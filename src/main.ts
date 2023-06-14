@@ -6,6 +6,7 @@ import { AppContext } from './types';
 import { createYoga } from 'graphql-yoga';
 import { schema } from './graphql/schema';
 import express from 'express';
+import { useMaskedErrors } from '@envelop/core';
 
 async function run() {
   const ctx: AppContext = createContext();
@@ -28,8 +29,17 @@ async function run() {
       credentials: true,
       origin: appConfig.cors.enabled ? (appConfig.cors.origins as string[]) : undefined,
     },
-    plugins: [     
+    plugins: [   
+      ...(process.env.NODE_ENV === 'production'
+      ? [
+          useMaskedErrors({
+            errorMessage: 'Something went wrong!',
+            maskError: errorHandlingFunction,
+          }),
+        ]
+      : []),  
     ],
+    
   });
   app.use(yoga.graphqlEndpoint, yoga);
   log.i('Starting BEPRO Chain Cast 🎧 Whisperer Service...');

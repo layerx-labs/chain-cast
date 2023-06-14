@@ -1,0 +1,15 @@
+export const ErrorsEnum = {
+    success: 200,
+    created: 201,
+    invalidUserInput: 401,
+    protectedEndpoint: 400,
+    invalidToken: 402,
+    objectNotFound: 403,
+    permissionsRequired: 404,
+    alreadyExists: 609,
+    accessDenied: 406,
+    maxFilesReached: 407,
+    fileTooLarge: 501,
+    maxRetriesReached: 410,
+    tooManyRequests: 429,
+  };

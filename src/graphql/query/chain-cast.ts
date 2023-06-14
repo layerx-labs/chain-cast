@@ -6,7 +6,6 @@ import { chainCast } from '../resolvers/chain-cast/chain';
 
 const ChainCastsWhereInput = builder.inputType('ChainCastsWhereInput', {
   fields: (t) => ({
-    id: t.int({ required: false }),
     address: t.field({
       type: StringFilter,
       required: false,
@@ -29,6 +28,7 @@ const ChainCastsOrderByEnum = builder.enumType('ChainCastsOrderByEnum', {
   values: ['id', 'type', 'address', 'chainId', 'blockNumber', 'createdAt'] as const,
 });
 
+
 builder.queryFields((t) => ({
   chainCast: t.prismaField({
     type: 'ChainCast',
@@ -43,7 +43,7 @@ builder.queryFields((t) => ({
     args: {
       where: t.arg({
         type: ChainCastsWhereInput,
-        required: true,
+        required: false,
       }),
       sortBy: t.arg({
         type: ChainCastsOrderByEnum,
@@ -66,15 +66,7 @@ builder.queryFields((t) => ({
       where: t.arg({
         type: ChainCastsWhereInput,
         required: true,
-      }),
-      sortBy: t.arg({
-        type: ChainCastsOrderByEnum,
-        required: false,
-      }),
-      order: t.arg({
-        type: SortOrderEnum,
-        required: true,
-      }),
+      }),     
     },
     resolve: chainCastsPageInfo,
   }),

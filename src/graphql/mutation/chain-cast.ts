@@ -1,15 +1,9 @@
-import { ChainIds } from '@/types/index';
+import { ChainNames } from '@/types/index';
 import { builder } from '../builder';
 import { ChainCastTypeEnum } from '@/graphql/types/ChainCast';
 import { chainCast } from '../resolvers/chain-cast/chain';
 import createChainCast from '../resolvers/chain-cast/create';
 import { deleteChainCast } from '../resolvers/chain-cast/delete';
-
-
-export const ChainIdsEnum = builder.enumType('ChainIds', {
-    values: Object.values(typeof ChainIds),
-});
-
 
 export const CreateChainCastDataInput = builder.inputType('CreateChainCastDataInput', {
     fields: (t) => ({
@@ -17,9 +11,7 @@ export const CreateChainCastDataInput = builder.inputType('CreateChainCastDataIn
             type: ChainCastTypeEnum,
         }),
         address: t.string({ required: true }),
-        chainId: t.field({
-            type: ChainIdsEnum
-        }),
+        chainId: t.int({ required: true }),
         startFrom: t.int({ required: false, defaultValue: 0 }),
     }),
 });
