@@ -15,7 +15,14 @@ export type ChainCastsArgType = {
     order?: Prisma.SortOrder,
     page?: number,
 }
-
+/**
+ * 
+ * @param _1 
+ * @param _2 
+ * @param args 
+ * @param ctx 
+ * @returns 
+ */
 export async function chainCasts(
     _1: unknown,
     _2: unknown,
