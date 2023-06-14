@@ -12,6 +12,7 @@ import { chainsSupported } from '@/constants/chains';
 import ContractListener from '@/services/contract-listener';
 import log from '@/services/log';
 import { ChainCastType, PrismaClient } from '@prisma/client';
+import { set } from 'zod';
 
 export class DebugListenerProcessor implements EventListenerProcessor {
   onEvent<N extends string, T>(event: Web3Event<N, T>): void {
@@ -59,13 +60,18 @@ export class EventWhisperer {
     chainId: number;
     blockNumber: number;
   }) {
-    await this._recoverEvents(stream);
-    await this._startRTWhispering(stream);
+    try {
+      await this._recoverEvents(stream);
+      await this._startRTWhispering(stream);
+    } catch(e: any) {
+      log.e(`Failed to add stream ${stream.id} ${e.message} ${e.stack}`);
+    }
   }
 
   async deleteStream(id: string) {
     if(this._listeners[id]) {
       this._listeners[id].stopListening();
+      delete this._listeners[id];
     }
   }
 
@@ -79,11 +85,14 @@ export class EventWhisperer {
     }
   ) {
     const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == stream.chainId);
+    log.i(`Starting Recovering events for stream ${stream.id} ` + 
+          `chainId=${stream.chainId} address=${stream.address} ${chain.rpcUrl}`);
     const web3Con = new Web3Connection({
       debug: false,
       web3Host: chain.rpcUrl,
     });
     const currentBlock = await web3Con.eth.getBlockNumber();
+    log.i(`Starting Recovering events current block ${currentBlock}`);
     if (stream.blockNumber <= currentBlock) {
       const fromBlock = stream.blockNumber + 1;
       switch (stream.type) {

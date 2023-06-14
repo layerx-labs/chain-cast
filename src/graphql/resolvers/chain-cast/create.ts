@@ -30,7 +30,7 @@ export default async function createChainCast(
             }
         }
     });
-    if (!oldChainCast) {
+    if (oldChainCast) {
         throw new UserInputError(
             'Chain Cast already found', 
             ErrorsEnum.alreadyExists
@@ -54,5 +54,6 @@ export default async function createChainCast(
         },
     })
     ctx.log.i(`Created a new Chain Cast id ${chainCast.id} ${chainCast.chainId} ${chainCast.address}`)
+    ctx.whisperer.addStream(chainCast);
     return chainCast;
 }

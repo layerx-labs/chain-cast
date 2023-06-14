@@ -12,7 +12,7 @@ export async function deleteChainCast(
      ctx: AppContext
   ): Promise<ChainCast> {
 
-    const chainCast = await ctx.db.chainCast.findUnique({    
+    const chainCast = await ctx.db.chainCast.delete({    
         where: {
             id: args.id,
         },
@@ -32,5 +32,6 @@ export async function deleteChainCast(
         );
     }
     ctx.log.i(`Deleted Chain Cast id ${chainCast.id} ${chainCast.chainId} ${chainCast.address}`)
+    ctx.whisperer.deleteStream(chainCast.id);
     return chainCast;
 }
