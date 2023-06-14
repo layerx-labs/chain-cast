@@ -4,7 +4,7 @@ import PrismaPlugin from '@pothos/plugin-prisma';
 import type PrismaTypes from '@pothos/plugin-prisma/generated';
 import prisma from '@/services/prisma';
 import { DateResolver, BigIntResolver, URLResolver, JSONResolver } from 'graphql-scalars';
-
+import { AppContext } from '@/types/index';
 // 2.
 export const builder = new SchemaBuilder<{
   // 3.
@@ -15,6 +15,7 @@ export const builder = new SchemaBuilder<{
     URL: { Input: string; Output: string };
   };
   PrismaTypes: PrismaTypes;
+  Context: AppContext;
 }>({
   // 4.
 
