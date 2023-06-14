@@ -1,0 +1,47 @@
+import { ChainSupported } from '../types';
+
+export const chainsSupported: ChainSupported = {
+  ethereum: {
+    id: 1,
+    rpcUrl: 'https://eth-vp.taikai.network:18080',
+    wsUrl: 'wss://eth-vp.taikai.network:18080',
+    blockExplorer: 'https://etherscan.io',
+    currency: 'ETH',
+    currencyDecimals: 18,
+    name: 'Ethereum Main Net',
+    shortName: 'Ethereum',
+    primaryColor: '#DDDDDD',
+  },
+  mumbai: {
+    id: 80001,
+    rpcUrl: 'https://matic-mumbai.chainstacklabs.com',
+    wsUrl: 'wss://matic-mumbai.chainstacklabs.com',
+    blockExplorer: 'https://etherscan.io',
+    currency: 'MATIC',
+    currencyDecimals: 18,
+    name: 'Polygon Main Net',
+    shortName: 'Polygon',
+    primaryColor: '#DDDDDD',
+  },
+  polygon: {
+    id: 137,
+    rpcUrl: 'https://polygon.llamarpc.com',
+    wsUrl: 'wss://polygon.llamarpc.com',
+    blockExplorer: 'https://polygonscan.io',
+    currency: 'MATIC',
+    currencyDecimals: 18,
+    name: 'Mumbai Test Net',
+    shortName: 'Polygon',
+    primaryColor: '#DDDDDD',
+  },
+  local: {
+    id: 1337,
+    rpcUrl: 'http://localhost:8545',
+    wsUrl: 'ws://localhost:8545',
+    currency: 'ETH',
+    currencyDecimals: 18,
+    name: 'Ganache Local Network',
+    shortName: 'Local',
+    primaryColor: '#DDDDDD',
+  },
+};
