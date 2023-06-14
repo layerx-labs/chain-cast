@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+generator pothos {
+  provider = "prisma-pothos-types"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum BeproChainCastType {
+  BEPRO_NETWORK_V2
+  BEPRO_FACTORY
+  BEPRO_REGISTRY
+  BEPRO_POP
+}
+
+model BeproChainCast {
+   id                     String  @id @default(cuid()) @db.VarChar(30)  
+   type                   BeproChainCastType
+   address                String
+   chainId                Int
+   blockNumber            Int @default(0)
+   events                 BeproCastEvent[]
+   createdAt              DateTime  @default(now())
+}
+
+model BeproCastEvent {
+  id                        String               @id @default(cuid()) @db.VarChar(30)  
+  streamId                  String               @db.VarChar(30)
+  stream                    BeproChainCast     @relation(fields: [streamId], references: [id])    
+  event                     String  
+  eventId                   String
+  address                   String
+  blockHash                 String
+  blockNumber               Int
+  transactionHash           String
+  transactionIndex          Int?
+  args                      Json
+  logIndex                  Int
+  createdAt                 DateTime  @default(now())
+}
