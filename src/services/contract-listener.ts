@@ -67,8 +67,8 @@ export class ContractListener<M extends Model, P extends EventListenerProcessor>
   async startListening(): Promise<void> {
     if (!this.isListening()) {
       await this._contract.start();
-      await this.changeProcessor(this._processor);
       this._isListening = true;
+      await this.changeProcessor(this._processor); 
     }
   }
 
@@ -86,7 +86,11 @@ export class ContractListener<M extends Model, P extends EventListenerProcessor>
       fromBlock: currentBlock + 1,
     };
     for (const event of Object.values(this.getEvents())) {
-      log.d(`Listening for ${event} on ${this._contract.contractAddress} ....`);
+      if(this.isListening()) {
+        log.d(`Listening for ${event} on ${this._contract.contractAddress} 👂`);
+      } else {
+        log.d(`Stop Listening for ${event} on ${this._contract.contractAddress} 👋`);
+      }      
       this._contract.contract.events[event](options)
         .on('changed', (changed: any) => processor.onEventChanged(event, changed))
         .on('data', (event: any) => {
@@ -101,9 +105,10 @@ export class ContractListener<M extends Model, P extends EventListenerProcessor>
    * Stop Listening for events
    */
   async stopListening(): Promise<void> {
-    if (this.isListening()) {
-      await this.changeProcessor(new SkipListenerProcessor());
+    if (this.isListening()) {     
       this._isListening = false;
+      await this.changeProcessor(new SkipListenerProcessor());
+     
     }
   }
 }
