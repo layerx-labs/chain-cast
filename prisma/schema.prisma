@@ -13,27 +13,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum BeproChainCastType {
+enum ChainCastType {
   BEPRO_NETWORK_V2
   BEPRO_FACTORY
   BEPRO_REGISTRY
   BEPRO_POP
 }
 
-model BeproChainCast {
+model ChainCast {
    id                     String  @id @default(cuid()) @db.VarChar(30)  
-   type                   BeproChainCastType
+   type                   ChainCastType
    address                String
    chainId                Int
    blockNumber            Int @default(0)
-   events                 BeproCastEvent[]
+   events                 ChainCastEvent[]
    createdAt              DateTime  @default(now())
 }
 
-model BeproCastEvent {
+model ChainCastEvent {
   id                        String               @id @default(cuid()) @db.VarChar(30)  
   streamId                  String               @db.VarChar(30)
-  stream                    BeproChainCast     @relation(fields: [streamId], references: [id])    
+  stream                    ChainCast     @relation(fields: [streamId], references: [id])    
   event                     String  
   eventId                   String
   address                   String

@@ -12,7 +12,7 @@ import { chainsSupported } from '@/constants/chains';
 import ContractListener from '@/services/contract-listener';
 import { AppContext, ChainParams } from '@/types/index';
 import log from '@/services/log';
-import { BeproChainCastType } from '@prisma/client';
+import { ChainCastType } from '@prisma/client';
 
 
 
@@ -54,7 +54,7 @@ export class EventWhisperer {
     chain: ChainParams,
     stream: {
       id: string;
-      type: BeproChainCastType;
+      type: ChainCastType;
       address: string;
       chainId: number;
       blockNumber: number;
@@ -68,13 +68,13 @@ export class EventWhisperer {
     if (stream.blockNumber <= currentBlock) {
       const fromBlock = stream.blockNumber + 1;
       switch (stream.type) {
-        case BeproChainCastType.BEPRO_FACTORY:
+        case ChainCastType.BEPRO_FACTORY:
           // Not Supported Yet
           break;
-        case BeproChainCastType.BEPRO_NETWORK_V2:
+        case ChainCastType.BEPRO_NETWORK_V2:
           await this.recoverContractEvents(web3Con, Network_v2, stream, fromBlock, currentBlock);
           break;
-        case BeproChainCastType.BEPRO_REGISTRY:
+        case ChainCastType.BEPRO_REGISTRY:
           await this.recoverContractEvents(
             web3Con,
             NetworkRegistry,
@@ -83,7 +83,7 @@ export class EventWhisperer {
             currentBlock
           );
           break;
-        case BeproChainCastType.BEPRO_POP:
+        case ChainCastType.BEPRO_POP:
           await this.recoverContractEvents(web3Con, BountyToken, stream, fromBlock, currentBlock);
           break;
       }
@@ -94,7 +94,7 @@ export class EventWhisperer {
     web3Con: Web3Connection,
     TCreator: new (web3Con: Web3Connection, address: string) => M,
     stream: {
-      type: BeproChainCastType;
+      type: ChainCastType;
       address: string;
       chainId: number;
     },
@@ -126,7 +126,7 @@ export class EventWhisperer {
     chain: ChainParams,
     stream: {
       id: string;
-      type: BeproChainCastType;
+      type: ChainCastType;
       address: string;
       chainId: number;
     }
@@ -136,10 +136,10 @@ export class EventWhisperer {
         `on ${stream.address}`
     );
     switch (stream.type) {
-      case BeproChainCastType.BEPRO_FACTORY:
+      case ChainCastType.BEPRO_FACTORY:
         // Not Supported Yet
         break;
-      case BeproChainCastType.BEPRO_NETWORK_V2:
+      case ChainCastType.BEPRO_NETWORK_V2:
         await this._setupListener(
           Network_v2,
           stream.id,
@@ -148,7 +148,7 @@ export class EventWhisperer {
           Object.values(NetworkEventsEnum)
         );
         break;
-      case BeproChainCastType.BEPRO_REGISTRY:
+      case ChainCastType.BEPRO_REGISTRY:
         await this._setupListener(
           NetworkRegistry,
           stream.id,
@@ -157,7 +157,7 @@ export class EventWhisperer {
           Object.values(RegistryEventsEnum)
         );
         break;
-      case BeproChainCastType.BEPRO_POP:
+      case ChainCastType.BEPRO_POP:
         await this._setupListener(
           BountyToken,
           stream.id,
@@ -170,7 +170,7 @@ export class EventWhisperer {
   }
 
   async _getStreams() {
-    return await this._ctx.db.beproChainCast.findMany({
+    return await this._ctx.db.chainCast.findMany({
       select: {
         id: true,
         type: true,

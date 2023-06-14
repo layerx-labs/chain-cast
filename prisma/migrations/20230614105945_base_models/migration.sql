@@ -1,20 +1,20 @@
 -- CreateEnum
-CREATE TYPE "BeproChainCastType" AS ENUM ('BEPRO_NETWORK_V2', 'BEPRO_FACTORY', 'BEPRO_REGISTRY', 'BEPRO_POP');
+CREATE TYPE "ChainCastType" AS ENUM ('BEPRO_NETWORK_V2', 'BEPRO_FACTORY', 'BEPRO_REGISTRY', 'BEPRO_POP');
 
 -- CreateTable
-CREATE TABLE "BeproChainCast" (
+CREATE TABLE "ChainCast" (
     "id" VARCHAR(30) NOT NULL,
-    "type" "BeproChainCastType" NOT NULL,
+    "type" "ChainCastType" NOT NULL,
     "address" TEXT NOT NULL,
     "chainId" INTEGER NOT NULL,
     "blockNumber" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "BeproChainCast_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "ChainCast_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "BeproCastEvent" (
+CREATE TABLE "ChainCastEvent" (
     "id" VARCHAR(30) NOT NULL,
     "streamId" VARCHAR(30) NOT NULL,
     "event" TEXT NOT NULL,
@@ -28,8 +28,8 @@ CREATE TABLE "BeproCastEvent" (
     "logIndex" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT "BeproCastEvent_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "ChainCastEvent_pkey" PRIMARY KEY ("id")
 );
 
 -- AddForeignKey
-ALTER TABLE "BeproCastEvent" ADD CONSTRAINT "BeproCastEvent_streamId_fkey" FOREIGN KEY ("streamId") REFERENCES "BeproChainCast"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ChainCastEvent" ADD CONSTRAINT "ChainCastEvent_streamId_fkey" FOREIGN KEY ("streamId") REFERENCES "ChainCast"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
