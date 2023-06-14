@@ -10,26 +10,24 @@ import {
 
 import { chainsSupported } from '@/constants/chains';
 import ContractListener from '@/services/contract-listener';
-import { AppContext, ChainParams } from '@/types/index';
 import log from '@/services/log';
 import { ChainCastType, PrismaClient } from '@prisma/client';
 
 export class DebugListenerProcessor implements EventListenerProcessor {
-    onEvent<N extends string, T>(event: Web3Event<N, T>): void {
-        console.log(`Event Received from ${event.event}`);
-    }
-    onError(eventName: string, error: Error): void {
-        console.log(`Error on Listener ${eventName}`,error);
-    }
-    onEventChanged(eventName: string, changed: any): void {}
-    onConnected(eventName: string, message: string): void {}
+  onEvent<N extends string, T>(event: Web3Event<N, T>): void {
+    console.log(`Event Received from ${event.event}`);
   }
+  onError(eventName: string, error: Error): void {
+    console.log(`Error on Listener ${eventName}`, error);
+  }
+  onEventChanged(eventName: string, changed: any): void {}
+  onConnected(eventName: string, message: string): void {}
+}
 
 /**
  * Main Event Indexer Service that
  */
 export class EventWhisperer {
-  
   _listeners: { [key: string]: EventListener };
   _db: PrismaClient;
 
@@ -41,14 +39,37 @@ export class EventWhisperer {
   async start() {
     const streams = await this._getStreams();
     for (const stream of streams) {
-      const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == stream.chainId);
-      await this.recoverEvents(chain, stream);
-      await this.startRTWhispering(chain, stream);
+      await this._recoverEvents(stream);
+      await this._startRTWhispering(stream);
+    }
+  }
+  async stop() {
+    const streams = await this._getStreams();
+    for (const stream of streams) {
+      if(this._listeners[stream.id]) {
+        this._listeners[stream.id].stopListening();
+      }
     }
   }
 
-  async recoverEvents(
-    chain: ChainParams,
+  async addStream(stream: {
+    id: string;
+    type: ChainCastType;
+    address: string;
+    chainId: number;
+    blockNumber: number;
+  }) {
+    await this._recoverEvents(stream);
+    await this._startRTWhispering(stream);
+  }
+
+  async deleteStream(id: string) {
+    if(this._listeners[id]) {
+      this._listeners[id].stopListening();
+    }
+  }
+
+  async _recoverEvents(
     stream: {
       id: string;
       type: ChainCastType;
@@ -57,6 +78,7 @@ export class EventWhisperer {
       blockNumber: number;
     }
   ) {
+    const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == stream.chainId);
     const web3Con = new Web3Connection({
       debug: false,
       web3Host: chain.rpcUrl,
@@ -69,10 +91,10 @@ export class EventWhisperer {
           // Not Supported Yet
           break;
         case ChainCastType.BEPRO_NETWORK_V2:
-          await this.recoverContractEvents(web3Con, Network_v2, stream, fromBlock, currentBlock);
+          await this._recoverContractEvents(web3Con, Network_v2, stream, fromBlock, currentBlock);
           break;
         case ChainCastType.BEPRO_REGISTRY:
-          await this.recoverContractEvents(
+          await this._recoverContractEvents(
             web3Con,
             NetworkRegistry,
             stream,
@@ -81,13 +103,13 @@ export class EventWhisperer {
           );
           break;
         case ChainCastType.BEPRO_POP:
-          await this.recoverContractEvents(web3Con, BountyToken, stream, fromBlock, currentBlock);
+          await this._recoverContractEvents(web3Con, BountyToken, stream, fromBlock, currentBlock);
           break;
       }
     }
   }
 
-  async recoverContractEvents<M extends Model>(
+  async _recoverContractEvents<M extends Model>(
     web3Con: Web3Connection,
     TCreator: new (web3Con: Web3Connection, address: string) => M,
     stream: {
@@ -119,8 +141,7 @@ export class EventWhisperer {
     } while (startBlock <= toBlock);
   }
 
-  async startRTWhispering(
-    chain: ChainParams,
+  async _startRTWhispering(
     stream: {
       id: string;
       type: ChainCastType;
@@ -128,6 +149,7 @@ export class EventWhisperer {
       chainId: number;
     }
   ) {
+    const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == stream.chainId);
     log.i(
       `Starting Consuming Events for stream ${chain.id} ${stream.id} ${stream.type} ` +
         `on ${stream.address}`

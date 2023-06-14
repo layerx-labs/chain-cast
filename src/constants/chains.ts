@@ -1,8 +1,8 @@
-import { ChainSupported } from '../types';
+import { ChainIds, ChainSupported } from '../types';
 
 export const chainsSupported: ChainSupported = {
   ethereum: {
-    id: 1,
+    id: ChainIds.ETHEREUM,
     rpcUrl: 'https://eth-vp.taikai.network:18080',
     wsUrl: 'wss://eth-vp.taikai.network:18080',
     blockExplorer: 'https://etherscan.io',
@@ -13,7 +13,7 @@ export const chainsSupported: ChainSupported = {
     primaryColor: '#DDDDDD',
   },
   mumbai: {
-    id: 80001,
+    id: ChainIds.MUMBAI,
     rpcUrl: 'https://matic-mumbai.chainstacklabs.com',
     wsUrl: 'wss://matic-mumbai.chainstacklabs.com',
     blockExplorer: 'https://etherscan.io',
@@ -24,7 +24,7 @@ export const chainsSupported: ChainSupported = {
     primaryColor: '#DDDDDD',
   },
   polygon: {
-    id: 137,
+    id: ChainIds.POLYGON,
     rpcUrl: 'https://polygon.llamarpc.com',
     wsUrl: 'wss://polygon.llamarpc.com',
     blockExplorer: 'https://polygonscan.io',
@@ -35,7 +35,7 @@ export const chainsSupported: ChainSupported = {
     primaryColor: '#DDDDDD',
   },
   local: {
-    id: 1337,
+    id: ChainIds.LOCAL,
     rpcUrl: 'http://localhost:8545',
     wsUrl: 'ws://localhost:8545',
     currency: 'ETH',

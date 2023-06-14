@@ -3,7 +3,6 @@ import { appConfig } from './config';
 import os from 'os';
 import { createContext } from './context';
 import { AppContext } from './types';
-import { EventWhisperer } from '@/services/whisperer';
 import { createYoga } from 'graphql-yoga';
 import { schema } from './graphql/schema';
 import express from 'express';
@@ -34,12 +33,18 @@ async function run() {
   });
   app.use(yoga.graphqlEndpoint, yoga);
   log.i('Starting BEPRO Chain Cast 🎧 Whisperer Service...');
-  ctx.whisperer.start();
+  await ctx.whisperer.start();
+
+  /** Start the GraphQL Server */
+  app.listen(appConfig.port, () => {
+    log.i(`Running a GraphQL API server at http://localhost:${appConfig.port}/graphql`);
+  });
+
 }
 
 run()
   .then(() => {
-    log.i('Started BEPRO Event Indexer');
+    log.i('Started BEPRO Event Chain Cast GraphQL Server');
   })
   .catch((e) => {
     log.e(e);

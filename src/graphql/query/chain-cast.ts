@@ -1,6 +1,8 @@
 import { builder } from '../builder';
 import { DateTimeFilter, PageInfo, SortOrderEnum, StringFilter } from '@/graphql/types';
 import { ChainCastTypeEnum } from '@/graphql/types/ChainCast';
+import { chainCasts, chainCastsPageInfo } from '../resolvers/chain-cast/chains';
+import { chainCast } from '../resolvers/chain-cast/chain';
 
 const ChainCastsWhereInput = builder.inputType('ChainCastsWhereInput', {
   fields: (t) => ({
@@ -28,17 +30,15 @@ const ChainCastsOrderByEnum = builder.enumType('ChainCastsOrderByEnum', {
 });
 
 builder.queryFields((t) => ({
-  chain: t.prismaField({
+  chainCast: t.prismaField({
     type: 'ChainCast',
     args: {
       id: t.arg.id(),
     },
-    resolve: async () => {
-      throw Error('TODO');
-    },
+    resolve: chainCast,
   }),
   // Define a field that issues an optimized prisma query
-  chains: t.prismaField({
+  chainCasts: t.prismaField({
     type: ['ChainCast'],
     args: {
       where: t.arg({
@@ -58,9 +58,7 @@ builder.queryFields((t) => ({
         required: false,
       }),
     },
-    resolve: async () => {
-      throw Error('TODO');
-    },
+    resolve: chainCasts,
   }),
   chainsPageInfo: t.field({
     type: PageInfo,
@@ -78,8 +76,6 @@ builder.queryFields((t) => ({
         required: true,
       }),
     },
-    resolve: async () => {
-      throw Error('TODO');
-    },
+    resolve: chainCastsPageInfo,
   }),
 }));

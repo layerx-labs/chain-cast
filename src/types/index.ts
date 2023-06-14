@@ -41,6 +41,13 @@ export type __Config = {
 
 export type ChainNames = 'ethereum' | 'mumbai' | 'local' | 'polygon';
 
+export enum ChainIds {
+  ETHEREUM = 1, 
+  MUMBAI = 80001,
+  POLYGON = 137,
+  LOCAL = 1337
+}
+
 export type ChainParams = {
   id: number;
   rpcUrl: string;
