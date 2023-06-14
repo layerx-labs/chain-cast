@@ -1,6 +1,6 @@
 import { builder } from '../builder';
 import { DateTimeFilter, PageInfo, SortOrderEnum, StringFilter } from '@/graphql/types';
-import { BeproChainCastTypeEnum } from '@/graphql/types/ChainCast';
+import { ChainCastTypeEnum } from '@/graphql/types/ChainCast';
 
 const ChainCastsWhereInput = builder.inputType('ChainCastsWhereInput', {
   fields: (t) => ({
@@ -10,7 +10,7 @@ const ChainCastsWhereInput = builder.inputType('ChainCastsWhereInput', {
       required: false,
     }),
     type: t.field({
-      type: BeproChainCastTypeEnum,
+      type: ChainCastTypeEnum,
       required: false,
     }),
     chainId: t.int({

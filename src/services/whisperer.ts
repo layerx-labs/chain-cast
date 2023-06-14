@@ -12,9 +12,7 @@ import { chainsSupported } from '@/constants/chains';
 import ContractListener from '@/services/contract-listener';
 import { AppContext, ChainParams } from '@/types/index';
 import log from '@/services/log';
-import { ChainCastType } from '@prisma/client';
-
-
+import { ChainCastType, PrismaClient } from '@prisma/client';
 
 export class DebugListenerProcessor implements EventListenerProcessor {
     onEvent<N extends string, T>(event: Web3Event<N, T>): void {
@@ -27,18 +25,17 @@ export class DebugListenerProcessor implements EventListenerProcessor {
     onConnected(eventName: string, message: string): void {}
   }
 
-
 /**
  * Main Event Indexer Service that
  */
 export class EventWhisperer {
   
   _listeners: { [key: string]: EventListener };
-  _ctx: AppContext;
+  _db: PrismaClient;
 
-  constructor(ctx: AppContext) {
+  constructor(db: PrismaClient) {
     this._listeners = {};
-    this._ctx = ctx;
+    this._db = db;
   }
 
   async start() {
@@ -170,7 +167,7 @@ export class EventWhisperer {
   }
 
   async _getStreams() {
-    return await this._ctx.db.chainCast.findMany({
+    return await this._db.chainCast.findMany({
       select: {
         id: true,
         type: true,
