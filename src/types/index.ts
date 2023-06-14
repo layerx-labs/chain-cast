@@ -1,9 +1,11 @@
+import { EventWhisperer } from '@/services/whisperer';
 import { PrismaClient } from '@prisma/client';
 import LogService, { LogLevel } from '@taikai/scribal';
 
 export type AppContext = {
     db: PrismaClient;
     log: LogService;
+    whisperer: EventWhisperer,
   };
 
 export type Environment = 'development' | 'staging' | 'production';

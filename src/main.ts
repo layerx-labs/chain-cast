@@ -12,17 +12,14 @@ async function run() {
   const ctx: AppContext = createContext();
   // Initialize Express Server
   const app = express();
-
   // Initialize logs
   log.init({
-    appName: 'bepro-event-indexer',
+    appName: 'bepro-chain-cast',
     version: appConfig.version,
     hostname: os.hostname(),
     ...appConfig.logs,
   });
-  log.i('Starting Bepro Chain Cast ...');
-  const whisperer = new EventWhisperer(ctx);
-  await whisperer.start();
+  log.i('Starting BEPRO Chain Cast 🎧 ...');
   const yoga = createYoga({
     schema,
     context: createContext,
@@ -36,8 +33,8 @@ async function run() {
     ],
   });
   app.use(yoga.graphqlEndpoint, yoga);
-
-
+  log.i('Starting BEPRO Chain Cast 🎧 Whisperer Service...');
+  ctx.whisperer.start();
 }
 
 run()

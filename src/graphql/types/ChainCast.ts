@@ -1,7 +1,7 @@
 import { builder } from '../builder';
 import {ChainCastType} from '@prisma/client';
 
-export const BeproChainCastTypeEnum = builder.enumType('ChainCastType', {
+export const ChainCastTypeEnum = builder.enumType('ChainCastType', {
   values: Object.values(ChainCastType),
 });
 
@@ -12,7 +12,7 @@ builder.prismaObject('ChainCast', {
       chainId: t.exposeInt('chainId'),     
       blockNumber: t.exposeInt('chainId'),     
       type: t.expose('type', {
-        type: BeproChainCastTypeEnum,
+        type: ChainCastTypeEnum,
       }),    
       createdAt: t.expose('createdAt', {
         type: 'Date',
