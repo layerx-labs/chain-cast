@@ -7,6 +7,7 @@ import { createYoga } from 'graphql-yoga';
 import { schema } from './graphql/schema';
 import express from 'express';
 import { useMaskedErrors } from '@envelop/core';
+import { errorHandlingFunction } from './middleware/errors';
 
 async function run() {
   const ctx: AppContext = createContext();
@@ -23,7 +24,7 @@ async function run() {
   const yoga = createYoga({
     schema,
     context: createContext,
-    maskedErrors: true,
+    maskedErrors: false,
     graphqlEndpoint: '/api/graphql',
     cors: {
       credentials: true,

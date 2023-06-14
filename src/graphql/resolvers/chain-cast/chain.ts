@@ -3,7 +3,6 @@ import { AppContext } from '@/types/index';
 import { ChainCast } from '@prisma/client';
 import { ErrorsEnum } from '@/constants/index';
 
-
 export type ChainCastArgType = {
     id: string;
 }

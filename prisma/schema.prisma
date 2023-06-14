@@ -27,4 +27,5 @@ model ChainCast {
    chainId                Int
    blockNumber            Int @default(0)
    createdAt              DateTime  @default(now())
+   @@unique([chainId, address])
 }

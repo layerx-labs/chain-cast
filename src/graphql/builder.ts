@@ -5,6 +5,9 @@ import type PrismaTypes from '@pothos/plugin-prisma/generated';
 import prisma from '@/services/prisma';
 import { DateResolver, BigIntResolver, URLResolver, JSONResolver } from 'graphql-scalars';
 import { AppContext } from '@/types/index';
+import ValidationPlugin from '@pothos/plugin-validation';
+import { UserInputError } from '@/middleware/errors';
+import { error } from 'console';
 // 2.
 export const builder = new SchemaBuilder<{
   // 3.
@@ -19,9 +22,23 @@ export const builder = new SchemaBuilder<{
 }>({
   // 4.
 
-  plugins: [PrismaPlugin],
+  plugins: [PrismaPlugin, ValidationPlugin],
   prisma: {
     client: prisma,
+  },
+  validationOptions: {
+    validationError: (zodError, args, context, info) => {
+      const errors: {[key: string]: any} = {};
+      zodError.errors.forEach(error=> { 
+        const key = error.path.join(".");
+        errors[key] = error.message; 
+      })
+      return new UserInputError(
+        "Invalid Input",
+        401,
+        errors
+      );
+    },
   },
 });
 builder.queryType({});
