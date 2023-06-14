@@ -4,10 +4,15 @@ import os from 'os';
 import { createContext } from './context';
 import { AppContext } from './types';
 import { EventWhisperer } from '@/services/whisperer';
-
+import { createYoga } from 'graphql-yoga';
+import { schema } from './graphql/schema';
+import express from 'express';
 
 async function run() {
   const ctx: AppContext = createContext();
+  // Initialize Express Server
+  const app = express();
+
   // Initialize logs
   log.init({
     appName: 'bepro-event-indexer',
@@ -15,8 +20,24 @@ async function run() {
     hostname: os.hostname(),
     ...appConfig.logs,
   });
+  log.i('Starting Bepro Chain Cast ...');
   const whisperer = new EventWhisperer(ctx);
   await whisperer.start();
+  const yoga = createYoga({
+    schema,
+    context: createContext,
+    maskedErrors: true,
+    graphqlEndpoint: '/api/graphql',
+    cors: {
+      credentials: true,
+      origin: appConfig.cors.enabled ? (appConfig.cors.origins as string[]) : undefined,
+    },
+    plugins: [     
+    ],
+  });
+  app.use(yoga.graphqlEndpoint, yoga);
+
+
 }
 
 run()
