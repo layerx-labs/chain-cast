@@ -1,11 +1,7 @@
-
-
 import log from '@/services/log';
 import { ContractCastType, PrismaClient } from '@prisma/client';
 import { ContractCast } from './contract-cast';
 import { ContractCastEventProcessor, PlugInConstructor } from '@/types/events';
-
-
 
 /**
  * Main Event Indexer Service that

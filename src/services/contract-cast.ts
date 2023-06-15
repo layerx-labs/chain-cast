@@ -75,13 +75,16 @@ export class ContractCast {
    * @param event
    */
   async onEvent<N extends string, T>(event: Web3Event<N, T>) {
-    log.d(`New Event ${event.event} forwarding to processors`)
-    for(const processor of this._processors) {
-        processor.onEvent({
-            id: this._id,
-            address: this._address,
-            chainId: this._chainId,
-        }, event);
+    log.d(`New Event ${event.event} forwarding to processors`);
+    for (const processor of this._processors) {
+      processor.onEvent(
+        {
+          id: this._id,
+          address: this._address,
+          chainId: this._chainId,
+        },
+        event
+      );
     }
   }
 
