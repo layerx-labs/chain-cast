@@ -1,4 +1,4 @@
-import { ContractCastEventProcessor, Web3Event } from "@/types/events";
+import { ContractCastEventProcessor, Web3Event } from '@/types/events';
 
 import log from '@/services/log';
 

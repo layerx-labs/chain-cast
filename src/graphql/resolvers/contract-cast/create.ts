@@ -1,7 +1,7 @@
-import { ErrorsEnum } from "@/constants/index";
-import { UserInputError } from "@/middleware/errors";
-import { AppContext } from "@/types/index";
-import { ContractCast, ContractCastType } from "@prisma/client";
+import { ErrorsEnum } from '@/constants/index';
+import { UserInputError } from '@/middleware/errors';
+import { AppContext } from '@/types/index';
+import { ContractCast, ContractCastType } from '@prisma/client';
 
 export type CreateContractCastArgType = {
     data: {

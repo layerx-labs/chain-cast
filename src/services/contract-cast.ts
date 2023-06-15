@@ -2,7 +2,6 @@ import { BountyToken, Model, NetworkRegistry, Network_v2, Web3Connection } from 
 import {
   EventListener,
   Web3Event,
-  EventListenerProcessor,
   ContractCastEventProcessor,
   PlugInConstructor,
 } from '@/types/events';
@@ -10,17 +9,6 @@ import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
 import ContractListener from './contract-listener';
 import { chainsSupported } from '@/constants/chains';
-
-export class DebugListenerProcessor implements EventListenerProcessor {
-  onEvent<N extends string, T>(event: Web3Event<N, T>): void {
-    console.log(`Event Received from ${event.event}`);
-  }
-  onError(error: Error): void {
-    console.log(`Error on Listener`, error);
-  }
-  onEventChanged(changed: any): void {}
-  onConnected(message: string): void {}
-}
 
 export class ContractCast {
   _id: string;

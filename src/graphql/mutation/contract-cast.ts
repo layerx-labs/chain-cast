@@ -1,4 +1,4 @@
-import { ChainIds, ChainNames } from '@/types/index';
+import { ChainIds } from '@/types/index';
 import { builder } from '../builder';
 import { ContractCastTypeEnum } from '@/graphql/types/contract-cast';
 import createContractCast from '../resolvers/contract-cast/create';
@@ -61,3 +61,5 @@ builder.mutationField('deleteContractCast', (t) =>
     resolve: deleteContractCast,
   })
 );
+
+

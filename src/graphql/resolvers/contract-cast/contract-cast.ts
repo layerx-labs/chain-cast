@@ -23,7 +23,7 @@ export async function contractCast(
 ): Promise<ContractCast> {
   const cast = await ctx.db.contractCast.findUnique({
     where: {
-      id: args?.id ?? "",
+      id: args?.id ?? '',
     },
     select: {
       id: true,

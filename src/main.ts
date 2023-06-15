@@ -46,7 +46,7 @@ async function run() {
   app.use(yoga.graphqlEndpoint, yoga);
   log.i('Starting Chain Cast 🎧 Whisperer Service...');
 
-  ctx.whisperer.registerProcessor("logger", LoggerContractCastEventProcessor);
+  ctx.whisperer.registerProcessor('logger', LoggerContractCastEventProcessor);
 
 
   await ctx.whisperer.start();

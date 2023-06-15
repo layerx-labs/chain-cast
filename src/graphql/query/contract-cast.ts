@@ -28,8 +28,6 @@ export const ContractCastsOrderByEnum = builder.enumType('ContractCastsOrderByEn
   values: ['id', 'type', 'address', 'chainId', 'blockNumber', 'createdAt'] as const,
 });
 
-
-
 builder.queryFields((t) => ({
   contractCast: t.prismaField({
     type: 'ContractCast',
@@ -40,7 +38,7 @@ builder.queryFields((t) => ({
     },
     resolve: contractCast,
   }),
-  
+
   // Define a field that issues an optimized prisma query
   contractCasts: t.prismaField({
     type: ['ContractCast'],
@@ -70,7 +68,7 @@ builder.queryFields((t) => ({
       where: t.arg({
         type: ContractCastsWhereInput,
         required: false,
-      }),     
+      }),
     },
     resolve: contractCastsPageInfo as any,
   }),
