@@ -3,14 +3,17 @@
 import log from '@/services/log';
 import { ChainCastType, PrismaClient } from '@prisma/client';
 import { ChainCast } from './chain-cast';
+import { ChainCastEventProcessor, PlugInConstructor } from '@/types/events';
+
+
 
 /**
  * Main Event Indexer Service that
  */
 export class EventWhisperer {
-  
   _casts: { [key: string]: ChainCast };
   _db: PrismaClient;
+  _supportedProcessors: { [key: string]: PlugInConstructor<ChainCastEventProcessor> } = {};
 
   constructor(db: PrismaClient) {
     this._casts = {};
@@ -25,7 +28,7 @@ export class EventWhisperer {
         cast.type,
         cast.address,
         cast.chainId,
-        cast.blockNumber,
+        cast.blockNumber
       );
       this._casts[cast.id] = chainCast;
       chainCast.start();
@@ -34,7 +37,7 @@ export class EventWhisperer {
   async stop() {
     const casts = await this._getCasts();
     for (const cast of casts) {
-      if(this._casts[cast.id]) {
+      if (this._casts[cast.id]) {
         this._casts[cast.id].stop();
       }
     }
@@ -53,17 +56,21 @@ export class EventWhisperer {
         cast.type,
         cast.address,
         cast.chainId,
-        cast.blockNumber,
+        cast.blockNumber
       );
       this._casts[cast.id] = chainCast;
+      const processorCtrs = Object.values(this._supportedProcessors);
+      for(const _constructor of processorCtrs) {
+        chainCast.enableProcessor(_constructor);      
+      }
       chainCast.start();
-    } catch(e: any) {
+    } catch (e: any) {
       log.e(`Failed to add chain cast ${cast.id} ${e.message} ${e.stack}`);
     }
   }
 
   async deleteCast(id: string) {
-    if(this._casts[id]) {
+    if (this._casts[id]) {
       this._casts[id].stop();
       delete this._casts[id];
     }
@@ -79,5 +86,12 @@ export class EventWhisperer {
         blockNumber: true,
       },
     });
+  }
+
+  registerProcessor<M extends ChainCastEventProcessor>(
+    name: string,
+    pConstructor: PlugInConstructor<M>
+  ) {
+    this._supportedProcessors[name] = pConstructor;
   }
 }

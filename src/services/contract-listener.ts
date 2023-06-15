@@ -3,6 +3,8 @@ import { Model, Web3Connection } from '@taikai/dappkit';
 import log from '@/services/log';
 import { EventEmitter } from 'node:events';
 
+
+
 /**
  * This Class listen for events on a contract of type M and
  * forward the event to the EventListenerProcessor

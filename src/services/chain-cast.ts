@@ -1,5 +1,11 @@
 import { BountyToken, Model, NetworkRegistry, Network_v2, Web3Connection } from '@taikai/dappkit';
-import { EventListener, Web3Event, EventListenerProcessor } from '@/types/events';
+import {
+  EventListener,
+  Web3Event,
+  EventListenerProcessor,
+  ChainCastEventProcessor,
+  PlugInConstructor,
+} from '@/types/events';
 import log from '@/services/log';
 import { ChainCastType } from '@prisma/client';
 import ContractListener from './contract-listener';
@@ -23,6 +29,7 @@ export class ChainCast {
   _chainId: number;
   _blockNumber: number;
   _listener: EventListener | null = null;
+  _processors: ChainCastEventProcessor[] = [];
 
   constructor(
     id: string,
@@ -36,6 +43,12 @@ export class ChainCast {
     this._address = address;
     this._chainId = chainId;
     this._blockNumber = blockNumber;
+  }
+
+  async enableProcessor<M extends ChainCastEventProcessor>(pConstructor: PlugInConstructor<M>) {
+    const processor = new pConstructor(this._id, this._address, this._chainId);
+    log.d(`Enabling processor ${processor.name} on cast ${this._id}`);
+    this._processors.push(processor);
   }
 
   async start() {
@@ -54,12 +67,12 @@ export class ChainCast {
   ) {
     const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this._chainId);
     try {
-      const listener: EventListener = new ContractListener(
-        TCreator,
-        chain.wsUrl,
-        this._address,
-        new DebugListenerProcessor()
-      );
+      const listener: EventListener = new ContractListener(TCreator, chain.wsUrl, this._address, {
+        onEvent: this.onEvent.bind(this),
+        onError: this.onError.bind(this),
+        onEventChanged: this.onEventChanged.bind(this),
+        onConnected: this.onConnected.bind(this),
+      });
       this._listener = listener;
       await listener.startListening();
     } catch (e: any) {
@@ -68,6 +81,17 @@ export class ChainCast {
           `on ${this._address} - ${e.message}`
       );
     }
+  }
+
+  onEventChanged(changed: any): void {
+    log.e(`Event Changed on cast ${this._id} ${changed}`);
+  }
+  onConnected(message: string): void {
+    log.e(`Event Emmiter Connected cast ${this._id} ${message}`);
+  }
+
+  onError(error: Error) {
+    log.e(`Error listening on cast ${this._id} ${error.message} ${this._type} `, error.stack);
   }
 
   async _startRTWhispering() {
@@ -121,13 +145,20 @@ export class ChainCast {
       }
     }
   }
+  /**
+   *
+   * @param event
+   */
+  async onEvent<N extends string, T>(event: Web3Event<N, T>) {
+    console.log(`Chegoun ao posto ${this._chainId}`);
+  }
+
   async _recoverContractEvents<M extends Model>(
     web3Con: Web3Connection,
     TCreator: new (web3Con: Web3Connection, address: string) => M,
     fromBlock: number,
     toBlock: number
   ) {
-    const processor = new DebugListenerProcessor();
     let startBlock = fromBlock;
     do {
       const endBlock = Math.min(startBlock + 100, toBlock);
@@ -139,7 +170,7 @@ export class ChainCast {
       const network = new TCreator(web3Con, this._address);
       const events = await network.contract.self.getPastEvents('allEvents', options);
       for (const event of events) {
-        processor.onEvent(event);
+        this.onEvent(event);
       }
       startBlock = endBlock + 1;
     } while (startBlock <= toBlock);
