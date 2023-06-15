@@ -27,16 +27,12 @@ export const builder = new SchemaBuilder<{
   },
   validationOptions: {
     validationError: (zodError) => {
-      const errors: {[key: string]: any} = {};
-      zodError.errors.forEach(error=> { 
+      const errors: { [key: string]: any } = {};
+      zodError.errors.forEach((error) => {
         const key = error.path.join('.');
-        errors[key] = error.message; 
-      })
-      return new UserInputError(
-        'Invalid Input',
-        401,
-        errors
-      );
+        errors[key] = error.message;
+      });
+      return new UserInputError('Invalid Input', 401, errors);
     },
   },
 });

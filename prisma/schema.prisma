@@ -26,6 +26,7 @@ model ContractCast {
    address                String
    chainId                Int
    blockNumber            Int @default(0)
+   processorConf          Json
    createdAt              DateTime  @default(now())
   @@unique([chainId, address])
 }

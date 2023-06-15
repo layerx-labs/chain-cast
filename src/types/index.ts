@@ -3,10 +3,10 @@ import { PrismaClient } from '@prisma/client';
 import LogService, { LogLevel } from '@taikai/scribal';
 
 export type AppContext = {
-    db: PrismaClient;
-    log: LogService;
-    whisperer: EventWhisperer,
-  };
+  db: PrismaClient;
+  log: LogService;
+  whisperer: EventWhisperer;
+};
 
 export type Environment = 'development' | 'staging' | 'production';
 
@@ -38,14 +38,13 @@ export type __Config = {
   };
 };
 
-
 export type ChainNames = 'ethereum' | 'mumbai' | 'local' | 'polygon';
 
 export enum ChainIds {
-  ETHEREUM = 1, 
+  ETHEREUM = 1,
   MUMBAI = 80001,
   POLYGON = 137,
-  LOCAL = 1337
+  LOCAL = 1337,
 }
 
 export type ChainParams = {

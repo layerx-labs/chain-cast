@@ -1,11 +1,7 @@
-
-
 import log from '@/services/log';
 import { ContractCastType, PrismaClient } from '@prisma/client';
 import { ContractCast } from './contract-cast';
 import { ContractCastEventProcessor, PlugInConstructor } from '@/types/events';
-
-
 
 /**
  * Main Event Indexer Service that
@@ -64,10 +60,23 @@ export class EventWhisperer {
       cast.blockNumber
     );
     this._casts[cast.id] = contractCast;
-    const processorCtrs = Object.values(this._supportedProcessors);
-    for (const _constructor of processorCtrs) {
-      contractCast.enableProcessor(_constructor);
-    }
+    Object.keys(this._supportedProcessors).forEach(key=> {
+      contractCast.enableProcessor(key, this._supportedProcessors[key]);
+    });
+    contractCast.loadConfiguration([{
+      name: 'logger',
+      filter: [],     
+    },{
+      name: 'webhook',
+      filter: [],
+      configuration: {
+        url: {
+          type: 'string',
+          required: true,
+          value: 'https://webhook.site/06218e87-7b2e-48c8-a467-746c1b031d17'
+        }
+      },
+    }])
     contractCast.start();
   }
 

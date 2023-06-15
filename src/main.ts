@@ -9,6 +9,7 @@ import express from 'express';
 import { useMaskedErrors } from '@envelop/core';
 import { errorHandlingFunction } from './middleware/errors';
 import { LoggerContractCastEventProcessor } from './services/processors/logger';
+import { WebHookEventProcessor } from './services/processors/webhook';
 
 async function run() {
   const ctx: AppContext = createContext();
@@ -47,6 +48,7 @@ async function run() {
   log.i('Starting Chain Cast 🎧 Whisperer Service...');
 
   ctx.whisperer.registerProcessor('logger', LoggerContractCastEventProcessor);
+  ctx.whisperer.registerProcessor('webhook', WebHookEventProcessor);
 
 
   await ctx.whisperer.start();
