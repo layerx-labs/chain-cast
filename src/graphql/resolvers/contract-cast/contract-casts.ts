@@ -1,30 +1,28 @@
-import { PageInfo } from '@/graphql/types';
+import { MakeDeepNullable, PageInfo } from '@/graphql/types';
 import { AppContext } from '@/types/index';
 import { ContractCast, ContractCastType, Prisma } from '@prisma/client';
 
 export type ContractCastsArgType = {
-  where?:
-     {
-        address?: string | Prisma.StringFilter ;
-        type?: ContractCastType ;
-        chainId?: number | Prisma.IntFilter ;
-        createdAt?: string | Prisma.DateTimeFilter;
-      };
+  where?: {
+    address?: string | Prisma.StringFilter;
+    type?: ContractCastType;
+    chainId?: number | Prisma.IntFilter;
+    createdAt?: string | Prisma.DateTimeFilter;
+  };
   sortBy?: 'id' | 'type' | 'address' | 'chainId' | 'blockNumber' | 'createdAt';
   order?: Prisma.SortOrder;
   page?: number;
 };
 
-
 export type ContractCastsArgPageInfoType = {
-  where?:
-     {
-        address?: string | Prisma.StringFilter ;
-        type?: ContractCastType ;
-        chainId?: number | Prisma.IntFilter ;
-        createdAt?: string | Prisma.DateTimeFilter;
-      };
+  where?: {
+    address?: string | Prisma.StringFilter;
+    type?: ContractCastType;
+    chainId?: number | Prisma.IntFilter;
+    createdAt?: string | Prisma.DateTimeFilter;
+  };
 };
+
 /**
 /**
  * 
@@ -39,10 +37,10 @@ export type ContractCastsArgPageInfoType = {
 export async function contractCasts(
   _1: unknown,
   _2: unknown,
-  args: ContractCastsArgType,
+  args: MakeDeepNullable<ContractCastsArgType>,
   ctx: AppContext
 ): Promise<ContractCast[]> {
-  const { where, sortBy, order } = args;
+  const { where, sortBy, order } = args as ContractCastsArgType;
   const perPage = 20;
   const page = args.page || 0;
   const skip = page * perPage;
@@ -70,18 +68,14 @@ export async function contractCasts(
 
 export async function contractCastsPageInfo(
   _1: unknown,
-  args: ContractCastsArgPageInfoType,
+  args: MakeDeepNullable<ContractCastsArgPageInfoType>,
   ctx: AppContext
 ): Promise<PageInfo> {
-  const { where } = args;
+  const { where } = args as ContractCastsArgPageInfoType;
   const perPage = 20;
   const count = await ctx.db.contractCast.count({
     where,
   });
   const pageCount = count % perPage == 0 ? count / perPage : Math.floor(count / perPage) + 1;
-  return new PageInfo(
-    perPage,   
-    pageCount,
-    count,
-  );
+  return new PageInfo(perPage, pageCount, count);
 }

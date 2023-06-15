@@ -23,7 +23,15 @@ export class PageInfo {
   }
 }
 
+type IsObject<T, K extends keyof T> = T[K] extends object ? true : false;
 
+export type MakeDeepNullable<T> = {
+  [K in keyof T]: undefined extends T[K]
+    ? MakeDeepNullable<T[K]> | null
+    : IsObject<T, K> extends true
+    ? MakeDeepNullable<T[K]>
+    : T[K];
+};
 
 export const SortOrderEnum = builder.enumType('SortOrder', {
   values: Object.values(Prisma.SortOrder),
@@ -42,7 +50,7 @@ export const StringFilter = builder.inputType('StringFilter', {
   fields: (t) => ({
     equals: t.string({ required: false }),
     not: t.string({ required: false }),
-    contains: t.float({ required: true }),
+    contains: t.string({ required: false }),
   }),
 });
 
@@ -61,13 +69,13 @@ export const IntFilter = builder.inputType('IntFilter', {
 
 export const DateTimeFilter = builder.inputType('DateTimeFilter', {
   fields: (t) => ({
-    equals: t.int({ required: false }),
-    in: t.intList({ required: false }),
-    notIn: t.intList({ required: false }),
-    lt: t.int({ required: false }),
-    lte: t.int({ required: false }),
-    gt: t.int({ required: false }),
-    gte: t.int({ required: false }),
-    not: t.int({ required: false }),
+    equals: t.string({ required: false }),
+    in: t.stringList({ required: false }),
+    notIn: t.stringList({ required: false }),
+    lt: t.string({ required: false }),
+    lte: t.string({ required: false }),
+    gt: t.string({ required: false }),
+    gte: t.string({ required: false }),
+    not: t.string({ required: false }),
   }),
 });
