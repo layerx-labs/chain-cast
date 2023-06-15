@@ -61,12 +61,10 @@ export class EventWhisperer {
       this._supportedProcessors,
     );
     this._casts[cast.id] = contractCast;
-    contractCast.loadConfiguration([{
+    contractCast.loadProgram([{
       name: 'logger',
-      filter: [],     
     },{
       name: 'webhook',
-      filter: [],
       configuration: {
         url: {
           type: 'string',
