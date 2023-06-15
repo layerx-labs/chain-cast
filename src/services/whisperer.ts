@@ -23,15 +23,7 @@ export class EventWhisperer {
   async start() {
     const casts = await this._getCasts();
     for (const cast of casts) {
-      const chainCast: ChainCast = new ChainCast(
-        cast.id,
-        cast.type,
-        cast.address,
-        cast.chainId,
-        cast.blockNumber
-      );
-      this._casts[cast.id] = chainCast;
-      chainCast.start();
+      this.setupCast(cast);
     }
   }
   async stop() {
@@ -51,22 +43,32 @@ export class EventWhisperer {
     blockNumber: number;
   }) {
     try {
-      const chainCast: ChainCast = new ChainCast(
-        cast.id,
-        cast.type,
-        cast.address,
-        cast.chainId,
-        cast.blockNumber
-      );
-      this._casts[cast.id] = chainCast;
-      const processorCtrs = Object.values(this._supportedProcessors);
-      for(const _constructor of processorCtrs) {
-        chainCast.enableProcessor(_constructor);      
-      }
-      chainCast.start();
+      this.setupCast(cast);
     } catch (e: any) {
       log.e(`Failed to add chain cast ${cast.id} ${e.message} ${e.stack}`);
     }
+  }
+
+  private setupCast(cast: {
+    id: string;
+    type: ChainCastType;
+    address: string;
+    chainId: number;
+    blockNumber: number;
+  }) {
+    const chainCast: ChainCast = new ChainCast(
+      cast.id,
+      cast.type,
+      cast.address,
+      cast.chainId,
+      cast.blockNumber
+    );
+    this._casts[cast.id] = chainCast;
+    const processorCtrs = Object.values(this._supportedProcessors);
+    for (const _constructor of processorCtrs) {
+      chainCast.enableProcessor(_constructor);
+    }
+    chainCast.start();
   }
 
   async deleteCast(id: string) {

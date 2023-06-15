@@ -309,7 +309,6 @@ export type ChainCastEventProcessor = {
     cast: {
       id: string,
       chainId: number,
-      type: ChainCastType,
       address: string,    
     },
     event: Web3Event<N, T>    

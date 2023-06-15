@@ -1,15 +1,19 @@
 import { ChainCastEventProcessor, Web3Event } from "@/types/events";
-import { ChainCastType } from "@prisma/client";
+
 import log from '@/services/log';
 
 export class LoggerChainCastEventProcessor implements ChainCastEventProcessor {
+
+  PLUGIN_NAME= 'Chain Cast Logger';
+
   name(): string {
-    return 'Chain Cast Event Logger';
+    return this.PLUGIN_NAME;
   }
   onEvent<N, T>(
-    cast: { id: string; chainId: number; type: ChainCastType; address: string },
+    cast: { id: string; chainId: number; address: string },
     event: Web3Event<N, T>
   ): void {
-    log.d(`Event Received from ${event.event} on cast ${cast.id} address ${address}`);
+    log.d(`[${this.PLUGIN_NAME}] Event Received from ${event.event} ` + 
+          ` on cast ${cast.id} address ${cast.address}`);
   }
 }

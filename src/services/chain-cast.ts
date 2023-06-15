@@ -47,7 +47,7 @@ export class ChainCast {
 
   async enableProcessor<M extends ChainCastEventProcessor>(pConstructor: PlugInConstructor<M>) {
     const processor = new pConstructor(this._id, this._address, this._chainId);
-    log.d(`Enabling processor ${processor.name} on cast ${this._id}`);
+    log.d(`Enabling processor ${processor.name()} on cast ${this._id}`);
     this._processors.push(processor);
   }
 
@@ -80,6 +80,20 @@ export class ChainCast {
         `Failed to setup ${this._id} ${this._chainId} ${this._type} ` +
           `on ${this._address} - ${e.message}`
       );
+    }
+  }
+  /**
+   *
+   * @param event
+   */
+  async onEvent<N extends string, T>(event: Web3Event<N, T>) {
+    log.d(`New Event ${event.event} forwarding to processors`)
+    for(const processor of this._processors) {
+        processor.onEvent({
+            id: this._id,
+            address: this._address,
+            chainId: this._chainId,
+        }, event);
     }
   }
 
@@ -144,13 +158,6 @@ export class ChainCast {
           break;
       }
     }
-  }
-  /**
-   *
-   * @param event
-   */
-  async onEvent<N extends string, T>(event: Web3Event<N, T>) {
-    console.log(`Chegoun ao posto ${this._chainId}`);
   }
 
   async _recoverContractEvents<M extends Model>(
