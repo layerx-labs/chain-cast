@@ -1,4 +1,4 @@
-import { EventListener, EventListenerProcessor } from '@/types/events';
+import { EventListener, EventListenerHandler } from '@/types/events';
 import { Model, Web3Connection } from '@taikai/dappkit';
 import log from '@/services/log';
 import { EventEmitter } from 'node:events';
@@ -7,7 +7,7 @@ import { EventEmitter } from 'node:events';
  * This Class listen for events on a contract of type M and
  * forward the event to the EventListenerProcessor
  */
-export class ContractListener<M extends Model, P extends EventListenerProcessor>
+export class ContractListener<M extends Model, P extends EventListenerHandler>
   implements EventListener
 {
   _web3Con: Web3Connection;
@@ -72,7 +72,7 @@ export class ContractListener<M extends Model, P extends EventListenerProcessor>
    * Always to start the listener on the Block Number
    * @param processor
    */
-  private async enableProcessor<Processor extends EventListenerProcessor>(processor: Processor) {
+  private async enableProcessor<Processor extends EventListenerHandler>(processor: Processor) {
     const currentBlock = await this._web3Con.eth.getBlockNumber();
     const startBlock = currentBlock + 1;
     const options = {
