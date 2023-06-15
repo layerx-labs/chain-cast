@@ -1,15 +1,10 @@
 import { BountyToken, Model, NetworkRegistry, Network_v2, Web3Connection } from '@taikai/dappkit';
-import {
-  EventListener,
-  Web3Event,
-  ContractCastEventProcessor,
-  PlugInConstructor,
-  ProcessorRuntime,
-} from '@/types/events';
+import { EventListener, Web3Event, SupportPlugInsMap, ProcessorRuntime } from '@/types/events';
 import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
 import ContractListener from './contract-listener';
 import { chainsSupported } from '@/constants/chains';
+import { Program } from './program';
 
 export class ContractCast {
   _id: string;
@@ -18,34 +13,38 @@ export class ContractCast {
   _chainId: number;
   _blockNumber: number;
   _listener: EventListener | null = null;
-  _processors: ProcessorRuntime[] = [];
-  _supportedProcessors: { [key: string]: PlugInConstructor<ContractCastEventProcessor> } = {};
+  _program: Program;
 
   constructor(
     id: string,
     type: ContractCastType,
     address: string,
     chainId: number,
-    blockNumber: number
+    blockNumber: number,
+    supportedProcessors: SupportPlugInsMap
   ) {
     this._id = id;
     this._type = type;
     this._address = address;
     this._chainId = chainId;
     this._blockNumber = blockNumber;
+    this._program = new Program(this, supportedProcessors);
   }
 
-  async enableProcessor<M extends ContractCastEventProcessor>(
-    name: string,
-    pConstructor: PlugInConstructor<M>
-  ) {
-    const processor = new pConstructor(this._id, this._address, this._chainId);
-    log.d(`Enabling processor ${processor.name()} on cast ${this._id}`);
-    this._supportedProcessors[name] = pConstructor;
+  getId() {
+    return this._id;
   }
 
-  async loadConfiguration(conf: ProcessorRuntime[]) {
-    this._processors = conf;
+  getAddress() {
+    return this._address;
+  }
+
+  getChainId() {
+    return this._chainId;
+  }
+
+  async loadProgram(program: ProcessorRuntime[]) {
+    this._program.loadProgram(program);
   }
 
   async start() {
@@ -84,33 +83,8 @@ export class ContractCast {
    * @param event
    */
   async onEvent<N extends string, T>(event: Web3Event<N, T>) {
-    log.d(`New Event ${event.event} forwarding to processors`);
-    let currentProcessor = 0;
-    
-    for (const processorRTM of this._processors) {
-      const variables = {};
-      const constructorZ = this._supportedProcessors[processorRTM.name];
-      const processor: ContractCastEventProcessor = new constructorZ(
-        this._id,
-        this._address,
-        this._chainId,
-      );
-      processor.onEvent(
-        {
-          cast: {
-            id: this._id,
-            address: this._address,
-            chainId: this._chainId,
-          },
-          processors: this._processors,
-          curProcessor: this._processors[currentProcessor],
-          curProcessorIndex: currentProcessor,
-          variables,
-        },
-        event
-      );
-      currentProcessor++;
-    }
+    log.d(`New Event ${event.event} goint to be executed by the program`);
+    await this._program.execute(event);
   }
 
   onEventChanged(changed: any): void {

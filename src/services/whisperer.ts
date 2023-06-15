@@ -1,7 +1,7 @@
 import log from '@/services/log';
 import { ContractCastType, PrismaClient } from '@prisma/client';
 import { ContractCast } from './contract-cast';
-import { ContractCastEventProcessor, PlugInConstructor } from '@/types/events';
+import { ContractCastEventProcessor, PlugInConstructor, SupportPlugInsMap } from '@/types/events';
 
 /**
  * Main Event Indexer Service that
@@ -9,7 +9,7 @@ import { ContractCastEventProcessor, PlugInConstructor } from '@/types/events';
 export class EventWhisperer {
   _casts: { [key: string]: ContractCast };
   _db: PrismaClient;
-  _supportedProcessors: { [key: string]: PlugInConstructor<ContractCastEventProcessor> } = {};
+  _supportedProcessors: SupportPlugInsMap = {};
 
   constructor(db: PrismaClient) {
     this._casts = {};
@@ -57,12 +57,10 @@ export class EventWhisperer {
       cast.type,
       cast.address,
       cast.chainId,
-      cast.blockNumber
+      cast.blockNumber,
+      this._supportedProcessors,
     );
     this._casts[cast.id] = contractCast;
-    Object.keys(this._supportedProcessors).forEach(key=> {
-      contractCast.enableProcessor(key, this._supportedProcessors[key]);
-    });
     contractCast.loadConfiguration([{
       name: 'logger',
       filter: [],     
