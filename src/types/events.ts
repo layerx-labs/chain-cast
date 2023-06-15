@@ -324,9 +324,11 @@ export type EventProcessorCtx = {
     address: string;
   },
   variables?: VariableDict,
-  processors: ProcessorRuntime[]
-  curProcessorIndex: number;
-  curProcessor: ProcessorRuntime
+  steps: ProcessorRuntime[]
+  processors: ContractCastEventProcessor[]
+  curProcessor: ContractCastEventProcessor
+  curStepIndex: number;  
+  curStep: ProcessorRuntime
 }
 
 
@@ -352,3 +354,8 @@ export type ContractCastEventProcessor = {
 };
 
 export type PlugInConstructor<M> = new (id: string, address: string, chainId: number) => M;
+
+export type SupportPlugInsMap = { 
+  [key: string]: PlugInConstructor<ContractCastEventProcessor> 
+;}
+
