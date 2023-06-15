@@ -1,19 +1,21 @@
-import { ContractCastEventProcessor, Web3Event } from '@/types/events';
+import { ContractCastEventProcessor, EventProcessorCtx, Web3Event } from '@/types/events';
 
 import log from '@/services/log';
 
 export class LoggerContractCastEventProcessor implements ContractCastEventProcessor {
 
-  PLUGIN_NAME= 'Chain Cast Logger';
+  PROCESSOR_NAME= 'logger';
 
   name(): string {
-    return this.PLUGIN_NAME;
+    return this.PROCESSOR_NAME;
   }
+  getConfTemplate() { return {}}
+
   onEvent<N, T>(
-    cast: { id: string; chainId: number; address: string },
+    ctx: EventProcessorCtx,
     event: Web3Event<N, T>
   ): void {
-    log.d(`[${this.PLUGIN_NAME}] Event Received from ${event.event} ` + 
-          ` on cast ${cast.id} address ${cast.address}`);
+    log.d(`[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` + 
+          ` on cast ${ctx.cast.id} address ${ctx.cast.address}`);
   }
 }

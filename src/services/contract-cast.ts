@@ -4,6 +4,7 @@ import {
   Web3Event,
   ContractCastEventProcessor,
   PlugInConstructor,
+  ProcessorRuntime,
 } from '@/types/events';
 import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
@@ -17,7 +18,8 @@ export class ContractCast {
   _chainId: number;
   _blockNumber: number;
   _listener: EventListener | null = null;
-  _processors: ContractCastEventProcessor[] = [];
+  _processors: ProcessorRuntime[] = [];
+  _supportedProcessors: { [key: string]: PlugInConstructor<ContractCastEventProcessor> } = {};
 
   constructor(
     id: string,
@@ -33,10 +35,17 @@ export class ContractCast {
     this._blockNumber = blockNumber;
   }
 
-  async enableProcessor<M extends ContractCastEventProcessor>(pConstructor: PlugInConstructor<M>) {
+  async enableProcessor<M extends ContractCastEventProcessor>(
+    name: string,
+    pConstructor: PlugInConstructor<M>
+  ) {
     const processor = new pConstructor(this._id, this._address, this._chainId);
     log.d(`Enabling processor ${processor.name()} on cast ${this._id}`);
-    this._processors.push(processor);
+    this._supportedProcessors[name] = pConstructor;
+  }
+
+  async loadConfiguration(conf: ProcessorRuntime[]) {
+    this._processors = conf;
   }
 
   async start() {
@@ -76,15 +85,31 @@ export class ContractCast {
    */
   async onEvent<N extends string, T>(event: Web3Event<N, T>) {
     log.d(`New Event ${event.event} forwarding to processors`);
-    for (const processor of this._processors) {
+    let currentProcessor = 0;
+    
+    for (const processorRTM of this._processors) {
+      const variables = {};
+      const constructorZ = this._supportedProcessors[processorRTM.name];
+      const processor: ContractCastEventProcessor = new constructorZ(
+        this._id,
+        this._address,
+        this._chainId,
+      );
       processor.onEvent(
         {
-          id: this._id,
-          address: this._address,
-          chainId: this._chainId,
+          cast: {
+            id: this._id,
+            address: this._address,
+            chainId: this._chainId,
+          },
+          processors: this._processors,
+          curProcessor: this._processors[currentProcessor],
+          curProcessorIndex: currentProcessor,
+          variables,
         },
         event
       );
+      currentProcessor++;
     }
   }
 
