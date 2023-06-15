@@ -26,6 +26,10 @@ export const CreateContractCastDataInput = builder.inputType('CreateContractCast
         ],
       },
     }),
+    program: t.field({
+      type: "JSON",
+      required: true,      
+    }),
     startFrom: t.int({
       required: false,
       defaultValue: 0,

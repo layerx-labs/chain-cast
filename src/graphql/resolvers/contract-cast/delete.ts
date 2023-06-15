@@ -22,6 +22,7 @@ export const deleteContractCast: Resolver<ContractCast, DeleteContractCastArgTyp
       blockNumber: true,
       chainId: true,
       createdAt: true,
+      program: true,
       type: true,
     },
   });

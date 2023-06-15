@@ -1,4 +1,13 @@
-import { BountyToken, Model, NetworkRegistry, Network_v2, Web3Connection } from '@taikai/dappkit';
+import {
+  BountyToken,
+  ERC1155Standard,
+  ERC20,
+  Erc721Standard,
+  Model,
+  NetworkRegistry,
+  Network_v2,
+  Web3Connection,
+} from '@taikai/dappkit';
 import { EventListener, Web3Event } from '@/types/events';
 import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
@@ -117,6 +126,15 @@ export class ContractCast {
       case ContractCastType.BEPRO_POP:
         await this._setupListener(BountyToken);
         break;
+      case ContractCastType.ERC20:
+        await this._setupListener(ERC20);
+        break;
+      case ContractCastType.ERC721:
+        await this._setupListener(Erc721Standard);
+        break;
+      case ContractCastType.ERC1155:
+        await this._setupListener(ERC1155Standard);
+        break;        
     }
   }
 
@@ -147,6 +165,15 @@ export class ContractCast {
         case ContractCastType.BEPRO_POP:
           await this._recoverContractEvents(web3Con, BountyToken, fromBlock, currentBlock);
           break;
+        case ContractCastType.ERC20:
+            await this._recoverContractEvents(web3Con, ERC20, fromBlock, currentBlock);
+            break;
+        case ContractCastType.ERC721:
+            await this._recoverContractEvents(web3Con, Erc721Standard, fromBlock, currentBlock);
+            break;
+        case ContractCastType.ERC1155:
+            await this._recoverContractEvents(web3Con, ERC1155Standard, fromBlock, currentBlock);
+            break;
       }
     }
   }

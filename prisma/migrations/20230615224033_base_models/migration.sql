@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "ContractCastType" AS ENUM ('BEPRO_NETWORK_V2', 'BEPRO_FACTORY', 'BEPRO_REGISTRY', 'BEPRO_POP');
+CREATE TYPE "ContractCastType" AS ENUM ('BEPRO_NETWORK_V2', 'BEPRO_FACTORY', 'BEPRO_REGISTRY', 'BEPRO_POP', 'ERC20', 'ERC721', 'ERC1155');
 
 -- CreateTable
 CREATE TABLE "ContractCast" (
@@ -8,6 +8,7 @@ CREATE TABLE "ContractCast" (
     "address" TEXT NOT NULL,
     "chainId" INTEGER NOT NULL,
     "blockNumber" INTEGER NOT NULL DEFAULT 0,
+    "program" JSONB NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "ContractCast_pkey" PRIMARY KEY ("id")
