@@ -1,10 +1,10 @@
 import { UserInputError } from '@/middleware/errors';
 import { AppContext } from '@/types/index';
-import { ChainCast } from '@prisma/client';
+import { ContractCast } from '@prisma/client';
 import { ErrorsEnum } from '@/constants/index';
 
-export type ChainCastArgType = {
-    id: string;
+export type ContractCastArgType = {
+    id: string | null | undefined;
 }
 
 /**
@@ -15,15 +15,15 @@ export type ChainCastArgType = {
  * @param ctx 
  * @returns 
  */
-export async function chainCast(
+export async function contractCast(
   _1: unknown,
   _2: unknown,
-  args: ChainCastArgType,
+  args: ContractCastArgType,
   ctx: AppContext
-): Promise<ChainCast> {
-  const cast = await ctx.db.chainCast.findUnique({
+): Promise<ContractCast> {
+  const cast = await ctx.db.contractCast.findUnique({
     where: {
-      id: args.id,
+      id: args?.id ?? "",
     },
     select: {
       id: true,

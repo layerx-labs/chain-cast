@@ -3,11 +3,11 @@ import {
   EventListener,
   Web3Event,
   EventListenerProcessor,
-  ChainCastEventProcessor,
+  ContractCastEventProcessor,
   PlugInConstructor,
 } from '@/types/events';
 import log from '@/services/log';
-import { ChainCastType } from '@prisma/client';
+import { ContractCastType } from '@prisma/client';
 import ContractListener from './contract-listener';
 import { chainsSupported } from '@/constants/chains';
 
@@ -22,18 +22,18 @@ export class DebugListenerProcessor implements EventListenerProcessor {
   onConnected(message: string): void {}
 }
 
-export class ChainCast {
+export class ContractCast {
   _id: string;
-  _type: ChainCastType;
+  _type: ContractCastType;
   _address: string;
   _chainId: number;
   _blockNumber: number;
   _listener: EventListener | null = null;
-  _processors: ChainCastEventProcessor[] = [];
+  _processors: ContractCastEventProcessor[] = [];
 
   constructor(
     id: string,
-    type: ChainCastType,
+    type: ContractCastType,
     address: string,
     chainId: number,
     blockNumber: number
@@ -45,7 +45,7 @@ export class ChainCast {
     this._blockNumber = blockNumber;
   }
 
-  async enableProcessor<M extends ChainCastEventProcessor>(pConstructor: PlugInConstructor<M>) {
+  async enableProcessor<M extends ContractCastEventProcessor>(pConstructor: PlugInConstructor<M>) {
     const processor = new pConstructor(this._id, this._address, this._chainId);
     log.d(`Enabling processor ${processor.name()} on cast ${this._id}`);
     this._processors.push(processor);
@@ -114,16 +114,16 @@ export class ChainCast {
         `on ${this._address}`
     );
     switch (this._type) {
-      case ChainCastType.BEPRO_FACTORY:
+      case ContractCastType.BEPRO_FACTORY:
         // Not Supported Yet
         break;
-      case ChainCastType.BEPRO_NETWORK_V2:
+      case ContractCastType.BEPRO_NETWORK_V2:
         await this._setupListener(Network_v2);
         break;
-      case ChainCastType.BEPRO_REGISTRY:
+      case ContractCastType.BEPRO_REGISTRY:
         await this._setupListener(NetworkRegistry);
         break;
-      case ChainCastType.BEPRO_POP:
+      case ContractCastType.BEPRO_POP:
         await this._setupListener(BountyToken);
         break;
     }
@@ -144,16 +144,16 @@ export class ChainCast {
           `from=[${fromBlock}] to=[${currentBlock}]`
       );
       switch (this._type) {
-        case ChainCastType.BEPRO_FACTORY:
+        case ContractCastType.BEPRO_FACTORY:
           // Not Supported Yet
           break;
-        case ChainCastType.BEPRO_NETWORK_V2:
+        case ContractCastType.BEPRO_NETWORK_V2:
           await this._recoverContractEvents(web3Con, Network_v2, fromBlock, currentBlock);
           break;
-        case ChainCastType.BEPRO_REGISTRY:
+        case ContractCastType.BEPRO_REGISTRY:
           await this._recoverContractEvents(web3Con, NetworkRegistry, fromBlock, currentBlock);
           break;
-        case ChainCastType.BEPRO_POP:
+        case ContractCastType.BEPRO_POP:
           await this._recoverContractEvents(web3Con, BountyToken, fromBlock, currentBlock);
           break;
       }

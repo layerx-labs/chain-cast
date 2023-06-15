@@ -8,7 +8,7 @@ import { schema } from './graphql/schema';
 import express from 'express';
 import { useMaskedErrors } from '@envelop/core';
 import { errorHandlingFunction } from './middleware/errors';
-import { LoggerChainCastEventProcessor } from './services/processors/logger';
+import { LoggerContractCastEventProcessor } from './services/processors/logger';
 
 async function run() {
   const ctx: AppContext = createContext();
@@ -45,10 +45,11 @@ async function run() {
   });
   app.use(yoga.graphqlEndpoint, yoga);
   log.i('Starting Chain Cast 🎧 Whisperer Service...');
-  ctx.whisperer.registerProcessor("logger", LoggerChainCastEventProcessor);
+
+  ctx.whisperer.registerProcessor("logger", LoggerContractCastEventProcessor);
+
+
   await ctx.whisperer.start();
-
-
 
   /** Start the GraphQL Server */
   app.listen(appConfig.port, () => {

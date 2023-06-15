@@ -1,8 +1,8 @@
-import { ChainCastEventProcessor, Web3Event } from "@/types/events";
+import { ContractCastEventProcessor, Web3Event } from "@/types/events";
 
 import log from '@/services/log';
 
-export class LoggerChainCastEventProcessor implements ChainCastEventProcessor {
+export class LoggerContractCastEventProcessor implements ContractCastEventProcessor {
 
   PLUGIN_NAME= 'Chain Cast Logger';
 
