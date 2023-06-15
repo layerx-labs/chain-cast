@@ -29,3 +29,4 @@ model ChainCast {
    createdAt              DateTime  @default(now())
    @@unique([chainId, address])
 }
+

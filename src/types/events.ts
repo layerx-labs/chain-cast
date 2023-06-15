@@ -303,7 +303,8 @@ export enum NetworkEventsEnum {
   >;
   
   
-export type WhispererEventProcessor = {
+export type ChainCastEventProcessor = {
+  name(): string,
   onEvent<N, T>(
     cast: {
       id: string,
@@ -314,3 +315,9 @@ export type WhispererEventProcessor = {
     event: Web3Event<N, T>    
   ): void;
 };
+
+export type PlugInConstructor<M>= new (
+  id: string,
+  address: string,
+  chainId: number,
+) => M;
