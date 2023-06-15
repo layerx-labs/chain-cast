@@ -304,7 +304,6 @@ export type VariableDict = {[key: string]: any};
 
 export type ProcessorRuntime = {
   name: string;
-  filter: string[],
   configuration?: ProcessorConfiguration,
 }
 

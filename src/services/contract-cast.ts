@@ -88,10 +88,10 @@ export class ContractCast {
   }
 
   onEventChanged(changed: any): void {
-    log.e(`Event Changed on cast ${this._id} ${changed}`);
+    log.d(`Event Changed on cast ${this._id} ${changed}`);
   }
   onConnected(message: string): void {
-    log.e(`Event Emmiter Connected cast ${this._id} ${message}`);
+    log.d(`Event Emmiter Connected cast ${this._id} ${message}`);
   }
 
   onError(error: Error) {
