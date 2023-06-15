@@ -46,7 +46,7 @@ builder.mutationField('createContractCast', (t) =>
         required: true,
       }),
     },
-    resolve: createContractCast,
+    resolve: async (_q, root, args, ctx, info) => createContractCast(root, args, ctx, info),
   })
 );
 
@@ -58,8 +58,6 @@ builder.mutationField('deleteContractCast', (t) =>
         required: true,
       }),
     },
-    resolve: deleteContractCast,
+    resolve: async (_q, root, args, ctx, info) => deleteContractCast(root, args, ctx, info),
   })
 );
-
-
