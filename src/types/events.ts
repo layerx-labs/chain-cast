@@ -300,14 +300,53 @@ export type RegistryEventProcessor = EventReactor<
   NetworkRegistered | NetworkClosed | UserLockedAmountChanged | ChangedFee | LockFeeChanged
 >;
 
+export type VariableDict = {[key: string]: any};
+
+export type ProcessorRuntime = {
+  name: string;
+  filter: string[],
+  configuration?: ProcessorConfiguration,
+}
+
+export type ProcessorConfiguration = {
+  [key: string]: 
+    {
+      type:  'number'| 'string'| 'boolean' | 'number[]'| 'string[]' | 'date';
+      required: boolean | false;
+      value: number | string| boolean | number[]| string[] | undefined;
+    }    
+};
+
+export type EventProcessorCtx = {
+  cast: {
+    id: string;
+    chainId: number;
+    address: string;
+  },
+  variables?: VariableDict,
+  processors: ProcessorRuntime[]
+  curProcessorIndex: number;
+  curProcessor: ProcessorRuntime
+}
+
+
+export type Variable = {[key: string]: number | string | boolean|  number[]| string[]};
+
+export type ConfigurationFieldType = {
+  type:  'number'| 'string'| 'boolean' | 'number[]'| 'string[]' | 'date';
+  required: boolean,
+}
+  
+
+export type ConfigurationTemplate = {
+  [key: string]: ConfigurationFieldType;
+};
+
 export type ContractCastEventProcessor = {
   name(): string;
+  getConfTemplate(): ConfigurationTemplate
   onEvent<N, T>(
-    cast: {
-      id: string;
-      chainId: number;
-      address: string;
-    },
+    ctx: EventProcessorCtx,
     event: Web3Event<N, T>
   ): void;
 };
