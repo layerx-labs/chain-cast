@@ -28,6 +28,15 @@ The following technologies and components are used in the project setup:
 * **Prisma**: Database ORM (Object-Relational Mapping) for GraphQL.
 * **Dappkit**: LayerX Framework for 
 
+## Suported Contracts on this version
+
+* NetworkV2
+* Network Registry
+* Bounty Token 
+* ERC1155
+* ERC20
+* ERC721
+
 ## :jigsaw: Quick Start Development 
 
 1. Create an environment file (.env) and configure the required variables
