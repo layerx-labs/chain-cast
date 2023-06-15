@@ -1,7 +1,7 @@
-import { ErrorsEnum } from "@/constants/index";
-import { UserInputError } from "@/middleware/errors";
-import { AppContext } from "@/types/index";
-import { ContractCast } from "@prisma/client";
+import { ErrorsEnum } from '@/constants/index';
+import { UserInputError } from '@/middleware/errors';
+import { AppContext } from '@/types/index';
+import { ContractCast } from '@prisma/client';
 
 export async function deleteContractCast(
     _1: unknown,
@@ -31,7 +31,8 @@ export async function deleteContractCast(
             ErrorsEnum.objectNotFound
         );
     }
-    ctx.log.i(`Deleted Chain Cast id ${contractCast.id} ${contractCast.chainId} ${contractCast.address}`)
+    ctx.log.i(`Deleted Chain Cast id ${contractCast.id} ${contractCast.chainId} `+ 
+             `${contractCast.address}`)
     ctx.whisperer.deleteCast(contractCast.id);
     return contractCast;
 }
