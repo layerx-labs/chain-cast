@@ -32,6 +32,6 @@ export async function deleteChainCast(
         );
     }
     ctx.log.i(`Deleted Chain Cast id ${chainCast.id} ${chainCast.chainId} ${chainCast.address}`)
-    ctx.whisperer.deleteStream(chainCast.id);
+    ctx.whisperer.deleteCast(chainCast.id);
     return chainCast;
 }
