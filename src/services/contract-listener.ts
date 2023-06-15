@@ -3,15 +3,13 @@ import { Model, Web3Connection } from '@taikai/dappkit';
 import log from '@/services/log';
 import { EventEmitter } from 'node:events';
 
-
-
 /**
  * This Class listen for events on a contract of type M and
  * forward the event to the EventListenerProcessor
  */
-export class ContractListener<M extends Model, P extends EventListenerProcessor> 
-  implements EventListener {
-  
+export class ContractListener<M extends Model, P extends EventListenerProcessor>
+  implements EventListener
+{
   _web3Con: Web3Connection;
   _contract: Model;
   _isListening = false;
@@ -63,7 +61,7 @@ export class ContractListener<M extends Model, P extends EventListenerProcessor>
    */
   async startListening(): Promise<void> {
     if (!this.isListening()) {
-      await this._contract.start();    
+      await this._contract.start();
       await this.enableProcessor(this._processor);
       this._isListening = true;
     }
@@ -76,7 +74,7 @@ export class ContractListener<M extends Model, P extends EventListenerProcessor>
    */
   private async enableProcessor<Processor extends EventListenerProcessor>(processor: Processor) {
     const currentBlock = await this._web3Con.eth.getBlockNumber();
-    const startBlock = currentBlock+1;
+    const startBlock = currentBlock + 1;
     const options = {
       filter: {
         value: [],
@@ -102,7 +100,7 @@ export class ContractListener<M extends Model, P extends EventListenerProcessor>
       const currentBlock = await this._web3Con.eth.getBlockNumber();
       log.d(`Stop Listening for ${this._contract.contractAddress} on ${currentBlock} 👋`);
       this._listener.removeAllListeners();
-      this._isListening = false;     
+      this._isListening = false;
     }
   }
 }
