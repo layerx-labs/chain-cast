@@ -18,11 +18,11 @@ export class DebugListenerProcessor implements EventListenerProcessor {
   onEvent<N extends string, T>(event: Web3Event<N, T>): void {
     console.log(`Event Received from ${event.event}`);
   }
-  onError(eventName: string, error: Error): void {
+  onError(error: Error): void {
     console.log(`Error on Listener ${eventName}`, error);
   }
-  onEventChanged(eventName: string, changed: any): void {}
-  onConnected(eventName: string, message: string): void {}
+  onEventChanged(changed: any): void {}
+  onConnected(message: string): void {}
 }
 
 /**
@@ -173,7 +173,6 @@ export class EventWhisperer {
           stream.id,
           chain.wsUrl,
           stream.address,
-          Object.values(NetworkEventsEnum)
         );
         break;
       case ChainCastType.BEPRO_REGISTRY:
@@ -182,7 +181,6 @@ export class EventWhisperer {
           stream.id,
           chain.wsUrl,
           stream.address,
-          Object.values(RegistryEventsEnum)
         );
         break;
       case ChainCastType.BEPRO_POP:
@@ -191,7 +189,6 @@ export class EventWhisperer {
           stream.id,
           chain.wsUrl,
           stream.address,
-          Object.values(POPEventsEnum)
         );
         break;
     }
@@ -214,13 +211,11 @@ export class EventWhisperer {
     streamId: string,
     wsUrl: string,
     contractAddress: string,
-    subscribeTo: string[]
   ) {
     const listener: EventListener = new ContractListener(
       TCreator,
       wsUrl,
       contractAddress,
-      subscribeTo,
       new DebugListenerProcessor()
     );
     await listener.startListening();

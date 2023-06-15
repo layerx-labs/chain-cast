@@ -1,3 +1,5 @@
+import { ChainCastType } from "@prisma/client";
+
 export enum NetworkEventsEnum {
     BOUNTY_CREATED = 'BountyCreated',
     BOUNTY_CANCELED = 'BountyCanceled',
@@ -269,9 +271,9 @@ export enum NetworkEventsEnum {
   
   export type EventListenerProcessor = {
     onEvent<N extends string, T>(event: Web3Event<N, T>): void;
-    onError(eventName: string, error: Error): void;
-    onEventChanged(eventName: string, changed: any): void;
-    onConnected(eventName: string, message: string): void;
+    onError(error: Error): void;
+    onEventChanged(changed: any): void;
+    onConnected(message: string): void;
   };
   
   export type EventListener = {
@@ -301,3 +303,14 @@ export enum NetworkEventsEnum {
   >;
   
   
+export type WhispererEventProcessor = {
+  onEvent<N, T>(
+    cast: {
+      id: string,
+      chainId: number,
+      type: ChainCastType,
+      address: string,    
+    },
+    event: Web3Event<N, T>    
+  ): void;
+};
