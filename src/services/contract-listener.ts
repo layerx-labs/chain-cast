@@ -1,25 +1,20 @@
-import { EventListener, EventListenerProcessor, Web3Event } from '@/types/events';
+import { EventListener, EventListenerProcessor } from '@/types/events';
 import { Model, Web3Connection } from '@taikai/dappkit';
 import log from '@/services/log';
+import { EventEmitter } from 'node:events';
 
-class SkipListenerProcessor implements EventListenerProcessor {
-  onEvent<N extends string, T>(_event: Web3Event<N, T>): void {}
-  onError(_eventName: string, _error: Error): void {}
-  onEventChanged(_eventName: string, _changed: any): void {}
-  onConnected(_eventName: string, _message: string): void {}
-}
 /**
  * This Class listen for events on a contract of type M and
  * forward the event to the EventListenerProcessor
  */
-export class ContractListener<M extends Model, P extends EventListenerProcessor>
-  implements EventListener
-{
+export class ContractListener<M extends Model, P extends EventListenerProcessor> 
+  implements EventListener {
+  
   _web3Con: Web3Connection;
   _contract: Model;
   _isListening = false;
   _processor: P;
-  _events: string[] = [];
+  _listener: EventEmitter | null = null;
 
   /**
    *
@@ -33,7 +28,6 @@ export class ContractListener<M extends Model, P extends EventListenerProcessor>
     TCreator: new (web3Con: Web3Connection, address: string) => M,
     wsUrl: string,
     address: string,
-    events: string[],
     processor: P
   ) {
     this._web3Con = new Web3Connection({
@@ -42,7 +36,6 @@ export class ContractListener<M extends Model, P extends EventListenerProcessor>
     });
     this._processor = processor;
     this._contract = new TCreator(this._web3Con, address);
-    this._events = events;
   }
 
   /**
@@ -50,7 +43,9 @@ export class ContractListener<M extends Model, P extends EventListenerProcessor>
    * @returns
    */
   getEvents(): string[] {
-    return this._events;
+    return (
+      (this._listener && this._listener.eventNames().map((eventName) => eventName.toString())) || []
+    );
   }
 
   /**
@@ -66,9 +61,9 @@ export class ContractListener<M extends Model, P extends EventListenerProcessor>
    */
   async startListening(): Promise<void> {
     if (!this.isListening()) {
-      await this._contract.start();
+      await this._contract.start();    
+      await this.enableProcessor(this._processor);
       this._isListening = true;
-      await this.changeProcessor(this._processor); 
     }
   }
 
@@ -77,38 +72,34 @@ export class ContractListener<M extends Model, P extends EventListenerProcessor>
    * Always to start the listener on the Block Number
    * @param processor
    */
-  private async changeProcessor<Processor extends EventListenerProcessor>(processor: Processor) {
+  private async enableProcessor<Processor extends EventListenerProcessor>(processor: Processor) {
     const currentBlock = await this._web3Con.eth.getBlockNumber();
     const options = {
       filter: {
         value: [],
       },
-      fromBlock: currentBlock + 1,
+      fromBlock: currentBlock,
     };
-    for (const event of Object.values(this.getEvents())) {
-      if(this.isListening()) {
-        log.d(`Listening for ${event} on ${this._contract.contractAddress} 👂`);
-      } else {
-        log.d(`Stop Listening for ${event} on ${this._contract.contractAddress} 👋`);
-      }      
-      this._contract.contract.events[event](options)
-        .on('changed', (changed: any) => processor.onEventChanged(event, changed))
-        .on('data', (event: any) => {
-          processor.onEvent(event);
-        })
-        .on('error', (err: Error) => processor.onError(event, err))
-        .on('connected', (str: string) => processor.onConnected(event, str));
-    }
+    log.d(`Listening for events on ${this._contract.contractAddress} from ${currentBlock} `);
+    this._listener = this._contract.contract.events
+      .allEvents(options)
+      .on('changed', (changed: any) => processor.onEventChanged(changed))
+      .on('data', (event: any) => {
+        processor.onEvent(event);
+      })
+      .on('error', (err: Error) => processor.onError(err))
+      .on('connected', (str: string) => processor.onConnected(str));
   }
 
   /***
    * Stop Listening for events
    */
   async stopListening(): Promise<void> {
-    if (this.isListening()) {     
-      this._isListening = false;
-      await this.changeProcessor(new SkipListenerProcessor());
-     
+    if (this.isListening() && this._listener) {
+      const currentBlock = await this._web3Con.eth.getBlockNumber();
+      log.d(`Stop Listening for ${this._contract.contractAddress} on ${currentBlock} 👋`);
+      this._listener.removeAllListeners();
+      this._isListening = false;     
     }
   }
 }
