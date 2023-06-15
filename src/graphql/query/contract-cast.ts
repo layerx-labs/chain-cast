@@ -60,7 +60,7 @@ builder.queryFields((t) => ({
         required: false,
       }),
     },
-    resolve: contractCasts as any,
+    resolve: contractCasts,
   }),
   contractCastsPageInfo: t.field({
     type: PothosPageInfo,
@@ -70,6 +70,6 @@ builder.queryFields((t) => ({
         required: false,
       }),
     },
-    resolve: contractCastsPageInfo as any,
+    resolve: contractCastsPageInfo,
   }),
 }));
