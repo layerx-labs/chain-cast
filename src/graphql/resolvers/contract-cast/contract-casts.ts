@@ -1,5 +1,4 @@
-import { MakeDeepNullable, PageInfo } from '@/graphql/types';
-import { AppContext } from '@/types/index';
+import { PageInfo, Resolver } from '@/graphql/types';
 import { ContractCast, ContractCastType, Prisma } from '@prisma/client';
 
 export type ContractCastsArgType = {
@@ -24,19 +23,17 @@ export type ContractCastsArgPageInfoType = {
 };
 
 /**
- * 
+ *
  * @param _1
- * @param _2
  * @param args
  * @param ctx
  * @returns
  */
-export async function contractCasts(
-  _1: unknown,
-  _2: unknown,
-  args: MakeDeepNullable<ContractCastsArgType>,
-  ctx: AppContext
-): Promise<ContractCast[]> {
+export const contractCasts: Resolver<ContractCast[], ContractCastsArgType> = async (
+  _1,
+  args,
+  ctx
+) => {
   const { where, sortBy, order } = args as ContractCastsArgType;
   const perPage = 20;
   const page = args.page || 0;
@@ -61,13 +58,13 @@ export async function contractCasts(
     },
   });
   return casts;
-}
+};
 
-export async function contractCastsPageInfo(
-  _1: unknown,
-  args: MakeDeepNullable<ContractCastsArgPageInfoType>,
-  ctx: AppContext
-): Promise<PageInfo> {
+export const contractCastsPageInfo: Resolver<PageInfo, ContractCastsArgPageInfoType> = async (
+  _1,
+  args,
+  ctx
+) => {
   const { where } = args as ContractCastsArgPageInfoType;
   const perPage = 20;
   const count = await ctx.db.contractCast.count({
@@ -75,4 +72,4 @@ export async function contractCastsPageInfo(
   });
   const pageCount = count % perPage == 0 ? count / perPage : Math.floor(count / perPage) + 1;
   return new PageInfo(perPage, pageCount, count);
-}
+};

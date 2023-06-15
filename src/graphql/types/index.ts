@@ -1,3 +1,4 @@
+import { AppContext } from '@/types/index';
 import { builder } from '../builder';
 import { Prisma } from '@prisma/client';
 
@@ -32,6 +33,21 @@ export type MakeDeepNullable<T> = {
     ? MakeDeepNullable<T[K]>
     : T[K];
 };
+
+export type BasicTypes = number | string | boolean | object | Array<BasicTypes> | NestedObject;
+export type NestedObject = { [key: string | number]: NestedObject | BasicTypes };
+export type NestedObjectBoolean = { [key: string]: NestedObjectBoolean | boolean };
+
+export type Resolver<T, Args = NestedObject> = (
+  parent: unknown,
+  args: Args | MakeDeepNullable<Args>,
+  ctx: AppContext,
+  info: unknown,
+  query?: {
+    select?: NestedObjectBoolean;
+    include?: NestedObjectBoolean;
+  }
+) => Promise<T> | T;
 
 export const SortOrderEnum = builder.enumType('SortOrder', {
   values: Object.values(Prisma.SortOrder),

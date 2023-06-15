@@ -36,7 +36,7 @@ builder.queryFields((t) => ({
         required: true,
       }),
     },
-    resolve: contractCast,
+    resolve: async (_q, root, args, ctx, info) => contractCast(root, args, ctx, info),
   }),
 
   // Define a field that issues an optimized prisma query
@@ -60,7 +60,7 @@ builder.queryFields((t) => ({
         required: false,
       }),
     },
-    resolve: contractCasts,
+    resolve: async (_q, root, args, ctx, info) => contractCasts(root, args, ctx, info),
   }),
   contractCastsPageInfo: t.field({
     type: PothosPageInfo,
