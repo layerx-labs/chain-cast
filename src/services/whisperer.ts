@@ -1,5 +1,5 @@
 import log from '@/services/log';
-import { ContractCastType, PrismaClient } from '@prisma/client';
+import { ContractCastType, PrismaClient, Prisma} from '@prisma/client';
 import { ContractCast } from './contract-cast';
 import {
   SupportPlugInsMap,
@@ -41,6 +41,7 @@ export class EventWhisperer {
     address: string;
     chainId: number;
     blockNumber: number;
+    program: object | Prisma.JsonValue;
   }) {
     try {
       this.setupCast(cast);
@@ -55,6 +56,7 @@ export class EventWhisperer {
     address: string;
     chainId: number;
     blockNumber: number;
+    program: Prisma.JsonValue;
   }) {
     const contractCast: ContractCast = new ContractCast(
       cast.id,
@@ -98,6 +100,7 @@ export class EventWhisperer {
         address: true,
         chainId: true,
         blockNumber: true,
+        program: true,
       },
     });
   }
