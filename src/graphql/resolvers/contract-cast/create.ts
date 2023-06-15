@@ -9,7 +9,7 @@ export type CreateContractCastArgType = {
     type: ContractCastType;
     chainId: number;
     startFrom?: number;
-    program: any,
+    program:  unknown,
   };
 };
 
