@@ -15,12 +15,12 @@ async function run() {
   const app = express();
   // Initialize logs
   log.init({
-    appName: 'bepro-chain-cast',
+    appName: 'chain-cast',
     version: appConfig.version,
     hostname: os.hostname(),
     ...appConfig.logs,
   });
-  log.i('Starting BEPRO Chain Cast 🎧 ...');
+  log.i('Starting Chain Cast 🎧 ...');
   const yoga = createYoga({
     schema,
     context: createContext,
@@ -43,20 +43,23 @@ async function run() {
     
   });
   app.use(yoga.graphqlEndpoint, yoga);
-  log.i('Starting BEPRO Chain Cast 🎧 Whisperer Service...');
+  log.i('Starting Chain Cast 🎧 Whisperer Service...');
   await ctx.whisperer.start();
 
   /** Start the GraphQL Server */
   app.listen(appConfig.port, () => {
     log.i(`Running a GraphQL API server at http://localhost:${appConfig.port}/graphql`);
   });
-
+  log.i('Started Event Chain Cast GraphQL Server');
+  
+  process.on('SIGTERM', () => {
+    log.i('Gracefully Shutting Down BEPRO Chain Cast 🎧 Whisperer Service 🥱');
+    ctx.whisperer.stop();
+    process.exit(0);
+  });
 }
 
-run()
-  .then(() => {
-    log.i('Started BEPRO Event Chain Cast GraphQL Server');
-  })
+run()  
   .catch((e) => {
     log.e(e);
     process.exit(1);

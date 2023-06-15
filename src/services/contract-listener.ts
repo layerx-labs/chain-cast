@@ -74,13 +74,14 @@ export class ContractListener<M extends Model, P extends EventListenerProcessor>
    */
   private async enableProcessor<Processor extends EventListenerProcessor>(processor: Processor) {
     const currentBlock = await this._web3Con.eth.getBlockNumber();
+    const startBlock = currentBlock+1;
     const options = {
       filter: {
         value: [],
       },
-      fromBlock: currentBlock,
+      fromBlock: startBlock,
     };
-    log.d(`Listening for events on ${this._contract.contractAddress} from ${currentBlock} `);
+    log.d(`Listening for events on ${this._contract.contractAddress} from ${startBlock} `);
     this._listener = this._contract.contract.events
       .allEvents(options)
       .on('changed', (changed: any) => processor.onEventChanged(changed))

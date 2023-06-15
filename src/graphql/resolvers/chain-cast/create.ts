@@ -54,6 +54,6 @@ export default async function createChainCast(
         },
     })
     ctx.log.i(`Created a new Chain Cast id ${chainCast.id} ${chainCast.chainId} ${chainCast.address}`)
-    ctx.whisperer.addStream(chainCast);
+    ctx.whisperer.addCast(chainCast);
     return chainCast;
 }
