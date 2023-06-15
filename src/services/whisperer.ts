@@ -1,9 +1,9 @@
 
 
 import log from '@/services/log';
-import { ChainCastType, PrismaClient } from '@prisma/client';
-import { ChainCast } from './chain-cast';
-import { ChainCastEventProcessor, PlugInConstructor } from '@/types/events';
+import { ContractCastType, PrismaClient } from '@prisma/client';
+import { ContractCast } from './contract-cast';
+import { ContractCastEventProcessor, PlugInConstructor } from '@/types/events';
 
 
 
@@ -11,9 +11,9 @@ import { ChainCastEventProcessor, PlugInConstructor } from '@/types/events';
  * Main Event Indexer Service that
  */
 export class EventWhisperer {
-  _casts: { [key: string]: ChainCast };
+  _casts: { [key: string]: ContractCast };
   _db: PrismaClient;
-  _supportedProcessors: { [key: string]: PlugInConstructor<ChainCastEventProcessor> } = {};
+  _supportedProcessors: { [key: string]: PlugInConstructor<ContractCastEventProcessor> } = {};
 
   constructor(db: PrismaClient) {
     this._casts = {};
@@ -37,7 +37,7 @@ export class EventWhisperer {
 
   async addCast(cast: {
     id: string;
-    type: ChainCastType;
+    type: ContractCastType;
     address: string;
     chainId: number;
     blockNumber: number;
@@ -51,24 +51,24 @@ export class EventWhisperer {
 
   private setupCast(cast: {
     id: string;
-    type: ChainCastType;
+    type: ContractCastType;
     address: string;
     chainId: number;
     blockNumber: number;
   }) {
-    const chainCast: ChainCast = new ChainCast(
+    const contractCast: ContractCast = new ContractCast(
       cast.id,
       cast.type,
       cast.address,
       cast.chainId,
       cast.blockNumber
     );
-    this._casts[cast.id] = chainCast;
+    this._casts[cast.id] = contractCast;
     const processorCtrs = Object.values(this._supportedProcessors);
     for (const _constructor of processorCtrs) {
-      chainCast.enableProcessor(_constructor);
+      contractCast.enableProcessor(_constructor);
     }
-    chainCast.start();
+    contractCast.start();
   }
 
   async deleteCast(id: string) {
@@ -79,7 +79,7 @@ export class EventWhisperer {
   }
 
   async _getCasts() {
-    return await this._db.chainCast.findMany({
+    return await this._db.contractCast.findMany({
       select: {
         id: true,
         type: true,
@@ -90,7 +90,7 @@ export class EventWhisperer {
     });
   }
 
-  registerProcessor<M extends ChainCastEventProcessor>(
+  registerProcessor<M extends ContractCastEventProcessor>(
     name: string,
     pConstructor: PlugInConstructor<M>
   ) {

@@ -13,20 +13,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ChainCastType {
+enum ContractCastType {
   BEPRO_NETWORK_V2
   BEPRO_FACTORY
   BEPRO_REGISTRY
   BEPRO_POP
 }
 
-model ChainCast {
+model ContractCast {
    id                     String  @id @default(cuid()) @db.VarChar(30)  
-   type                   ChainCastType
+   type                   ContractCastType
    address                String
    chainId                Int
    blockNumber            Int @default(0)
    createdAt              DateTime  @default(now())
-   @@unique([chainId, address])
+  @@unique([chainId, address])
 }
-

@@ -1,1 +1,1 @@
-import './chain-cast';
+import './contract-cast';

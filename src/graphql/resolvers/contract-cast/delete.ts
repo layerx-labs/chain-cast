@@ -1,18 +1,18 @@
 import { ErrorsEnum } from "@/constants/index";
 import { UserInputError } from "@/middleware/errors";
 import { AppContext } from "@/types/index";
-import { ChainCast } from "@prisma/client";
+import { ContractCast } from "@prisma/client";
 
-export async function deleteChainCast(
+export async function deleteContractCast(
     _1: unknown,
     _2: unknown,
     args: {
         id: string,
     },
      ctx: AppContext
-  ): Promise<ChainCast> {
+  ): Promise<ContractCast> {
 
-    const chainCast = await ctx.db.chainCast.delete({    
+    const contractCast = await ctx.db.contractCast.delete({    
         where: {
             id: args.id,
         },
@@ -25,13 +25,13 @@ export async function deleteChainCast(
             type: true,
         },
     })
-    if (!chainCast) {
+    if (!contractCast) {
         throw new UserInputError(
             'Chain Cast not found', 
             ErrorsEnum.objectNotFound
         );
     }
-    ctx.log.i(`Deleted Chain Cast id ${chainCast.id} ${chainCast.chainId} ${chainCast.address}`)
-    ctx.whisperer.deleteCast(chainCast.id);
-    return chainCast;
+    ctx.log.i(`Deleted Chain Cast id ${contractCast.id} ${contractCast.chainId} ${contractCast.address}`)
+    ctx.whisperer.deleteCast(contractCast.id);
+    return contractCast;
 }

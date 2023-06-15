@@ -1,5 +1,3 @@
-import { ChainCastType } from "@prisma/client";
-
 export enum NetworkEventsEnum {
     BOUNTY_CREATED = 'BountyCreated',
     BOUNTY_CANCELED = 'BountyCanceled',
@@ -303,7 +301,7 @@ export enum NetworkEventsEnum {
   >;
   
   
-export type ChainCastEventProcessor = {
+export type ContractCastEventProcessor = {
   name(): string,
   onEvent<N, T>(
     cast: {

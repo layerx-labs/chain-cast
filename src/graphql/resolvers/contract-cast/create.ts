@@ -1,28 +1,26 @@
 import { ErrorsEnum } from "@/constants/index";
 import { UserInputError } from "@/middleware/errors";
 import { AppContext } from "@/types/index";
-import { ChainCast, ChainCastType } from "@prisma/client";
-import { create } from "domain";
-import web3 from "web3";
+import { ContractCast, ContractCastType } from "@prisma/client";
 
-export type CreateChainCastArgType = {
+export type CreateContractCastArgType = {
     data: {
         address: string,
-        type: ChainCastType,
+        type: ContractCastType,
         chainId: number,
-        startFrom?: number,
+        startFrom?: number | null | undefined,
     },    
 }
 
 
-export default async function createChainCast(
+export default async function createContractCast(
     _1: unknown,
     _2: unknown,
-    args: CreateChainCastArgType,
+    args: CreateContractCastArgType,
     ctx: AppContext
-  ): Promise<ChainCast> {
+  ): Promise<ContractCast> {
 
-    const oldChainCast = await ctx.db.chainCast.findUnique({
+    const oldContractCast = await ctx.db.contractCast.findUnique({
         where: {
             chainId_address: {
                 address: args.data.address,
@@ -30,19 +28,19 @@ export default async function createChainCast(
             }
         }
     });
-    if (oldChainCast) {
+    if (oldContractCast) {
         throw new UserInputError(
             'Chain Cast already found', 
             ErrorsEnum.alreadyExists
         );
     }
 
-    const chainCast = await ctx.db.chainCast.create({    
+    const contractCast = await ctx.db.contractCast.create({    
         data: {
             address: args.data.address,
             type: args.data.type,
             chainId: args.data.chainId,
-            blockNumber: args.data.startFrom,
+            blockNumber: args.data.startFrom ?? 0,
         },
         select: {
             id: true,
@@ -53,7 +51,8 @@ export default async function createChainCast(
             type: true,
         },
     })
-    ctx.log.i(`Created a new Chain Cast id ${chainCast.id} ${chainCast.chainId} ${chainCast.address}`)
-    ctx.whisperer.addCast(chainCast);
-    return chainCast;
+    ctx.log.i(`Created a new Chain Cast id ${contractCast.id} ${contractCast.chainId} ` + 
+              `${contractCast.address}`)
+    ctx.whisperer.addCast(contractCast);
+    return contractCast;
 }

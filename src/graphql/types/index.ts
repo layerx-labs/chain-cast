@@ -23,11 +23,13 @@ export class PageInfo {
   }
 }
 
+
+
 export const SortOrderEnum = builder.enumType('SortOrder', {
   values: Object.values(Prisma.SortOrder),
 });
 
-builder.interfaceType(PageInfo, {
+export const PothosPageInfo = builder.objectType(PageInfo, {
   name: 'PageInfo',
   fields: (t) => ({
     perPage: t.exposeInt('perPage'),
