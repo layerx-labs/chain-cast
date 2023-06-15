@@ -1,14 +1,10 @@
-import {
-  ContractCastEventProcessor,
-  ProcessorRuntime,
-  SupportPlugInsMap,
-  Web3Event,
-} from '@/types/events';
+import { Web3Event } from '@/types/events';
 import { ContractCast } from './contract-cast';
 import log from '@/services/log';
+import { SupportPlugInsMap, ProcessorRuntime, ContractCastEventProcessor } from '@/types/processor';
 
 /**
- *  Class to excute a program, a set of processors in sequence 
+ *  Class to excute a program, a set of processors in sequence
  */
 export class Program {
   _supportedProcessors: SupportPlugInsMap;
@@ -61,8 +57,10 @@ export class Program {
         );
         stepIndex++;
       } catch (e: Error | any) {
-        log.e(`Failed to execute Program ${this._contractCast._id} ` + 
-             `on Step ${stepIndex} ${e.message} ${e.stack}`)
+        log.e(
+          `Failed to execute Program ${this._contractCast._id} ` +
+            `on Step ${stepIndex} ${e.message} ${e.stack}`
+        );
       }
     }
   }

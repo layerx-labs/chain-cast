@@ -1,10 +1,11 @@
 import { BountyToken, Model, NetworkRegistry, Network_v2, Web3Connection } from '@taikai/dappkit';
-import { EventListener, Web3Event, SupportPlugInsMap, ProcessorRuntime } from '@/types/events';
+import { EventListener, Web3Event } from '@/types/events';
 import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
 import ContractListener from './contract-listener';
 import { chainsSupported } from '@/constants/chains';
 import { Program } from './program';
+import { SupportPlugInsMap, ProcessorRuntime } from '@/types/processor';
 
 export class ContractCast {
   _id: string;

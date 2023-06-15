@@ -1,15 +1,14 @@
-import {
-  ConfigurationTemplate,
-  ContractCastEventProcessor,
-  EventProcessorCtx,
-  Web3Event,
-} from '@/types/events';
+import { Web3Event } from '@/types/events';
 
 import log from '@/services/log';
 import axios from 'axios';
+import {
+  ContractCastEventProcessor,
+  ConfigurationTemplate,
+  EventProcessorCtx,
+} from '@/types/processor';
 
 export class WebHookEventProcessor implements ContractCastEventProcessor {
-  
   PROCESSOR_NAME = 'webhook';
 
   name(): string {
@@ -50,8 +49,8 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
         log.d(`[${this.PROCESSOR_NAME}] Weekhook called succesfully`);
       } else {
         log.w(
-          `[${this.PROCESSOR_NAME}] Weekhook failed to be called ` + 
-           `${response.status} ${response.statusText} on url `,
+          `[${this.PROCESSOR_NAME}] Weekhook failed to be called ` +
+            `${response.status} ${response.statusText} on url `,
           url
         );
       }
