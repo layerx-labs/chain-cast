@@ -18,6 +18,9 @@ enum ContractCastType {
   BEPRO_FACTORY
   BEPRO_REGISTRY
   BEPRO_POP
+  ERC20
+  ERC721
+  ERC1155
 }
 
 model ContractCast {
@@ -26,7 +29,7 @@ model ContractCast {
    address                String
    chainId                Int
    blockNumber            Int @default(0)
-   processorConf          Json
+   program                Json
    createdAt              DateTime  @default(now())
-  @@unique([chainId, address])
+   @@unique([chainId, address])
 }

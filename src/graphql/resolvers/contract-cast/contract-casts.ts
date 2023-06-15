@@ -55,6 +55,7 @@ export const contractCasts: Resolver<ContractCast[], ContractCastsArgType> = asy
       chainId: true,
       createdAt: true,
       type: true,
+      program: true,
     },
   });
   return casts;

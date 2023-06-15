@@ -9,6 +9,7 @@ export type CreateContractCastArgType = {
     type: ContractCastType;
     chainId: number;
     startFrom?: number;
+    program: any,
   };
 };
 
@@ -35,10 +36,12 @@ const createContractCast: Resolver<ContractCast, CreateContractCastArgType> = as
       type: args.data.type,
       chainId: args.data.chainId,
       blockNumber: args.data.startFrom ?? 0,
+      program: args.data.program ?? {},
     },
     select: {
       id: true,
       address: true,
+      program: true,
       blockNumber: true,
       chainId: true,
       createdAt: true,
