@@ -1,20 +1,26 @@
 import { Web3Event } from '@/types/events';
-import { ContractCast } from './contract-cast';
 import log from '@/services/log';
-import { SupportPlugInsMap, ProcessorRuntime, ContractCastEventProcessor } from '@/types/processor';
+import {
+  SupportPlugInsMap,
+  ProcessorRuntime,
+  ContractCastEventProcessor,
+  Program,
+} from '@/types/processor';
+import { CastInfo } from '../types';
 
 /**
  *  Class to excute a program, a set of processors in sequence
  */
-export class Program {
+export class ContractCastProgram<CI extends CastInfo> implements Program {
+  
   _supportedProcessors: SupportPlugInsMap;
   _steps: ProcessorRuntime[] = [];
   _processors: ContractCastEventProcessor[] = [];
-  _contractCast: ContractCast;
+  _info: CI;
 
-  constructor(contractCast: ContractCast, supportedProcessors: SupportPlugInsMap) {
+  constructor(info: CI, supportedProcessors: SupportPlugInsMap) {
     this._supportedProcessors = supportedProcessors;
-    this._contractCast = contractCast;
+    this._info = info;
   }
 
   loadProgram(program: ProcessorRuntime[]) {
@@ -23,9 +29,9 @@ export class Program {
     for (const step of this._steps) {
       const constructorZ = this._supportedProcessors[step.name];
       const processor: ContractCastEventProcessor = new constructorZ(
-        this._contractCast.getId(),
-        this._contractCast.getAddress(),
-        this._contractCast.getChainId()
+        this._info.getId(),
+        this._info.getAddress(),
+        this._info.getChainId()
       );
       this._processors.push(processor);
     }
@@ -33,18 +39,18 @@ export class Program {
 
   async execute<N extends string, T>(event: Web3Event<N, T>) {
     let stepIndex = 0;
-    log.d(`Executing Program for ${this._contractCast._id}  `);
+    log.d(`Executing Program for ${this._info.getId()}  `);
     for (const step of this._steps) {
       const variables = {};
       const processor = this._processors[stepIndex];
-      log.d(`Executing Step for ${this._contractCast._id}  - ${step.name}`);
+      log.d(`Executing Step for ${this._info.getId()}  - ${step.name}`);
       try {
         await processor.onEvent(
           {
             cast: {
-              id: this._contractCast.getId(),
-              address: this._contractCast.getAddress(),
-              chainId: this._contractCast.getChainId(),
+              id: this._info.getId(),
+              address: this._info.getAddress(),
+              chainId: this._info.getChainId(),
             },
             steps: this._steps,
             processors: this._processors,
@@ -58,7 +64,7 @@ export class Program {
         stepIndex++;
       } catch (e: Error | any) {
         log.e(
-          `Failed to execute Program ${this._contractCast._id} ` +
+          `Failed to execute Program ${this._info.getId()} ` +
             `on Step ${stepIndex} ${e.message} ${e.stack}`
         );
       }

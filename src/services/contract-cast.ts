@@ -13,7 +13,7 @@ import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
 import ContractListener from './contract-listener';
 import { chainsSupported } from '@/constants/chains';
-import { Program } from './program';
+import { ContractCastProgram } from './program';
 import { SupportPlugInsMap, ProcessorRuntime } from '@/types/processor';
 
 export class ContractCast {
@@ -23,7 +23,7 @@ export class ContractCast {
   _chainId: number;
   _blockNumber: number;
   _listener: EventListener | null = null;
-  _program: Program;
+  _program: ContractCastProgram<ContractCast>;
 
   constructor(
     id: string,
@@ -38,7 +38,7 @@ export class ContractCast {
     this._address = address;
     this._chainId = chainId;
     this._blockNumber = blockNumber;
-    this._program = new Program(this, supportedProcessors);
+    this._program = new ContractCastProgram(this, supportedProcessors);
   }
 
   getId() {
@@ -51,6 +51,10 @@ export class ContractCast {
 
   getChainId() {
     return this._chainId;
+  }
+
+  getBlockNumber() {
+    return this._blockNumber;
   }
 
   async loadProgram(program: ProcessorRuntime[]) {
