@@ -47,11 +47,11 @@ export class ContractCastProgram<CI extends CastInfo> implements Program {
   async execute<N extends string, T>(event: Web3Event<N, T>) {
     let stepIndex = 0;
     log.d(`Executing Program for ${this._info.getId()}  `);
-    for (const step of this._steps) {
-      const variables = {};
-      const processor = this._processors[stepIndex];
-      log.d(`Executing Step for ${this._info.getId()}  - ${step.name}`);
-      try {
+    try {
+      for (const step of this._steps) {
+        const variables = {};
+        const processor = this._processors[stepIndex];
+        log.d(`Executing Step for ${this._info.getId()}  - ${step.name}`);
         await processor.onEvent(
           {
             cast: {
@@ -69,12 +69,13 @@ export class ContractCastProgram<CI extends CastInfo> implements Program {
           event
         );
         stepIndex++;
-      } catch (e: Error | any) {
-        log.e(
-          `Failed to execute Program ${this._info.getId()} ` +
-            `on Step ${stepIndex} ${e.message} ${e.stack}`
-        );
       }
+    } catch (e: Error | any) {
+      log.e(
+        `Failed to execute Program ${this._info.getId()} ` + 
+        `on Step ${stepIndex} ${e.message} ${e.stack}`
+      );
+      return;
     }
   }
 }
