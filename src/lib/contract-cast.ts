@@ -13,7 +13,7 @@ import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
 import EVMContractListener from './contract-listener';
 import { chainsSupported } from '@/constants/chains';
-import { ContractCastProgram } from './program';
+import { ContractCastProgram } from '../services/program';
 import { SupportPlugInsMap, ProcessorRuntime } from '@/types/processor';
 import { ContractCast } from '../types';
 import db from '@/services/prisma';
