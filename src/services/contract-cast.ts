@@ -82,7 +82,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   }
 
   async start() {
-    log.d(`Starting the Contract Cast ${this._id}`);
+    log.d(`St the Contract Cast ${this._id}`);
     await this._recoverEvents();
     await this._startRTWhispering();
   }
