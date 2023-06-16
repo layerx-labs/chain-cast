@@ -2,7 +2,6 @@ import log from '@/services/log';
 import { appConfig } from './config';
 import os from 'os';
 import { createContext } from './context';
-import { AppContext } from './types';
 import { createYoga } from 'graphql-yoga';
 import { schema } from './graphql/schema';
 import express from 'express';
@@ -10,9 +9,10 @@ import { useMaskedErrors } from '@envelop/core';
 import { errorHandlingFunction } from './middleware/errors';
 import { LoggerContractCastEventProcessor } from '@/processors/logger';
 import { WebHookEventProcessor } from '@/processors/webhook';
+import { EVMContractCast } from './services/contract-cast';
 
 async function run() {
-  const ctx: AppContext = createContext();
+  const ctx = createContext<EVMContractCast>();
   // Initialize Express Server
   const app = express();
   // Initialize logs
