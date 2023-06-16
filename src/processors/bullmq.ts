@@ -10,7 +10,6 @@ import {
 import { Queue } from 'bullmq';
 
 export class WebHookEventProcessor implements ContractCastEventProcessor {
-  
   PROCESSOR_NAME = 'bull-producer';
 
   validatConf(_conf: ProcessorConfiguration | undefined): boolean {
@@ -18,13 +17,14 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
     const queueName = _conf?.queueName ?? '';
     const redisHostSchema = z.string().url();
     const redisHost = _conf?.redisHost ?? '';
-    const redisPortSchema = z.number().gt(0).lt(65500)
+    const redisPortSchema = z.number().gt(0).lt(65500);
     const redisPort = _conf?.redisHost ?? 0;
 
-    if(!_conf 
-        || !queueNameSchema.safeParse(queueName).success
-        || !redisHostSchema.safeParse(redisHost).success
-        || !redisPortSchema.safeParse(redisPort).success
+    if (
+      !_conf ||
+      !queueNameSchema.safeParse(queueName).success ||
+      !redisHostSchema.safeParse(redisHost).success ||
+      !redisPortSchema.safeParse(redisPort).success
     ) {
       return false;
     }
@@ -58,15 +58,15 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
     const redisPort = (ctx.curStep?.configuration?.redisHost.value as number) ?? 0;
 
     if (queueName && redisHost && redisPort) {
-        const queue = new Queue(queueName, {
-            connection: {
-              host: redisHost,
-              port: redisPort,
-            },
-        });
-     
+      const queue = new Queue(queueName, {
+        connection: {
+          host: redisHost,
+          port: redisPort,
+        },
+      });
+
       log.d(`[${this.PROCESSOR_NAME}] Adding ${event.event} to queue ${queueName}`);
-      await queue.add(event.event as string, event);     
+      await queue.add(event.event as string, event);
     }
   }
 }

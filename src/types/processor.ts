@@ -44,7 +44,7 @@ export type ConfigurationTemplate = {
 export type ContractCastEventProcessor = {
   name(): string;
   getConfTemplate(): ConfigurationTemplate;
-  validatConf(conf: ProcessorConfiguration| undefined): boolean;
+  validatConf(conf: ProcessorConfiguration | undefined): boolean;
   onEvent<N, T>(ctx: EventProcessorCtx, event: Web3Event<N, T>): void;
 };
 
@@ -54,8 +54,7 @@ export type SupportPlugInsMap = {
   [key: string]: PlugInConstructor<ContractCastEventProcessor>;
 };
 
-
 export type Program = {
   loadProgram(program: ProcessorRuntime[]): void;
-  execute<N extends string, T>(event: Web3Event<N, T>): Promise<void>
-}
+  execute<N extends string, T>(event: Web3Event<N, T>): Promise<void>;
+};

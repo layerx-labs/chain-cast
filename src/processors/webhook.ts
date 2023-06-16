@@ -15,7 +15,7 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
   validatConf(_conf: ProcessorConfiguration | undefined): boolean {
     const urlSchema = z.string().url();
     const url = _conf?.url ?? '';
-    if(!_conf || !urlSchema.safeParse(url).success) {
+    if (!_conf || !urlSchema.safeParse(url).success) {
       return false;
     }
     return true;

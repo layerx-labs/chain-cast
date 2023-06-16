@@ -72,7 +72,7 @@ async function run() {
   process.on('SIGINT', () => {
     log.d('Gracefully Shutting Down Chain Cast Manager...');
     ctx.manager.stop().then(()=> {
-      log.d('Bye.......');
+      log.d('Bye, Bye See you Soon on your favorite cast 📻');
       process.exit(0);
     });    
   });
