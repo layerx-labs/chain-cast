@@ -3,7 +3,7 @@ import { ContractCastType, PrismaClient } from '@prisma/client';
 import LogService, { LogLevel } from '@taikai/scribal';
 import { ProcessorRuntime, SupportPlugInsMap } from './processor';
 import { EventListenerHandler, Web3Event } from './events';
-import { EVMContractCast } from '@/services/contract-cast';
+import { EVMContractCast } from '@/lib/contract-cast';
 import { Web3Connection } from '@taikai/dappkit';
 
 export type AppContext = {

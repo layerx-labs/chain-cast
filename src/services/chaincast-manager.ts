@@ -10,7 +10,7 @@ import {
 import { ContractCast, ContractCastConstructor } from '../types';
 
 /**
- * The Service that manage all the casts lifecycles
+ * The Service that manage all the contract casts lifecycles
  */
 export class ChainCastManager<C extends ContractCast> {
   private _casts: { [key: string]: C };
