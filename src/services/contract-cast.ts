@@ -26,6 +26,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   private _address: string;
   private _chainId: number;
   private _blockNumber: number;
+  private _transactionIndex: number;
   private _listener: ContractEventListener | null = null;
   private _program: ContractCastProgram<typeof this>;
   private _web3Con: Web3Connection;
@@ -36,6 +37,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     address: string,
     chainId: number,
     blockNumber: number,
+    transactionIndex: number,
     supportedProcessors: SupportPlugInsMap
   ) {
     this._id = id;
@@ -43,6 +45,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     this._address = address;
     this._chainId = chainId;
     this._blockNumber = blockNumber;
+    this._transactionIndex = transactionIndex;
     this._program = new ContractCastProgram(this, supportedProcessors);
     const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this._chainId);
     const web3Con = new Web3Connection({
@@ -66,6 +69,11 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
 
   getBlockNumber() {
     return this._blockNumber;
+  }
+
+
+  getTxIndex() {
+    return this._transactionIndex;
   }
 
   async loadProgram(program: ProcessorRuntime[]) {

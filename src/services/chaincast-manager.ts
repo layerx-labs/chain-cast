@@ -46,6 +46,7 @@ export class ChainCastManager<C extends ContractCast> {
     address: string;
     chainId: number;
     blockNumber: number;
+    transactionIndex: number;
     program: object | Prisma.JsonValue;
   }) {
     try {
@@ -77,6 +78,7 @@ export class ChainCastManager<C extends ContractCast> {
         address: true,
         chainId: true,
         blockNumber: true,
+        transactionIndex: true,
         program: true,
       },
     });
@@ -88,6 +90,7 @@ export class ChainCastManager<C extends ContractCast> {
     address: string;
     chainId: number;
     blockNumber: number;
+    transactionIndex: true,
     program: Prisma.JsonValue;
   }) {
     const contractCast: C = new this.creator(
@@ -96,6 +99,7 @@ export class ChainCastManager<C extends ContractCast> {
       cast.address,
       cast.chainId,
       cast.blockNumber,
+      cast.transactionIndex,
       this._supportedProcessors
     );
     this._casts[cast.id] = contractCast;

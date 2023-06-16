@@ -88,6 +88,7 @@ export type ContractCastConstructor<T> = new (
   adress: string,
   chainId: number,
   blockNumber: number,
+  transactionIndex: number,
   processors: SupportPlugInsMap
 ) => T;
 

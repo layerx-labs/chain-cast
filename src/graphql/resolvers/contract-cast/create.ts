@@ -35,6 +35,7 @@ const createContractCast: Resolver<
       type: args.data.type,
       chainId: args.data.chainId,
       blockNumber: args.data.startFrom ?? 0,
+      transactionIndex: 0,
       program: args.data.program ?? {},
     },
     select: {
@@ -42,6 +43,7 @@ const createContractCast: Resolver<
       address: true,
       program: true,
       blockNumber: true,
+      transactionIndex: true,
       chainId: true,
       createdAt: true,
       type: true,
