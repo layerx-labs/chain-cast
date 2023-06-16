@@ -52,3 +52,9 @@ export type PlugInConstructor<M> = new (id: string, address: string, chainId: nu
 export type SupportPlugInsMap = {
   [key: string]: PlugInConstructor<ContractCastEventProcessor>;
 };
+
+
+export type Program = {
+  loadProgram(program: ProcessorRuntime[]): void;
+  execute<N extends string, T>(event: Web3Event<N, T>): Promise<void>
+}

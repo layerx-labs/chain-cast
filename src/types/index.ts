@@ -62,3 +62,18 @@ export type ChainParams = {
 export type ChainSupported = {
   [key in ChainNames]: ChainParams;
 };
+
+
+export type CastInfo = {
+  
+  getId(): string ;
+  getAddress(): string;
+  getChainId(): number;
+  getBlockNumber() : number;
+}
+
+
+export type Program = {
+  loadProgram(program: ProcessorRuntime[]);
+  async execute<N extends string, T>(event: Web3Event<N, T>): Promise<void>
+}
