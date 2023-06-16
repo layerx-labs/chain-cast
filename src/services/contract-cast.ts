@@ -17,8 +17,9 @@ import { ContractCastProgram } from './program';
 import { SupportPlugInsMap, ProcessorRuntime } from '@/types/processor';
 import { ContractCast } from '../types';
 import db from '@/services/prisma';
+
 /**
- *
+ * An implementation that creates a stream of events for an Ethereum Smart Contract
  */
 export class EVMContractCast implements ContractCast, EventListenerHandler {
   private _id: string;
@@ -81,12 +82,28 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     this._program.loadProgram(program);
   }
 
+  /**
+   * The start() function is an asynchronous function that initiates the Contract Cast.
+   * It performs the following steps:
+   *
+   * Attempts to recover events by calling the _recoverEvents() function,
+   * which presumably retrieves events related to the contract.
+   * Waits for the event recovery process to complete before proceeding to the next step.
+   * Starts listening to the contract and establishes a ubscription to contract events.
+   * */
   async start() {
-    log.d(`St the Contract Cast ${this._id}`);
-    await this._recoverEvents();
-    await this._startRTWhispering();
+    log.d(`Starting the Contract Cast ${this._id}`);
+    try {
+      await this._recoverEvents();
+      await this._startContractListening();
+    } catch (e: Error | any) {
+      log.e(`Failed to start Contract Cast ${this._id} ${e.message}  ${e.stack}`);
+    }
   }
-
+  /**
+   *  Stops the cast and saves the next blocknumber to be processd on the
+   *  next startup
+   */
   async stop() {
     if (this._listener?.isListening()) {
       await this._listener.stopListening();
@@ -96,8 +113,8 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
       if (
         currentBlock == this._lastEventBlockNumber &&
         this._lastEventTransactionIndex &&
-        (txCount) >= this._lastEventTransactionIndex + 1
-      ) {        
+        txCount >= this._lastEventTransactionIndex + 1
+      ) {
         await this._updateCastIndex(currentBlock, this._lastEventTransactionIndex + 1);
       } else {
         await this._updateCastIndex(currentBlock + 1);
@@ -106,7 +123,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   }
 
   async _updateCastIndex(blockNumber: number, transactionIndex?: number) {
-    log.d(`Saving Chain Cast index on ${this.getId()} at ${blockNumber}:${transactionIndex ?? 0}` );
+    log.d(`Saving Chain Cast index on ${this.getId()} at ${blockNumber}:${transactionIndex ?? 0}`);
     await db.contractCast.update({
       where: {
         id: this._id,
@@ -123,8 +140,10 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
    * @param event
    */
   async onEvent<N extends string, T>(event: Web3Event<N, T>) {
-    log.d(`New Event ${event.event} goint to be executed by the program ` + 
-          `${event.blockNumber}:${event.transactionIndex}`);
+    log.d(
+      `New Event ${event.event} goint to be executed by the program ` +
+        `${event.blockNumber}:${event.transactionIndex}`
+    );
     await this._program.execute(event);
     this._lastEventBlockNumber = event.blockNumber;
     this._lastEventTransactionIndex = event.transactionIndex;
@@ -162,11 +181,15 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     }
   }
 
-  private async _startRTWhispering() {
+  /**
+   * Setup a contract listening for the different casts types supported
+   */
+  private async _startContractListening() {
     log.i(
       `Starting Consuming Events for stream ${this._id} ${this._chainId} ${this._type} ` +
         `on ${this._address}`
     );
+
     switch (this._type) {
       case ContractCastType.BEPRO_FACTORY:
         // Not Supported Yet
@@ -274,8 +297,11 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     let startBlock = fromBlock;
     do {
       const endBlock = Math.min(startBlock + 100, toBlock);
-      log.d(`Finding Events stream=${this._id} ` + `from=[${startBlock}] ` + 
-            `fromIndex=[${fromTxIndex}] to=[${endBlock}]`);
+      log.d(
+        `Finding Events stream=${this._id} ` +
+          `from=[${startBlock}] ` +
+          `fromIndex=[${fromTxIndex}] to=[${endBlock}]`
+      );
       const options = {
         fromBlock: startBlock,
         toBlock: endBlock,

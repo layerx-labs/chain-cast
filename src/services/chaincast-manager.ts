@@ -10,7 +10,7 @@ import {
 import { ContractCast, ContractCastConstructor } from '../types';
 
 /**
- * Main Event Indexer Service that
+ * The Service that manage all the casts lifecycles
  */
 export class ChainCastManager<C extends ContractCast> {
   private _casts: { [key: string]: C };
@@ -28,18 +28,30 @@ export class ChainCastManager<C extends ContractCast> {
     return Object.values(this._casts);
   }
 
+  /**
+   * Start all the casts asynchronously
+   */
   async start() {
     const casts = await this._loadCastsFromDb();
     for (const cast of casts) {
-      await this._setupCast(cast);
+      // Start the cast asynchronously without waiting for the cast to start
+      this._setupCast(cast);
     }
   }
+  /**
+   * Stop all the cast ssynchronously
+   */
   async stop() {
     for (const cast of Object.values(this._casts)) {
+      // Stop Sequencially the casts
       await cast.stop();
     }
   }
 
+  /**
+   * Add a new cast to process events
+   * @param cast
+   */
   async addCast(cast: {
     id: string;
     type: ContractCastType;
@@ -58,7 +70,7 @@ export class ChainCastManager<C extends ContractCast> {
 
   async deleteCast(id: string) {
     if (this._casts[id]) {
-      this._casts[id].stop();
+      await this._casts[id].stop();
       delete this._casts[id];
     }
   }
@@ -84,7 +96,7 @@ export class ChainCastManager<C extends ContractCast> {
     });
   }
 
-  private async  _setupCast(cast: {
+  private async _setupCast(cast: {
     id: string;
     type: ContractCastType;
     address: string;
