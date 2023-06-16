@@ -5,15 +5,15 @@ import { EventEmitter } from 'node:events';
 
 /**
  * This Class listen for events on a contract of type M and
- * forward the event to the EventListenerProcessor
+ * forward the event to the EventListenerhandler
  */
-export class ContractListener<M extends Model, P extends EventListenerHandler>
+export class ContractListener<M extends Model, H extends EventListenerHandler>
   implements EventListener
 {
   _web3Con: Web3Connection;
   _contract: Model;
   _isListening = false;
-  _processor: P;
+  _handler: H;
   _listener: EventEmitter | null = null;
 
   /**
@@ -22,19 +22,19 @@ export class ContractListener<M extends Model, P extends EventListenerHandler>
    * @param wsUrl
    * @param address
    * @param events
-   * @param processor
+   * @param handler
    */
   constructor(
     TCreator: new (web3Con: Web3Connection, address: string) => M,
     wsUrl: string,
     address: string,
-    processor: P
+    handler: H
   ) {
     this._web3Con = new Web3Connection({
       debug: false,
       web3Host: wsUrl,
     });
-    this._processor = processor;
+    this._handler = handler;
     this._contract = new TCreator(this._web3Con, address);
   }
 
@@ -62,17 +62,17 @@ export class ContractListener<M extends Model, P extends EventListenerHandler>
   async startListening(): Promise<void> {
     if (!this.isListening()) {
       await this._contract.start();
-      await this.enableProcessor(this._processor);
+      await this.enablehandler(this._handler);
       this._isListening = true;
     }
   }
 
   /**
-   * Toggle between the processor passed and a skip processor
+   * Toggle between the handler passed and a skip handler
    * Always to start the listener on the Block Number
-   * @param processor
+   * @param handler
    */
-  private async enableProcessor<Processor extends EventListenerHandler>(processor: Processor) {
+  private async enablehandler<handler extends EventListenerHandler>(handler: handler) {
     const currentBlock = await this._web3Con.eth.getBlockNumber();
     const startBlock = currentBlock + 1;
     const options = {
@@ -84,12 +84,12 @@ export class ContractListener<M extends Model, P extends EventListenerHandler>
     log.d(`Listening for events on ${this._contract.contractAddress} from ${startBlock} `);
     this._listener = this._contract.contract.events
       .allEvents(options)
-      .on('changed', (changed: any) => processor.onEventChanged(changed))
+      .on('changed', (changed: any) => handler.onEventChanged(changed))
       .on('data', (event: any) => {
-        processor.onEvent(event);
+        handler.onEvent(event);
       })
-      .on('error', (err: Error) => processor.onError(err))
-      .on('connected', (str: string) => processor.onConnected(str));
+      .on('error', (err: Error) => handler.onError(err))
+      .on('connected', (str: string) => handler.onConnected(str));
   }
 
   /***
