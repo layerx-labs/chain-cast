@@ -1,7 +1,6 @@
 import { ErrorsEnum } from '@/constants/index';
 import { Resolver } from '@/graphql/types';
 import { UserInputError } from '@/middleware/errors';
-import { EVMContractCast } from '@/services/contract-cast';
 import { ContractCast, ContractCastType } from '@prisma/client';
 
 export type CreateContractCastArgType = {
@@ -16,7 +15,6 @@ export type CreateContractCastArgType = {
 
 const createContractCast: Resolver<
   ContractCast,
-  EVMContractCast,
   CreateContractCastArgType
 > = async (_1, args, ctx) => {
   const oldContractCast = await ctx.db.contractCast.findUnique({

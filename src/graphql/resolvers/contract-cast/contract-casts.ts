@@ -1,5 +1,4 @@
 import { PageInfo, Resolver } from '@/graphql/types';
-import { EVMContractCast } from '@/services/contract-cast';
 import { ContractCast, ContractCastType, Prisma } from '@prisma/client';
 
 export type ContractCastsArgType = {
@@ -32,7 +31,6 @@ export type ContractCastsArgPageInfoType = {
  */
 export const contractCasts: Resolver<
   ContractCast[],
-  EVMContractCast,
   ContractCastsArgType
 > = async (_1, args, ctx) => {
   const { where, sortBy, order } = args as ContractCastsArgType;
@@ -64,7 +62,6 @@ export const contractCasts: Resolver<
 
 export const contractCastsPageInfo: Resolver<
   PageInfo,
-  EVMContractCast,
   ContractCastsArgPageInfoType
 > = async (_1, args, ctx) => {
   const { where } = args as ContractCastsArgPageInfoType;

@@ -1,4 +1,4 @@
-import { AppContext, ContractCast } from '@/types/index';
+import { AppContext } from '@/types/index';
 import { builder } from '../builder';
 import { Prisma } from '@prisma/client';
 
@@ -38,10 +38,10 @@ export type BasicTypes = number | string | boolean | object | Array<BasicTypes> 
 export type NestedObject = { [key: string | number]: NestedObject | BasicTypes };
 export type NestedObjectBoolean = { [key: string]: NestedObjectBoolean | boolean };
 
-export type Resolver<T, C extends ContractCast, Args = NestedObject> = (
+export type Resolver<T, Args = NestedObject> = (
   parent: unknown,
   args: Args | MakeDeepNullable<Args>,
-  ctx: AppContext<C>,
+  ctx: AppContext,
   info: unknown,
   query?: {
     select?: NestedObjectBoolean;

@@ -3,11 +3,12 @@ import { ContractCastType, PrismaClient } from '@prisma/client';
 import LogService, { LogLevel } from '@taikai/scribal';
 import { ProcessorRuntime, SupportPlugInsMap } from './processor';
 import { Web3Event } from './events';
+import { EVMContractCast } from '@/services/contract-cast';
 
-export type AppContext<C extends ContractCast> = {
+export type AppContext = {
   db: PrismaClient;
   log: LogService;
-  manager: ChainCastManager<C>;
+  manager: ChainCastManager<EVMContractCast>;
 };
 
 export type Environment = 'development' | 'staging' | 'production';
