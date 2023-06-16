@@ -11,16 +11,13 @@ import { ContractCast, ContractCastConstructor } from '../types';
 /**
  * Main Event Indexer Service that
  */
-export class ChainCastManager<
-  C extends ContractCast,
-  CT extends ContractCastConstructor<C>
-> {
+export class ChainCastManager<C extends ContractCast> {
   private _casts: { [key: string]: C };
   private _db: PrismaClient;
   private _supportedProcessors: SupportPlugInsMap = {};
-  private creator: CT;
+  private creator: ContractCastConstructor<C>;
 
-  constructor(creator: CT, db: PrismaClient) {
+  constructor(creator: ContractCastConstructor<C>, db: PrismaClient) {
     this._casts = {};
     this._db = db;
     this.creator = creator;

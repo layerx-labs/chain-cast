@@ -7,6 +7,7 @@ import { DateResolver, BigIntResolver, URLResolver, JSONResolver } from 'graphql
 import { AppContext } from '@/types/index';
 import ValidationPlugin from '@pothos/plugin-validation';
 import { UserInputError } from '@/middleware/errors';
+import { EVMContractCast } from '@/services/contract-cast';
 // 2.
 export const builder = new SchemaBuilder<{
   // 3.
@@ -17,7 +18,7 @@ export const builder = new SchemaBuilder<{
     URL: { Input: string; Output: string };
   };
   PrismaTypes: PrismaTypes;
-  Context: AppContext;
+  Context: AppContext<EVMContractCast>;
 }>({
   // 4.
 

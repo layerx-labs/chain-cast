@@ -4,10 +4,10 @@ import LogService, { LogLevel } from '@taikai/scribal';
 import { ProcessorRuntime, SupportPlugInsMap } from './processor';
 import { Web3Event } from './events';
 
-export type AppContext = {
+export type AppContext<C extends ContractCast> = {
   db: PrismaClient;
   log: LogService;
-  manager: ChainCastManager;
+  manager: ChainCastManager<C>;
 };
 
 export type Environment = 'development' | 'staging' | 'production';

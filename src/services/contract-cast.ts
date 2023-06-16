@@ -18,6 +18,7 @@ import { SupportPlugInsMap, ProcessorRuntime } from '@/types/processor';
 import { ContractCast } from '../types';
 
 export class EVMContractCast implements ContractCast {
+  
   private _id: string;
   private _type: ContractCastType;
   private _address: string;
@@ -76,7 +77,7 @@ export class EVMContractCast implements ContractCast {
    *
    * @param event
    */
-  async onEvent<N extends string, T>(event: Web3Event<N, T>) {
+  async onEvent<N extends string, T>(event: Web3Event<N, T>) : Promise<void>{
     log.d(`New Event ${event.event} goint to be executed by the program`);
     await this._program.execute(event);
   }
