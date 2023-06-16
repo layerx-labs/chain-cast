@@ -72,10 +72,9 @@ export class ContractCastProgram<CI extends CastInfo> implements Program {
       }
     } catch (e: Error | any) {
       log.e(
-        `Failed to execute Program ${this._info.getId()} ` + 
-        `on Step ${stepIndex} ${e.message} ${e.stack}`
+        `Failed to execute Program ${this._info.getId()} ` +
+          `on Step ${stepIndex} ${e.message} ${e.stack}`
       );
-      return;
     }
   }
 }
