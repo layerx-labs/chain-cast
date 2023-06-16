@@ -5,6 +5,7 @@ import {
   SupportPlugInsMap,
   ContractCastEventProcessor,
   PlugInConstructor,
+  ProcessorRuntime,
 } from '@/types/processor';
 import { ContractCast, ContractCastConstructor } from '../types';
 
@@ -101,21 +102,8 @@ export class ChainCastManager<C extends ContractCast> {
       this._supportedProcessors
     );
     this._casts[cast.id] = contractCast;
-    contractCast.loadProgram([
-      {
-        name: 'logger',
-      },
-      {
-        name: 'webhook',
-        configuration: {
-          url: {
-            type: 'string',
-            required: true,
-            value: 'https://webhook.site/06218e87-7b2e-48c8-a467-746c1b031d17',
-          },
-        },
-      },
-    ]);
+    const obj: ProcessorRuntime[] = JSON.parse(cast?.program?.toString() ?? '{}');
+    contractCast.loadProgram(obj);
     contractCast.start();
   }
 }
