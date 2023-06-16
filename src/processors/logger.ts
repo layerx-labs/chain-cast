@@ -1,8 +1,16 @@
 import { Web3Event } from '@/types/events';
 import log from '@/services/log';
-import { ContractCastEventProcessor, EventProcessorCtx } from '@/types/processor';
+import {
+  ContractCastEventProcessor,
+  EventProcessorCtx,
+  ProcessorConfiguration,
+} from '@/types/processor';
 
 export class LoggerContractCastEventProcessor implements ContractCastEventProcessor {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  validatConf(_conf: ProcessorConfiguration | undefined): boolean {
+    return true;
+  }
   PROCESSOR_NAME = 'logger';
 
   name(): string {

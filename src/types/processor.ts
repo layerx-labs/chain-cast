@@ -44,6 +44,7 @@ export type ConfigurationTemplate = {
 export type ContractCastEventProcessor = {
   name(): string;
   getConfTemplate(): ConfigurationTemplate;
+  validatConf(conf: ProcessorConfiguration| undefined): boolean;
   onEvent<N, T>(ctx: EventProcessorCtx, event: Web3Event<N, T>): void;
 };
 

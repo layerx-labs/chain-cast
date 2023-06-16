@@ -1,14 +1,15 @@
-import { EventListener, EventListenerHandler } from '@/types/events';
+import { ContractEventListener, EventListenerHandler } from '@/types/events';
 import { Model, Web3Connection } from '@taikai/dappkit';
 import log from '@/services/log';
 import { EventEmitter } from 'node:events';
+import { ModelConstructor } from '../types';
 
 /**
  * This Class listen for events on a contract of type M and
  * forward the event to the EventListenerhandler
  */
-export class ContractListener<M extends Model, H extends EventListenerHandler>
-  implements EventListener
+export class EVMContractListener<M extends Model, H extends EventListenerHandler>
+  implements ContractEventListener
 {
   private _web3Con: Web3Connection;
   private _contract: Model;
@@ -25,7 +26,7 @@ export class ContractListener<M extends Model, H extends EventListenerHandler>
    * @param handler
    */
   constructor(
-    TCreator: new (web3Con: Web3Connection, address: string) => M,
+    modelConstructor: ModelConstructor<M>,
     wsUrl: string,
     address: string,
     handler: H
@@ -35,7 +36,7 @@ export class ContractListener<M extends Model, H extends EventListenerHandler>
       web3Host: wsUrl,
     });
     this._handler = handler;
-    this._contract = new TCreator(this._web3Con, address);
+    this._contract = new modelConstructor(this._web3Con, address);
   }
 
   /**
@@ -105,4 +106,4 @@ export class ContractListener<M extends Model, H extends EventListenerHandler>
   }
 }
 
-export default ContractListener;
+export default EVMContractListener;

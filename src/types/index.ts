@@ -2,8 +2,9 @@ import { ChainCastManager } from '@/services/chaincast-manager';
 import { ContractCastType, PrismaClient } from '@prisma/client';
 import LogService, { LogLevel } from '@taikai/scribal';
 import { ProcessorRuntime, SupportPlugInsMap } from './processor';
-import { Web3Event } from './events';
+import { EventListenerHandler, Web3Event } from './events';
 import { EVMContractCast } from '@/services/contract-cast';
+import { Web3Connection } from '@taikai/dappkit';
 
 export type AppContext = {
   db: PrismaClient;
@@ -66,21 +67,20 @@ export type ChainSupported = {
   [key in ChainNames]: ChainParams;
 };
 
-
-export type CastInfo = { 
-  getId(): string ;
+export type CastInfo = {
+  getId(): string;
   getAddress(): string;
   getChainId(): number;
-  getBlockNumber() : number;
-}
+  getBlockNumber(): number;
+};
 
 export type ContractCast = {
   loadProgram(program: ProcessorRuntime[]): Promise<void>;
   start(): Promise<void>;
-  stop(): Promise<void> ;
-  onEvent<N extends string, T>(event: Web3Event<N, T>): Promise<void>; 
+  stop(): Promise<void>;
+  onEvent<N extends string, T>(event: Web3Event<N, T>): Promise<void>;
   onError(error: Error): void;
-}
+};
 
 export type ContractCastConstructor<T> = new (
   id: string,
@@ -88,4 +88,15 @@ export type ContractCastConstructor<T> = new (
   adress: string,
   chainId: number,
   blockNumber: number,
-  processors: SupportPlugInsMap) => T;
+  processors: SupportPlugInsMap
+) => T;
+
+export type ModelConstructor<M> = new (web3Con: Web3Connection, address: string) => M;
+
+
+export type ContractEventListenerConstructor<M, H extends EventListenerHandler> = new (
+  modelConstructor: ModelConstructor<M>,
+  wsUrl: string,
+  address: string,
+  handler: H
+) => M;

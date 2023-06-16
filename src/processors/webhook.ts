@@ -1,15 +1,25 @@
 import { Web3Event } from '@/types/events';
-
+import { z } from 'zod';
 import log from '@/services/log';
 import axios from 'axios';
 import {
   ContractCastEventProcessor,
   ConfigurationTemplate,
   EventProcessorCtx,
+  ProcessorConfiguration,
 } from '@/types/processor';
 
 export class WebHookEventProcessor implements ContractCastEventProcessor {
   PROCESSOR_NAME = 'webhook';
+
+  validatConf(_conf: ProcessorConfiguration | undefined): boolean {
+    const urlSchema = z.string().url();
+    const url = _conf?.url ?? '';
+    if(!_conf || !urlSchema.safeParse(url).success) {
+      return false;
+    }
+    return true;
+  }
 
   name(): string {
     return this.PROCESSOR_NAME;
