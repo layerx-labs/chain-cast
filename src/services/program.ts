@@ -7,6 +7,8 @@ import {
   Program,
 } from '@/types/processor';
 import { CastInfo } from '../types';
+import { UserInputError } from '@/middleware/errors';
+import { ErrorsEnum } from '../constants';
 
 /**
  *  Class to excute a program, a set of processors in sequence
@@ -33,6 +35,12 @@ export class ContractCastProgram<CI extends CastInfo> implements Program {
         this._info.getAddress(),
         this._info.getChainId()
       );
+      if (!processor.validatConf(step.configuration)){
+        throw new UserInputError(
+          'Failed to load program, configuration is wrong',
+          ErrorsEnum.invalidUserInput
+        );
+      }
       this._processors.push(processor);
     }
   }

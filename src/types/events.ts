@@ -19,7 +19,7 @@ export type EventListenerHandler = {
   onConnected(message: string): void;
 };
 
-export type EventListener = {
+export type ContractEventListener = {
   getEvents(): string[];
   isListening(): boolean;
   startListening(): void;

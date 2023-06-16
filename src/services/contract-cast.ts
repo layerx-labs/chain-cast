@@ -8,24 +8,27 @@ import {
   Network_v2,
   Web3Connection,
 } from '@taikai/dappkit';
-import { EventListener, Web3Event } from '@/types/events';
+import { ContractEventListener, EventListenerHandler, Web3Event } from '@/types/events';
 import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
-import ContractListener from './contract-listener';
+import EVMContractListener from './contract-listener';
 import { chainsSupported } from '@/constants/chains';
 import { ContractCastProgram } from './program';
 import { SupportPlugInsMap, ProcessorRuntime } from '@/types/processor';
 import { ContractCast } from '../types';
 
-export class EVMContractCast implements ContractCast {
-  
+/**
+ * 
+ */
+export class EVMContractCast implements ContractCast, EventListenerHandler
+{
   private _id: string;
   private _type: ContractCastType;
   private _address: string;
   private _chainId: number;
   private _blockNumber: number;
-  private _listener: EventListener | null = null;
-  private _program: ContractCastProgram<EVMContractCast>;
+  private _listener: ContractEventListener | null = null;
+  private _program: ContractCastProgram<typeof this>;
 
   constructor(
     id: string,
@@ -77,7 +80,7 @@ export class EVMContractCast implements ContractCast {
    *
    * @param event
    */
-  async onEvent<N extends string, T>(event: Web3Event<N, T>) : Promise<void>{
+  async onEvent<N extends string, T>(event: Web3Event<N, T>) {
     log.d(`New Event ${event.event} goint to be executed by the program`);
     await this._program.execute(event);
   }
@@ -98,12 +101,12 @@ export class EVMContractCast implements ContractCast {
   ) {
     const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this._chainId);
     try {
-      const listener: EventListener = new ContractListener(TCreator, chain.wsUrl, this._address, {
-        onEvent: this.onEvent.bind(this),
-        onError: this.onError.bind(this),
-        onEventChanged: this.onEventChanged.bind(this),
-        onConnected: this.onConnected.bind(this),
-      });
+      const listener: ContractEventListener = new EVMContractListener(
+        TCreator,
+        chain.wsUrl,
+        this._address,
+        this
+      );
       this._listener = listener;
       await listener.startListening();
     } catch (e: any) {
