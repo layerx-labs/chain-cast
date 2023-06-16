@@ -47,10 +47,10 @@ async function run() {
   app.use(yoga.graphqlEndpoint, yoga);
   log.i('Starting Chain Cast 🎧 Whisperer Service...');
 
-  ctx.whisperer.registerProcessor('logger', LoggerContractCastEventProcessor);
-  ctx.whisperer.registerProcessor('webhook', WebHookEventProcessor);
+  ctx.manager.registerProcessor('logger', LoggerContractCastEventProcessor);
+  ctx.manager.registerProcessor('webhook', WebHookEventProcessor);
 
-  await ctx.whisperer.start();
+  await ctx.manager.start();
 
   /** Start the GraphQL Server */
   app.listen(appConfig.port, () => {
@@ -60,7 +60,7 @@ async function run() {
   
   process.on('SIGTERM', () => {
     log.i('Gracefully Shutting Down BEPRO Chain Cast 🎧 Whisperer Service 🥱');
-    ctx.whisperer.stop();
+    ctx.manager.stop();
     process.exit(0);
   });
 }

@@ -1,14 +1,15 @@
 import prisma from '@/services/prisma';
 import { AppContext } from './types';
 import log from '@/services/log';
-import {EventWhisperer} from '@/services/whisperer';
+import {ChainCastManager} from '@/services/chaincast-manager';
+import { EVMContractCast } from './services/contract-cast';
 
-const whisperer = new EventWhisperer(prisma);
+const manager = new ChainCastManager(EVMContractCast, prisma);
 
 export function createContext(): AppContext {
   return {
     db: prisma,
     log,
-    whisperer,
+    manager,
   };
 }

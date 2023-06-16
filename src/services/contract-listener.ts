@@ -10,11 +10,11 @@ import { EventEmitter } from 'node:events';
 export class ContractListener<M extends Model, H extends EventListenerHandler>
   implements EventListener
 {
-  _web3Con: Web3Connection;
-  _contract: Model;
-  _isListening = false;
-  _handler: H;
-  _listener: EventEmitter | null = null;
+  private _web3Con: Web3Connection;
+  private _contract: Model;
+  private _isListening = false;
+  private _handler: H;
+  private _listener: EventEmitter | null = null;
 
   /**
    *
