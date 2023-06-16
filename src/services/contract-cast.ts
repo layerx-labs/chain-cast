@@ -16,12 +16,11 @@ import { chainsSupported } from '@/constants/chains';
 import { ContractCastProgram } from './program';
 import { SupportPlugInsMap, ProcessorRuntime } from '@/types/processor';
 import { ContractCast } from '../types';
-
+import db from "@/services/prisma";
 /**
- * 
+ *
  */
-export class EVMContractCast implements ContractCast, EventListenerHandler
-{
+export class EVMContractCast implements ContractCast, EventListenerHandler {
   private _id: string;
   private _type: ContractCastType;
   private _address: string;
@@ -29,6 +28,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler
   private _blockNumber: number;
   private _listener: ContractEventListener | null = null;
   private _program: ContractCastProgram<typeof this>;
+  private _web3Con: Web3Connection;
 
   constructor(
     id: string,
@@ -44,6 +44,12 @@ export class EVMContractCast implements ContractCast, EventListenerHandler
     this._chainId = chainId;
     this._blockNumber = blockNumber;
     this._program = new ContractCastProgram(this, supportedProcessors);
+    const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this._chainId);
+    const web3Con = new Web3Connection({
+      debug: false,
+      web3Host: chain.rpcUrl,
+    });
+    this._web3Con = web3Con;
   }
 
   getId() {
@@ -72,10 +78,25 @@ export class EVMContractCast implements ContractCast, EventListenerHandler
   }
 
   async stop() {
-    if (this._listener) {
+    if (this._listener?.isListening()) {    
       this._listener.stopListening();
+      const currentBlock = await this._web3Con.eth.getBlockNumber();
+      log.d(`Stopping the Contract Cast for ${this.getId()} at ${currentBlock}`);
+      await this._updateLastBlock(currentBlock);
     }
   }
+
+  async _updateLastBlock(blockNumber: number) {    
+    await db.contractCast.update({
+      where: {
+        id: this._id,
+      },
+      data: {
+        blockNumber: blockNumber,
+      },
+    });
+  }
+
   /**
    *
    * @param event
@@ -148,15 +169,10 @@ export class EVMContractCast implements ContractCast, EventListenerHandler
   }
 
   private async _recoverEvents() {
-    const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this._chainId);
-    const web3Con = new Web3Connection({
-      debug: false,
-      web3Host: chain.rpcUrl,
-    });
-    const currentBlock = await web3Con.eth.getBlockNumber();
+    const currentBlock = await this._web3Con.eth.getBlockNumber();
 
-    if (this._blockNumber <= currentBlock) {
-      const fromBlock = this._blockNumber === 0 ? this._blockNumber : this._blockNumber + 1;
+    if (this._blockNumber < currentBlock) {
+      const fromBlock = this._blockNumber;
       log.i(
         `Starting  Recovering events stream ${this._id} ` +
           `from=[${fromBlock}] to=[${currentBlock}]`
@@ -166,22 +182,32 @@ export class EVMContractCast implements ContractCast, EventListenerHandler
           // Not Supported Yet
           break;
         case ContractCastType.BEPRO_NETWORK_V2:
-          await this._recoverContractEvents(web3Con, Network_v2, fromBlock, currentBlock);
+          await this._recoverContractEvents(this._web3Con, Network_v2, fromBlock, currentBlock);
           break;
         case ContractCastType.BEPRO_REGISTRY:
-          await this._recoverContractEvents(web3Con, NetworkRegistry, fromBlock, currentBlock);
+          await this._recoverContractEvents(
+            this._web3Con,
+            NetworkRegistry,
+            fromBlock,
+            currentBlock
+          );
           break;
         case ContractCastType.BEPRO_POP:
-          await this._recoverContractEvents(web3Con, BountyToken, fromBlock, currentBlock);
+          await this._recoverContractEvents(this._web3Con, BountyToken, fromBlock, currentBlock);
           break;
         case ContractCastType.ERC20:
-          await this._recoverContractEvents(web3Con, ERC20, fromBlock, currentBlock);
+          await this._recoverContractEvents(this._web3Con, ERC20, fromBlock, currentBlock);
           break;
         case ContractCastType.ERC721:
-          await this._recoverContractEvents(web3Con, Erc721Standard, fromBlock, currentBlock);
+          await this._recoverContractEvents(this._web3Con, Erc721Standard, fromBlock, currentBlock);
           break;
         case ContractCastType.ERC1155:
-          await this._recoverContractEvents(web3Con, ERC1155Standard, fromBlock, currentBlock);
+          await this._recoverContractEvents(
+            this._web3Con,
+            ERC1155Standard,
+            fromBlock,
+            currentBlock
+          );
           break;
       }
     }
@@ -206,6 +232,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler
       for (const event of events) {
         this.onEvent(event);
       }
+      await this._updateLastBlock(toBlock);
       startBlock = endBlock + 1;
     } while (startBlock <= toBlock);
   }

@@ -99,7 +99,7 @@ export class EVMContractListener<M extends Model, H extends EventListenerHandler
   async stopListening(): Promise<void> {
     if (this.isListening() && this._listener) {
       const currentBlock = await this._web3Con.eth.getBlockNumber();
-      log.d(`Stop Listening for ${this._contract.contractAddress} on ${currentBlock} 👋`);
+      log.d(`Stop Listening for ${this._contract.contractAddress} on ${currentBlock}`);
       this._listener.removeAllListeners();
       this._isListening = false;
     }
