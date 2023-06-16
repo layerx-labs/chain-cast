@@ -94,7 +94,6 @@ export type ContractCastConstructor<T> = new (
 
 export type ModelConstructor<M> = new (web3Con: Web3Connection, address: string) => M;
 
-
 export type ContractEventListenerConstructor<M, H extends EventListenerHandler> = new (
   modelConstructor: ModelConstructor<M>,
   wsUrl: string,

@@ -16,12 +16,12 @@ export class ChainCastManager<C extends ContractCast> {
   private _casts: { [key: string]: C };
   private _db: PrismaClient;
   private _supportedProcessors: SupportPlugInsMap = {};
-  private creator: ContractCastConstructor<C>;
+  private _creator: ContractCastConstructor<C>;
 
   constructor(creator: ContractCastConstructor<C>, db: PrismaClient) {
     this._casts = {};
     this._db = db;
-    this.creator = creator;
+    this._creator = creator;
   }
 
   getCasts(): ContractCast[] {
@@ -31,12 +31,12 @@ export class ChainCastManager<C extends ContractCast> {
   async start() {
     const casts = await this._loadCastsFromDb();
     for (const cast of casts) {
-      this._setupCast(cast);
+      await this._setupCast(cast);
     }
   }
-  async stop() {  
+  async stop() {
     for (const cast of Object.values(this._casts)) {
-      await cast.stop();      
+      await cast.stop();
     }
   }
 
@@ -84,16 +84,16 @@ export class ChainCastManager<C extends ContractCast> {
     });
   }
 
-  private _setupCast(cast: {
+  private async  _setupCast(cast: {
     id: string;
     type: ContractCastType;
     address: string;
     chainId: number;
     blockNumber: number;
-    transactionIndex: true,
+    transactionIndex: number;
     program: Prisma.JsonValue;
   }) {
-    const contractCast: C = new this.creator(
+    const contractCast: C = new this._creator(
       cast.id,
       cast.type,
       cast.address,
@@ -104,7 +104,7 @@ export class ChainCastManager<C extends ContractCast> {
     );
     this._casts[cast.id] = contractCast;
     const obj: ProcessorRuntime[] = JSON.parse(cast?.program?.toString() ?? '{}');
-    contractCast.loadProgram(obj);
-    contractCast.start();
+    await contractCast.loadProgram(obj);
+    await contractCast.start();
   }
 }

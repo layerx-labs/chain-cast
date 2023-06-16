@@ -14,7 +14,6 @@ import { ErrorsEnum } from '../constants';
  *  Class to excute a program, a set of processors in sequence
  */
 export class ContractCastProgram<CI extends CastInfo> implements Program {
-  
   private _supportedProcessors: SupportPlugInsMap;
   private _steps: ProcessorRuntime[] = [];
   private _processors: ContractCastEventProcessor[] = [];
@@ -35,7 +34,7 @@ export class ContractCastProgram<CI extends CastInfo> implements Program {
         this._info.getAddress(),
         this._info.getChainId()
       );
-      if (!processor.validatConf(step.configuration)){
+      if (!processor.validatConf(step.configuration)) {
         throw new UserInputError(
           'Failed to load program, configuration is wrong',
           ErrorsEnum.invalidUserInput
