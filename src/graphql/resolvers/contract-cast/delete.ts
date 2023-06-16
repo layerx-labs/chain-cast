@@ -1,7 +1,6 @@
 import { ErrorsEnum } from '@/constants/index';
 import { Resolver } from '@/graphql/types';
 import { UserInputError } from '@/middleware/errors';
-import { EVMContractCast } from '@/services/contract-cast';
 import { ContractCast } from '@prisma/client';
 
 type DeleteContractCastArgType = {
@@ -10,7 +9,6 @@ type DeleteContractCastArgType = {
 
 export const deleteContractCast: Resolver<
   ContractCast,
-  EVMContractCast,
   DeleteContractCastArgType
 > = async (_1, args, ctx) => {
   const contractCast = await ctx.db.contractCast.delete({

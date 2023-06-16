@@ -1,15 +1,15 @@
 import prisma from '@/services/prisma';
-import { AppContext, ContractCast } from './types';
+import { AppContext } from './types';
 import log from '@/services/log';
 import { ChainCastManager } from '@/services/chaincast-manager';
 import { EVMContractCast } from './services/contract-cast';
 
-const manager: ChainCastManager<EVMContractCast> = new ChainCastManager(
+const manager = new ChainCastManager(
   EVMContractCast,
   prisma
 );
 
-export function createContext<C extends ContractCast>(): AppContext<C> {
+export function createContext(): AppContext {
   return {
     db: prisma,
     log,
