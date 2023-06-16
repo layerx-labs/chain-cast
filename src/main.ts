@@ -19,7 +19,7 @@ const chainCastBanner=`
 ╚██████╗██║  ██║██║  ██║██║██║ ╚████║    ╚██████╗██║  ██║███████║   ██║   
  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝     ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   
 `                                                                     
-
+const byeMessage = 'Bye, Bye See you Soon on your favorite cast 📻';
 
 async function run() {
   console.log(chainCastBanner)
@@ -67,16 +67,34 @@ async function run() {
   app.listen(appConfig.port, () => {
     log.i(`Running Chain Cast API server at http://localhost:${appConfig.port}/graphql`);
   });
+  
   log.i('Started Chain Cast GraphQL Server');
-
+  
   process.on('SIGINT', () => {
-    log.d('Gracefully Shutting Down Chain Cast Manager...');
+    log.d('SIGINT Received Shutting Down Chain Cast Manager...');
     ctx.manager.stop().then(()=> {
-      log.d('Bye, Bye See you Soon on your favorite cast 📻');
+      log.d(byeMessage);
       process.exit(0);
     });    
   });
+  process.on('SIGTERM', () => {
+    log.d('SIGTERM Received Shutting Down Chain Cast Manager...');
+    ctx.manager.stop().then(()=> {
+      log.d(byeMessage);
+      process.exit(0);
+    });    
+  });
+
+  process.on('uncaughtException', err => {
+    log.e(`Uncaught Exception: ${err.message} ${err.stack}`)
+    ctx.manager.stop().then(()=> {
+      log.d(byeMessage);
+      process.exit(1);
+    }); 
+  });
 }
+
+
 
 run()  
   .catch((e) => {
