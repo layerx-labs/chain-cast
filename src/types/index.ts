@@ -1,11 +1,13 @@
-import { EventWhisperer } from '@/services/whisperer';
-import { PrismaClient } from '@prisma/client';
+import { ChainCastManager } from '@/services/chaincast-manager';
+import { ContractCastType, PrismaClient } from '@prisma/client';
 import LogService, { LogLevel } from '@taikai/scribal';
+import { ProcessorRuntime, SupportPlugInsMap } from './processor';
+import { Web3Event } from './events';
 
 export type AppContext = {
   db: PrismaClient;
   log: LogService;
-  whisperer: EventWhisperer;
+  manager: ChainCastManager;
 };
 
 export type Environment = 'development' | 'staging' | 'production';
@@ -64,16 +66,25 @@ export type ChainSupported = {
 };
 
 
-export type CastInfo = {
-  
+export type CastInfo = { 
   getId(): string ;
   getAddress(): string;
   getChainId(): number;
   getBlockNumber() : number;
 }
 
-
-export type Program = {
-  loadProgram(program: ProcessorRuntime[]);
-  async execute<N extends string, T>(event: Web3Event<N, T>): Promise<void>
+export type ContractCast = {
+  loadProgram(program: ProcessorRuntime[]): Promise<void>;
+  start(): Promise<void>;
+  stop(): Promise<void> ;
+  onEvent<N extends string, T>(event: Web3Event<N, T>): Promise<void>; 
+  onError(error: Error): void;
 }
+
+export type ContractCastConstructor<T> = new (
+  id: string,
+  type: ContractCastType,
+  adress: string,
+  chainId: number,
+  blockNumber: number,
+  processors: SupportPlugInsMap) => T;

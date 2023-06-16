@@ -52,7 +52,7 @@ const createContractCast: Resolver<ContractCast, CreateContractCastArgType> = as
     `Created a new Chain Cast id ${contractCast.id} ${contractCast.chainId} ` +
       `${contractCast.address}`
   );
-  ctx.whisperer.addCast(contractCast);
+  ctx.manager.addCast(contractCast);
   return contractCast;
 };
 

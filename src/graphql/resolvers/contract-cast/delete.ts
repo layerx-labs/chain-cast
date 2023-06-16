@@ -32,6 +32,6 @@ export const deleteContractCast: Resolver<ContractCast, DeleteContractCastArgTyp
   ctx.log.i(
     `Deleted Chain Cast id ${contractCast.id} ${contractCast.chainId} ` + `${contractCast.address}`
   );
-  ctx.whisperer.deleteCast(contractCast.id);
+  ctx.manager.deleteCast(contractCast.id);
   return contractCast;
 };

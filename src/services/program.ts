@@ -13,10 +13,10 @@ import { CastInfo } from '../types';
  */
 export class ContractCastProgram<CI extends CastInfo> implements Program {
   
-  _supportedProcessors: SupportPlugInsMap;
-  _steps: ProcessorRuntime[] = [];
-  _processors: ContractCastEventProcessor[] = [];
-  _info: CI;
+  private _supportedProcessors: SupportPlugInsMap;
+  private _steps: ProcessorRuntime[] = [];
+  private _processors: ContractCastEventProcessor[] = [];
+  private _info: CI;
 
   constructor(info: CI, supportedProcessors: SupportPlugInsMap) {
     this._supportedProcessors = supportedProcessors;

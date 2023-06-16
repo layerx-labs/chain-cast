@@ -15,15 +15,16 @@ import ContractListener from './contract-listener';
 import { chainsSupported } from '@/constants/chains';
 import { ContractCastProgram } from './program';
 import { SupportPlugInsMap, ProcessorRuntime } from '@/types/processor';
+import { ContractCast } from '../types';
 
-export class ContractCast {
-  _id: string;
-  _type: ContractCastType;
-  _address: string;
-  _chainId: number;
-  _blockNumber: number;
-  _listener: EventListener | null = null;
-  _program: ContractCastProgram<ContractCast>;
+export class EVMContractCast implements ContractCast {
+  private _id: string;
+  private _type: ContractCastType;
+  private _address: string;
+  private _chainId: number;
+  private _blockNumber: number;
+  private _listener: EventListener | null = null;
+  private _program: ContractCastProgram<EVMContractCast>;
 
   constructor(
     id: string,
@@ -71,27 +72,6 @@ export class ContractCast {
       this._listener.stopListening();
     }
   }
-
-  async _setupListener<M extends Model>(
-    TCreator: new (web3Con: Web3Connection, address: string) => M
-  ) {
-    const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this._chainId);
-    try {
-      const listener: EventListener = new ContractListener(TCreator, chain.wsUrl, this._address, {
-        onEvent: this.onEvent.bind(this),
-        onError: this.onError.bind(this),
-        onEventChanged: this.onEventChanged.bind(this),
-        onConnected: this.onConnected.bind(this),
-      });
-      this._listener = listener;
-      await listener.startListening();
-    } catch (e: any) {
-      log.e(
-        `Failed to setup ${this._id} ${this._chainId} ${this._type} ` +
-          `on ${this._address} - ${e.message}`
-      );
-    }
-  }
   /**
    *
    * @param event
@@ -112,7 +92,28 @@ export class ContractCast {
     log.e(`Error listening on cast ${this._id} ${error.message} ${this._type} `, error.stack);
   }
 
-  async _startRTWhispering() {
+  private async _setupListener<M extends Model>(
+    TCreator: new (web3Con: Web3Connection, address: string) => M
+  ) {
+    const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this._chainId);
+    try {
+      const listener: EventListener = new ContractListener(TCreator, chain.wsUrl, this._address, {
+        onEvent: this.onEvent.bind(this),
+        onError: this.onError.bind(this),
+        onEventChanged: this.onEventChanged.bind(this),
+        onConnected: this.onConnected.bind(this),
+      });
+      this._listener = listener;
+      await listener.startListening();
+    } catch (e: any) {
+      log.e(
+        `Failed to setup ${this._id} ${this._chainId} ${this._type} ` +
+          `on ${this._address} - ${e.message}`
+      );
+    }
+  }
+
+  private async _startRTWhispering() {
     log.i(
       `Starting Consuming Events for stream ${this._id} ${this._chainId} ${this._type} ` +
         `on ${this._address}`
@@ -138,11 +139,11 @@ export class ContractCast {
         break;
       case ContractCastType.ERC1155:
         await this._setupListener(ERC1155Standard);
-        break;        
+        break;
     }
   }
 
-  async _recoverEvents() {
+  private async _recoverEvents() {
     const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this._chainId);
     const web3Con = new Web3Connection({
       debug: false,
@@ -170,19 +171,19 @@ export class ContractCast {
           await this._recoverContractEvents(web3Con, BountyToken, fromBlock, currentBlock);
           break;
         case ContractCastType.ERC20:
-            await this._recoverContractEvents(web3Con, ERC20, fromBlock, currentBlock);
-            break;
+          await this._recoverContractEvents(web3Con, ERC20, fromBlock, currentBlock);
+          break;
         case ContractCastType.ERC721:
-            await this._recoverContractEvents(web3Con, Erc721Standard, fromBlock, currentBlock);
-            break;
+          await this._recoverContractEvents(web3Con, Erc721Standard, fromBlock, currentBlock);
+          break;
         case ContractCastType.ERC1155:
-            await this._recoverContractEvents(web3Con, ERC1155Standard, fromBlock, currentBlock);
-            break;
+          await this._recoverContractEvents(web3Con, ERC1155Standard, fromBlock, currentBlock);
+          break;
       }
     }
   }
 
-  async _recoverContractEvents<M extends Model>(
+  private async _recoverContractEvents<M extends Model>(
     web3Con: Web3Connection,
     TCreator: new (web3Con: Web3Connection, address: string) => M,
     fromBlock: number,
