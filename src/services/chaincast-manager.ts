@@ -34,12 +34,9 @@ export class ChainCastManager<C extends ContractCast> {
       this._setupCast(cast);
     }
   }
-  async stop() {
-    const casts = await this._loadCastsFromDb();
-    for (const cast of casts) {
-      if (this._casts[cast.id]) {
-        this._casts[cast.id].stop();
-      }
+  async stop() {  
+    for (const cast of Object.values(this._casts)) {
+      await cast.stop();      
     }
   }
 
