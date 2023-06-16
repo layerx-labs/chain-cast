@@ -23,6 +23,7 @@ export const deleteContractCast: Resolver<
       createdAt: true,
       program: true,
       type: true,
+      transactionIndex: true,
     },
   });
   if (!contractCast) {
