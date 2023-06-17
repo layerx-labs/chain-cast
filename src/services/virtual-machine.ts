@@ -12,8 +12,6 @@ import { CastInfo } from '../types';
 import { UserInputError } from '@/middleware/errors';
 import { ErrorsEnum } from '../constants';
 
-
-
 class Stack<T> {
 
   private stack: T[];
@@ -64,7 +62,7 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
   private _error: string | null = null;
   private _errorStack: any = null;
   private _halt = false;
-  private _variables: VariableDict = {};
+  private _globalVariables: VariableDict = {};
   private _stack: Stack<ProcessorStep>;
 
 
@@ -81,10 +79,10 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
    };
   }
   getVariables(): VariableDict {
-    return this._variables;
+    return this._globalVariables;
   }
   getVariable(name: string) {
-    return this._variables[name];
+    return this._globalVariables[name];
   }
   getCurrentStackItem(): ProcessorStep| undefined {
     return this._stack.peek();
@@ -145,28 +143,50 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
       this._stack.pop();
     }
   }
+  
+  initGlobalVariables(rootName: string, obj: any) {
+    Object.keys(obj).forEach((key) => {
+      const valueType = typeof obj[key];
+      switch (valueType) {
+        case 'string':
+        case 'number':
+        case 'undefined':
+        case 'boolean':
+        case 'symbol':
+        case 'bigint':          
+          this._globalVariables[`${rootName}.${key}`] = obj[key];
+          break;
+        case 'object':
+          this.initGlobalVariables(`${rootName}.${key}`, obj[key])
+          break;
+        default:
+          break;
+      }
+    })
+  }
+
 
   async execute<N extends string, T>(event: Web3Event<N, T>) {
-    let stepIndex = 0;
     log.d(`Executing Program for ${this._info.getId()}  `);
     //1. Initialize Virtual Machine State
     this._error = null;
     this._errorStack = null;
     this._halt = false;
-    this._variables = {};
+    this._globalVariables = {};
     this._stack.clear();
+    this.initGlobalVariables('event', event);
+    this.initGlobalVariables('cast', this.getCast());
     try {
       for (const step of this._program) {
         await this.executeStep(
           step,
           event,
         )
-        stepIndex++;
       }
     } catch (e: Error | any) {
       log.e(
         `Failed to execute Program ${this._info.getId()} ` +
-          `on Step ${stepIndex} ${e.message} ${e.stack}`
+          `on Step ${this.getCurrentStackItem()?.name} ${e.message} ${e.stack}`
       );
     }
   }
