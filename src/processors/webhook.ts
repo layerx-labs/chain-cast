@@ -4,15 +4,15 @@ import log from '@/services/log';
 import axios from 'axios';
 import {
   ContractCastEventProcessor,
-  ConfigurationTemplate,
-  EventProcessorCtx,
-  ProcessorConfiguration,
+  ArgumentsSchema,
+  ProcessorArgs,
+  VirtualMachine,
 } from '@/types/processor';
 
 export class WebHookEventProcessor implements ContractCastEventProcessor {
   PROCESSOR_NAME = 'webhook';
 
-  validatConf(_conf: ProcessorConfiguration | undefined): boolean {
+  validatConf(_conf: ProcessorArgs | undefined): boolean {
     const urlSchema = z.string().url();
     const url = _conf?.url ?? '';
     if (!_conf || !urlSchema.safeParse(url).success) {
@@ -24,7 +24,7 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
   name(): string {
     return this.PROCESSOR_NAME;
   }
-  getConfTemplate(): ConfigurationTemplate {
+  getArgsSchema(): ArgumentsSchema {
     return {
       url: {
         type: 'string',
@@ -37,22 +37,23 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
     };
   }
 
-  async onEvent<N, T>(ctx: EventProcessorCtx, event: Web3Event<N, T>): Promise<void> {
+  async onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): Promise<void> {
+    const step = vm.getCurrentStackItem();
     log.d(
       `[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` +
-        ` on cast ${ctx.cast.id} address ${ctx.cast.address}`
+        ` on cast ${vm.getCast().id} address ${vm.getCast().address}`
     );
 
-    const url = (ctx.curStep?.configuration?.url.value as string) ?? null;
+    const url = (step?.args?.url.value as string) ?? null;
 
     if (url) {
       log.d(`[${this.PROCESSOR_NAME}] Calling webhook for ${url} for ${event.event}`);
       const response = await axios.post(url, {
         event,
         metadata: {
-          id: ctx.cast.id,
-          address: ctx.cast.address,
-          chainId: ctx.cast.chainId,
+          id: vm.getCast().id,
+          address: vm.getCast().address,
+          chainId: vm.getCast().chainId,
         },
       });
       if (response.status == 200) {

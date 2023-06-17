@@ -3,16 +3,16 @@ import { z } from 'zod';
 import log from '@/services/log';
 import {
   ContractCastEventProcessor,
-  ConfigurationTemplate,
-  EventProcessorCtx,
-  ProcessorConfiguration,
+  ArgumentsSchema,
+  ProcessorArgs,
+  VirtualMachine,
 } from '@/types/processor';
 import { Queue } from 'bullmq';
 
 export class WebHookEventProcessor implements ContractCastEventProcessor {
   PROCESSOR_NAME = 'bull-producer';
 
-  validatConf(_conf: ProcessorConfiguration | undefined): boolean {
+  validatConf(_conf: ProcessorArgs | undefined): boolean {
     const queueNameSchema = z.string().min(2);
     const queueName = _conf?.queueName ?? '';
     const redisHostSchema = z.string().url();
@@ -35,7 +35,7 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
     return this.PROCESSOR_NAME;
   }
 
-  getConfTemplate(): ConfigurationTemplate {
+  getArgsSchema(): ArgumentsSchema {
     return {
       queueName: {
         type: 'string',
@@ -52,21 +52,26 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
     };
   }
 
-  async onEvent<N, T>(ctx: EventProcessorCtx, event: Web3Event<N, T>): Promise<void> {
-    const queueName = (ctx.curStep?.configuration?.queueName.value as string) ?? null;
-    const redisHost = (ctx.curStep?.configuration?.redisHost.value as string) ?? null;
-    const redisPort = (ctx.curStep?.configuration?.redisHost.value as number) ?? 0;
-
-    if (queueName && redisHost && redisPort) {
-      const queue = new Queue(queueName, {
-        connection: {
-          host: redisHost,
-          port: redisPort,
-        },
-      });
-
-      log.d(`[${this.PROCESSOR_NAME}] Adding ${event.event} to queue ${queueName}`);
-      await queue.add(event.event as string, event);
+  async onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): Promise<void> {
+    const step = vm.getCurrentStackItem();
+    try {
+      const queueName = (step?.args?.queueName.value as string) ?? null;
+      const redisHost = (step?.args?.redisHost.value as string) ?? null;
+      const redisPort = (step?.args?.redisHost.value as number) ?? 0;
+      if (queueName && redisHost && redisPort) {
+        const queue = new Queue(queueName, {
+          connection: {
+            host: redisHost,
+            port: redisPort,
+          },
+        });
+  
+        log.d(`[${this.PROCESSOR_NAME}] Adding ${event.event} to queue ${queueName}`);
+        await queue.add(event.event as string, event);
+      }
+    } catch (e: Error| any) {
+      log.e(`[${this.PROCESSOR_NAME}] Failed to execute on ${vm.getCast().id} ${e.message}`);
+      vm.setError(e.message, e.stack);
     }
   }
 }

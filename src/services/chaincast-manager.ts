@@ -5,7 +5,7 @@ import {
   SupportPlugInsMap,
   ContractCastEventProcessor,
   PlugInConstructor,
-  ProcessorRuntime,
+  ProcessorStep,
 } from '@/types/processor';
 import { ContractCast, ContractCastConstructor } from '../types';
 
@@ -115,7 +115,7 @@ export class ChainCastManager<C extends ContractCast> {
       this._supportedProcessors
     );
     this._casts[cast.id] = contractCast;
-    const obj: ProcessorRuntime[] = JSON.parse(cast?.program?.toString() ?? '{}');
+    const obj: ProcessorStep[] = JSON.parse(cast?.program?.toString() ?? '{}');
     await contractCast.loadProgram(obj);
     await contractCast.start();
   }
