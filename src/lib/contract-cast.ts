@@ -13,10 +13,10 @@ import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
 import EVMContractListener from './contract-listener';
 import { chainsSupported } from '@/constants/chains';
-import { ContractCastProgram } from '../services/program';
-import { SupportPlugInsMap, ProcessorRuntime } from '@/types/processor';
+import { SupportPlugInsMap, ProcessorStep } from '@/types/processor';
 import { ContractCast } from '../types';
 import db from '@/services/prisma';
+import { ChainCastVirtualMachine } from '@/services/virtual-machine';
 
 /**
  * An implementation that creates a stream of events for an Ethereum Smart Contract
@@ -29,7 +29,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   private _blockNumber: number;
   private _transactionIndex: number;
   private _listener: ContractEventListener | null = null;
-  private _program: ContractCastProgram<typeof this>;
+  private _vm: ChainCastVirtualMachine<typeof this>;
   private _web3Con: Web3Connection;
   private _lastEventBlockNumber = -1;
   private _lastEventTransactionIndex = -1;
@@ -49,7 +49,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     this._chainId = chainId;
     this._blockNumber = blockNumber;
     this._transactionIndex = transactionIndex;
-    this._program = new ContractCastProgram(this, supportedProcessors);
+    this._vm = new ChainCastVirtualMachine(this, supportedProcessors);
     const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this._chainId);
     const web3Con = new Web3Connection({
       debug: false,
@@ -78,8 +78,8 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     return this._transactionIndex;
   }
 
-  async loadProgram(program: ProcessorRuntime[]) {
-    this._program.loadProgram(program);
+  async loadProgram(program: ProcessorStep[]) {
+    this._vm.loadProgram(program);
   }
 
   /**
@@ -144,7 +144,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
       `New Event ${event.event} goint to be executed by the program ` +
         `${event.blockNumber}:${event.transactionIndex}`
     );
-    await this._program.execute(event);
+    await this._vm.execute(event);
     this._lastEventBlockNumber = event.blockNumber;
     this._lastEventTransactionIndex = event.transactionIndex;
   }
