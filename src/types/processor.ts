@@ -20,7 +20,7 @@ export type ProcessorArgs = {
 export type Variable = { [key: string]: number | string | boolean | number[] | string[] };
 
 export type ArgFieldType = {
-  type: 'number' | 'string' | 'boolean' | 'number[]' | 'string[]' | 'date';
+  type: 'number' | 'string' | 'boolean' | 'number[]' | 'string[]' | 'date'| 'any';
   required: boolean;
 };
 

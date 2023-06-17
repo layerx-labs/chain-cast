@@ -8,28 +8,40 @@ import {
 } from '@/types/processor';
 import { z } from 'zod';
 
-export class FilterEventsProcessor implements ContractCastEventProcessor {
-  PROCESSOR_NAME = 'filter-events';
+export class IFProcessor implements ContractCastEventProcessor {
+  
+  PROCESSOR_NAME = 'if';
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validatConf(_conf: ProcessorArgs | undefined): boolean {
-    const eventNamesSchema = z.string().array().nonempty();
-    const eventNames = _conf?.eventNames ?? [];
-    if (!_conf || !eventNamesSchema.safeParse(eventNames).success) {
-      return false;
-    }
     return true;
   }
 
   name(): string {
     return this.PROCESSOR_NAME;
   }
-
+  
   getArgsSchema(): ArgumentsSchema {
     return {
-      eventNames: {
-        type: 'string[]',
+      variable: {
+        type: 'string',
         required: true,
       },
+      operator: {
+        type: 'string',
+        required: true,
+      },
+      compareTo: {
+        type: 'any',
+        required: true,
+      },
+      onTrue: {
+        type: "string",
+        required: true,
+      },
+      onFalse: {
+        type: "string",
+        required: true,
+      }
     };
   }
 
@@ -39,9 +51,7 @@ export class FilterEventsProcessor implements ContractCastEventProcessor {
       `[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` +
         ` on cast ${vm.getCast().id} address ${vm.getCast().address}`
     );
-    const eventsToForward = (step?.args?.eventNames.value as string[]) ?? [];
-    if (!eventsToForward.includes(event.event as string)) {
-      vm.halt(true);
-    }
+    const eventsToForward = (step?.args?.variable.value as string) ?? "";
+    // TODO 
   }
 }
