@@ -27,6 +27,7 @@ export const contractCast: Resolver<ContractCast, ContractCastArgType> = async (
       id: true,
       address: true,
       blockNumber: true,
+      transactionIndex: true,
       chainId: true,
       createdAt: true,
       program: true,
