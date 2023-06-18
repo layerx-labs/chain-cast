@@ -1,53 +1,59 @@
 import log from '@/services/log';
 import { ContractCastType, PrismaClient, Prisma } from '@prisma/client';
 
-import {
-  SupportPlugInsMap,
-  ContractCastEventProcessor,
-  PlugInConstructor,
-} from '@/types/processor';
+import { InstructionMap, Instruction, PlugInConstructor, InstructionCall } from '@/types/vm';
 import { ContractCast, ContractCastConstructor } from '../types';
 
 /**
- * Main Event Indexer Service that
+ * The Service that manage all the contract casts lifecycles
  */
 export class ChainCastManager<C extends ContractCast> {
   private _casts: { [key: string]: C };
   private _db: PrismaClient;
-  private _supportedProcessors: SupportPlugInsMap = {};
-  private creator: ContractCastConstructor<C>;
+  private _supportedProcessors: InstructionMap = {};
+  private _creator: ContractCastConstructor<C>;
 
   constructor(creator: ContractCastConstructor<C>, db: PrismaClient) {
     this._casts = {};
     this._db = db;
-    this.creator = creator;
+    this._creator = creator;
   }
 
   getCasts(): ContractCast[] {
     return Object.values(this._casts);
   }
 
+  /**
+   * Start all the casts asynchronously
+   */
   async start() {
     const casts = await this._loadCastsFromDb();
     for (const cast of casts) {
+      // Start the cast asynchronously without waiting for the cast to start
       this._setupCast(cast);
     }
   }
+  /**
+   * Stop all the cast ssynchronously
+   */
   async stop() {
-    const casts = await this._loadCastsFromDb();
-    for (const cast of casts) {
-      if (this._casts[cast.id]) {
-        this._casts[cast.id].stop();
-      }
+    for (const cast of Object.values(this._casts)) {
+      // Stop Sequencially the casts
+      await cast.stop();
     }
   }
 
+  /**
+   * Add a new cast to process events
+   * @param cast
+   */
   async addCast(cast: {
     id: string;
     type: ContractCastType;
     address: string;
     chainId: number;
     blockNumber: number;
+    transactionIndex: number;
     program: object | Prisma.JsonValue;
   }) {
     try {
@@ -59,15 +65,12 @@ export class ChainCastManager<C extends ContractCast> {
 
   async deleteCast(id: string) {
     if (this._casts[id]) {
-      this._casts[id].stop();
+      await this._casts[id].stop();
       delete this._casts[id];
     }
   }
 
-  registerProcessor<M extends ContractCastEventProcessor>(
-    name: string,
-    pConstructor: PlugInConstructor<M>
-  ) {
+  registerProcessor<M extends Instruction>(name: string, pConstructor: PlugInConstructor<M>) {
     this._supportedProcessors[name] = pConstructor;
   }
 
@@ -79,43 +82,33 @@ export class ChainCastManager<C extends ContractCast> {
         address: true,
         chainId: true,
         blockNumber: true,
+        transactionIndex: true,
         program: true,
       },
     });
   }
 
-  private _setupCast(cast: {
+  private async _setupCast(cast: {
     id: string;
     type: ContractCastType;
     address: string;
     chainId: number;
     blockNumber: number;
+    transactionIndex: number;
     program: Prisma.JsonValue;
   }) {
-    const contractCast: C = new this.creator(
+    const contractCast: C = new this._creator(
       cast.id,
       cast.type,
       cast.address,
       cast.chainId,
       cast.blockNumber,
+      cast.transactionIndex,
       this._supportedProcessors
     );
     this._casts[cast.id] = contractCast;
-    contractCast.loadProgram([
-      {
-        name: 'logger',
-      },
-      {
-        name: 'webhook',
-        configuration: {
-          url: {
-            type: 'string',
-            required: true,
-            value: 'https://webhook.site/06218e87-7b2e-48c8-a467-746c1b031d17',
-          },
-        },
-      },
-    ]);
-    contractCast.start();
+    const obj: InstructionCall[] = JSON.parse(cast?.program?.toString() ?? '{}');
+    await contractCast.loadProgram(obj);
+    await contractCast.start();
   }
 }

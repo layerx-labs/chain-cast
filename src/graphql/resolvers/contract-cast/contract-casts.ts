@@ -51,6 +51,7 @@ export const contractCasts: Resolver<
       id: true,
       address: true,
       blockNumber: true,
+      transactionIndex: true,
       chainId: true,
       createdAt: true,
       type: true,

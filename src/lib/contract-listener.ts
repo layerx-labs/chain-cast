@@ -25,12 +25,7 @@ export class EVMContractListener<M extends Model, H extends EventListenerHandler
    * @param events
    * @param handler
    */
-  constructor(
-    modelConstructor: ModelConstructor<M>,
-    wsUrl: string,
-    address: string,
-    handler: H
-  ) {
+  constructor(modelConstructor: ModelConstructor<M>, wsUrl: string, address: string, handler: H) {
     this._web3Con = new Web3Connection({
       debug: false,
       web3Host: wsUrl,
@@ -98,8 +93,7 @@ export class EVMContractListener<M extends Model, H extends EventListenerHandler
    */
   async stopListening(): Promise<void> {
     if (this.isListening() && this._listener) {
-      const currentBlock = await this._web3Con.eth.getBlockNumber();
-      log.d(`Stop Listening for ${this._contract.contractAddress} on ${currentBlock} 👋`);
+      log.d(`Contract Cast Listener stopping for ${this._contract.contractAddress}`);
       this._listener.removeAllListeners();
       this._isListening = false;
     }

@@ -7,10 +7,22 @@ import { schema } from './graphql/schema';
 import express from 'express';
 import { useMaskedErrors } from '@envelop/core';
 import { errorHandlingFunction } from './middleware/errors';
-import { LoggerContractCastEventProcessor } from '@/processors/logger';
-import { WebHookEventProcessor } from '@/processors/webhook';
+import { LoggerContractCastEventProcessor } from 'src/instructions/logger';
+import { WebHookEventProcessor } from 'src/instructions/webhook';
+
+
+const chainCastBanner=`
+██████╗██╗  ██╗ █████╗ ██╗███╗   ██╗     ██████╗ █████╗ ███████╗████████╗
+██╔════╝██║  ██║██╔══██╗██║████╗  ██║    ██╔════╝██╔══██╗██╔════╝╚══██╔══╝
+██║     ███████║███████║██║██╔██╗ ██║    ██║     ███████║███████╗   ██║   
+██║     ██╔══██║██╔══██║██║██║╚██╗██║    ██║     ██╔══██║╚════██║   ██║   
+╚██████╗██║  ██║██║  ██║██║██║ ╚████║    ╚██████╗██║  ██║███████║   ██║   
+ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝     ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   
+`                                                                     
+const byeMessage = 'Bye, Bye See you Soon on your favorite cast 📻';
 
 async function run() {
+  console.log(chainCastBanner)
   const ctx = createContext();
   // Initialize Express Server
   const app = express();
@@ -21,7 +33,7 @@ async function run() {
     hostname: os.hostname(),
     ...appConfig.logs,
   });
-  log.i('Starting Chain Cast 🎧 ...');
+  log.i('Starting Chain Cast ...');
   const yoga = createYoga({
     schema,
     context: createContext,
@@ -44,7 +56,7 @@ async function run() {
     
   });
   app.use(yoga.graphqlEndpoint, yoga);
-  log.i('Starting Chain Cast 🎧 Whisperer Service...');
+  log.i('Starting Chain Cast Manager Service...');
 
   ctx.manager.registerProcessor('logger', LoggerContractCastEventProcessor);
   ctx.manager.registerProcessor('webhook', WebHookEventProcessor);
@@ -53,16 +65,36 @@ async function run() {
 
   /** Start the GraphQL Server */
   app.listen(appConfig.port, () => {
-    log.i(`Running a GraphQL API server at http://localhost:${appConfig.port}/graphql`);
+    log.i(`Running Chain Cast API server at http://localhost:${appConfig.port}/graphql`);
   });
-  log.i('Started Event Chain Cast GraphQL Server');
   
+  log.i('Started Chain Cast GraphQL Server');
+  
+  process.on('SIGINT', () => {
+    log.d('SIGINT Received Shutting Down Chain Cast Manager...');
+    ctx.manager.stop().then(()=> {
+      log.d(byeMessage);
+      process.exit(0);
+    });    
+  });
   process.on('SIGTERM', () => {
-    log.i('Gracefully Shutting Down BEPRO Chain Cast 🎧 Whisperer Service 🥱');
-    ctx.manager.stop();
-    process.exit(0);
+    log.d('SIGTERM Received Shutting Down Chain Cast Manager...');
+    ctx.manager.stop().then(()=> {
+      log.d(byeMessage);
+      process.exit(0);
+    });    
+  });
+
+  process.on('uncaughtException', err => {
+    log.e(`Uncaught Exception: ${err.message} ${err.stack}`)
+    ctx.manager.stop().then(()=> {
+      log.d(byeMessage);
+      process.exit(1);
+    }); 
   });
 }
+
+
 
 run()  
   .catch((e) => {
