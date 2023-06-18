@@ -14,12 +14,12 @@ import { ErrorsEnum } from '../constants';
 import { Stack } from '@/lib/stack';
 
 /**
- *  Class to excute a program, a set of processors in sequence
+ *  Class to excute a program, a set of instructions in sequence
  */
 export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMachine {
-  private _supportedProcessors: InstructionMap;
+  private _supportedInstructions: InstructionMap;
   private _program: Program = [];
-  private _processors: Instruction[] = [];
+  private _instructions: Instruction[] = [];
   private _info: CI;
 
   //Virtual Machine Temporary Context
@@ -30,8 +30,8 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
   private _globalVariables: VariableDict = {};
   private _stack: Stack<InstructionCall>;
 
-  constructor(info: CI, supportedProcessors: InstructionMap) {
-    this._supportedProcessors = supportedProcessors;
+  constructor(info: CI, supportedInstructions: InstructionMap) {
+    this._supportedInstructions = supportedInstructions;
     this._info = info;
     this._stack = new Stack<InstructionCall>();
   }
@@ -72,22 +72,22 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
   }
 
   loadProgram(program: Program) {
-    this._processors = [];
+    this._instructions = [];
     this._program = program;
     for (const step of this._program) {
-      const constructorZ = this._supportedProcessors[step.name];
-      const processor: Instruction = new constructorZ(
+      const constructorZ = this._supportedInstructions[step.name];
+      const instruction: Instruction = new constructorZ(
         this._info.getId(),
         this._info.getAddress(),
         this._info.getChainId()
       );
-      if (!processor.validateArgs(step.args)) {
+      if (!instruction.validateArgs(step.args)) {
         throw new UserInputError(
           'Failed to load program, configuration is wrong',
           ErrorsEnum.invalidUserInput
         );
       }
-      this._processors.push(processor);
+      this._instructions.push(instruction);
     }
   }
 
@@ -96,14 +96,14 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     event: Web3Event<N, T>
   ): Promise<void> {
     if (!this._halt && !this._error) {
-      const constructorZ = this._supportedProcessors[step.name];
-      const processor = new constructorZ(
+      const constructorZ = this._supportedInstructions[step.name];
+      const instruction = new constructorZ(
         this._info.getId(),
         this._info.getAddress(),
         this._info.getChainId()
       );
       this._stack.push(step);
-      await processor.onEvent(this, event);
+      await instruction.onEvent(this, event);
       this._stack.pop();
     }
   }
