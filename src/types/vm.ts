@@ -11,16 +11,16 @@ export type InstructionCall = {
 
 export type InstructionArgs = {
   [key: string]: {
-    type: 'number' | 'string' | 'boolean' | 'number[]' | 'string[]' | 'date'| 'any';
+    type: 'number' | 'string' | 'boolean' | 'number[]' | 'string[]' | 'date' | 'any';
     required: boolean | false;
-    value: number | string | boolean | number[] | string[] | undefined;
+    value: any;
   };
 };
 
 export type Variable = { [key: string]: number | string | boolean | number[] | string[] };
 
 export type ArgFieldType = {
-  type: 'number' | 'string' | 'boolean' | 'number[]' | 'string[]' | 'date'| 'any';
+  type: 'number' | 'string' | 'boolean' | 'number[]' | 'string[]' | 'date' | 'any';
   required: boolean;
 };
 
@@ -32,7 +32,7 @@ export type Instruction = {
   name(): string;
   getArgsSchema(): ArgsSchema;
   validateArgs(conf: InstructionArgs | undefined): boolean;
-  onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): void;
+  onEvent<N extends string, T>(vm: VirtualMachine, event: Web3Event<N, T>): void;
 };
 
 export type PlugInConstructor<M> = new (id: string, address: string, chainId: number) => M;
@@ -41,7 +41,7 @@ export type InstructionMap = {
   [key: string]: PlugInConstructor<Instruction>;
 };
 
-export type Program = InstructionCall[]; 
+export type Program = InstructionCall[];
 
 /**
  * Stack Virtual Machine
@@ -49,9 +49,7 @@ export type Program = InstructionCall[];
 export type VirtualMachine = {
   getGlobalVariables(): VariableDict;
   getGlobalVariable(path: string): any;
-  executeProgram<N extends string, T>(
-    program: Program,
-    event: Web3Event<N, T>): Promise<void>;
+  executeProgram<N extends string, T>(program: Program, event: Web3Event<N, T>): Promise<void>;
   execute<N extends string, T>(event: Web3Event<N, T>): Promise<void>;
   executeStep<N extends string, T>(
     step: InstructionCall,
@@ -62,7 +60,6 @@ export type VirtualMachine = {
   isHalted(): boolean;
   halt(halt: boolean): void;
   getError(): string | null;
-  setError(message: string, stack: any): void
+  setError(message: string, stack: any): void;
   loadProgram(program: InstructionCall[]): void;
-
 };

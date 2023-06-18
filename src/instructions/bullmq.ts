@@ -1,12 +1,7 @@
 import { Web3Event } from '@/types/events';
 import { z } from 'zod';
 import log from '@/services/log';
-import {
-  Instruction,
-  ArgsSchema,
-  InstructionArgs,
-  VirtualMachine,
-} from '@/types/vm';
+import { Instruction, ArgsSchema, InstructionArgs, VirtualMachine } from '@/types/vm';
 import { Queue } from 'bullmq';
 
 export class WebHookEventProcessor implements Instruction {
@@ -66,11 +61,11 @@ export class WebHookEventProcessor implements Instruction {
             port: redisPort,
           },
         });
-  
+
         log.d(`[${this.PROCESSOR_NAME}] Adding ${event.event} to queue ${queueName}`);
         await queue.add(event.event as string, event);
       }
-    } catch (e: Error| any) {
+    } catch (e: Error | any) {
       log.e(`[${this.PROCESSOR_NAME}] Failed to execute on ${castID} ${e.message}`);
       vm.setError(e.message, e.stack);
     }
