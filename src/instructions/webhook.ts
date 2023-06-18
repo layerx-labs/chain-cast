@@ -2,12 +2,12 @@ import { Web3Event } from '@/types/events';
 import { z } from 'zod';
 import log from '@/services/log';
 import axios from 'axios';
-import {
-  Instruction,
-  ArgsSchema,
-  InstructionArgs,
-  VirtualMachine,
-} from '@/types/vm';
+import { Instruction, ArgsSchema, InstructionArgs, VirtualMachine } from '@/types/vm';
+
+export type ArgsType = {
+  url: string;
+  authorizationKey?: string;
+};
 
 export class WebHookEventProcessor implements Instruction {
   PROCESSOR_NAME = 'webhook';
@@ -47,11 +47,14 @@ export class WebHookEventProcessor implements Instruction {
         ` on cast ${castID} address ${castAddres}`
     );
 
-    const url = (step?.args?.url.value as string) ?? null;
+    const args: ArgsType = {
+      url: (step?.args?.url.value as string) ?? '',
+      authorizationKey: (step?.args?.authorizationKey?.value as string) ?? '',
+    };
 
-    if (url) {
-      log.d(`[${this.PROCESSOR_NAME}] Calling webhook for ${url} for ${event.event}`);
-      const response = await axios.post(url, {
+    if (args.url) {
+      log.d(`[${this.PROCESSOR_NAME}] Calling webhook for ${args.url} for ${event.event}`);
+      const response = await axios.post(args.url, {
         event,
         metadata: {
           id: castID,

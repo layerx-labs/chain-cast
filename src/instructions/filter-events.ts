@@ -1,11 +1,6 @@
 import { Web3Event } from '@/types/events';
 import log from '@/services/log';
-import {
-  Instruction,
-  VirtualMachine,
-  InstructionArgs,
-  ArgsSchema,
-} from '@/types/vm';
+import { Instruction, VirtualMachine, InstructionArgs, ArgsSchema } from '@/types/vm';
 import { z } from 'zod';
 
 export class FilterEventsProcessor implements Instruction {
