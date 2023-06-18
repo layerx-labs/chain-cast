@@ -1,14 +1,14 @@
 import { Web3Event } from '@/types/events';
 import log from '@/services/log';
 import {
-  ContractCastEventProcessor,
+  Instruction,
   VirtualMachine,
-  ProcessorArgs,
-} from '@/types/processor';
+  InstructionArgs,
+} from '@/types/vm';
 
-export class LoggerContractCastEventProcessor implements ContractCastEventProcessor {
+export class LoggerContractCastEventProcessor implements Instruction {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  validatConf(_conf: ProcessorArgs | undefined): boolean {
+  validateArgs(_conf: InstructionArgs | undefined): boolean {
     return true;
   }
   PROCESSOR_NAME = 'logger';
@@ -21,9 +21,12 @@ export class LoggerContractCastEventProcessor implements ContractCastEventProces
   }
 
   onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): void {
+
+    const castID = vm.getGlobalVariable('cast.id');
+    const castAddres = vm.getGlobalVariable('cast.address');
     log.d(
       `[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` +
-        ` on cast ${vm.getCast().id} address ${vm.getCast().address}`
+        ` on cast ${castID} address ${castAddres}`
     );
   }
 }

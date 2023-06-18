@@ -13,10 +13,10 @@ import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
 import EVMContractListener from './contract-listener';
 import { chainsSupported } from '@/constants/chains';
-import { SupportPlugInsMap, ProcessorStep } from '@/types/processor';
+import { InstructionMap, InstructionCall } from '@/types/vm';
 import { ContractCast } from '../types';
 import db from '@/services/prisma';
-import { ChainCastVirtualMachine } from '@/services/virtual-machine';
+import { ChainCastVirtualMachine } from '@/services/vm';
 
 /**
  * An implementation that creates a stream of events for an Ethereum Smart Contract
@@ -41,7 +41,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     chainId: number,
     blockNumber: number,
     transactionIndex: number,
-    supportedProcessors: SupportPlugInsMap
+    supportedProcessors: InstructionMap
   ) {
     this._id = id;
     this._type = type;
@@ -78,7 +78,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     return this._transactionIndex;
   }
 
-  async loadProgram(program: ProcessorStep[]) {
+  async loadProgram(program: InstructionCall[]) {
     this._vm.loadProgram(program);
   }
 

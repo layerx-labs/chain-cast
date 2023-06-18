@@ -1,60 +1,25 @@
 import { Web3Event } from '@/types/events';
 import log from '@/services/log';
 import {
-  SupportPlugInsMap,
-  ProcessorStep,
-  ContractCastEventProcessor,
+  InstructionMap,
+  InstructionCall,
+  Instruction,
   VirtualMachine,
   Program,
   VariableDict,
-} from '@/types/processor';
+} from '@/types/vm';
 import { CastInfo } from '../types';
 import { UserInputError } from '@/middleware/errors';
 import { ErrorsEnum } from '../constants';
+import { Stack } from '@/lib/stack';
 
-class Stack<T> {
-
-  private stack: T[];
-
-  constructor() {
-    this.stack = [];
-  }
-
-  push(item: T) {
-    this.stack.push(item);
-  }
-
-  pop(): T | undefined {
-    return this.stack.pop();
-  }
-
-  isEmpty(): boolean {
-    return this.stack.length === 0;
-  }
-
-  size(): number {
-    return this.stack.length;
-  }
-
-  peek(): T | undefined {
-    return this.stack[this.stack.length - 1];
-  }
-
-  clear() {
-    this.stack = [];
-  }
-
-  getAll(){
-    return this.stack; 
-  }
-}
 /**
  *  Class to excute a program, a set of processors in sequence
  */
 export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMachine {
-  private _supportedProcessors: SupportPlugInsMap;
+  private _supportedProcessors: InstructionMap;
   private _program: Program = [];
-  private _processors: ContractCastEventProcessor[] = [];
+  private _processors: Instruction[] = [];
   private _info: CI;
 
   //Virtual Machine Temporary Context
@@ -63,36 +28,36 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
   private _errorStack: any = null;
   private _halt = false;
   private _globalVariables: VariableDict = {};
-  private _stack: Stack<ProcessorStep>;
+  private _stack: Stack<InstructionCall>;
 
-
-  constructor(info: CI, supportedProcessors: SupportPlugInsMap) {
+  constructor(info: CI, supportedProcessors: InstructionMap) {
     this._supportedProcessors = supportedProcessors;
     this._info = info;
-    this._stack = new Stack<ProcessorStep>();
+    this._stack = new Stack<InstructionCall>();
   }
-  getCast(): { id: string; chainId: number; address: string; } {
-   return {
-    id: this._info.getId(),
-    chainId: this._info.getChainId(),
-    address: this._info.getAddress()
-   };
+
+  getCast(): { id: string; chainId: number; address: string } {
+    return {
+      id: this._info.getId(),
+      chainId: this._info.getChainId(),
+      address: this._info.getAddress(),
+    };
   }
-  getVariables(): VariableDict {
+  getGlobalVariables(): VariableDict {
     return this._globalVariables;
   }
-  getVariable(name: string) {
+  getGlobalVariable(name: string) {
     return this._globalVariables[name];
   }
-  getCurrentStackItem(): ProcessorStep| undefined {
+  getCurrentStackItem(): InstructionCall | undefined {
     return this._stack.peek();
   }
 
-  getStack(): ProcessorStep[] {
+  getStack(): InstructionCall[] {
     return this._stack.getAll();
   }
   isHalted(): boolean {
-      return this._halt;
+    return this._halt;
   }
   halt(halt: boolean): void {
     this._halt = halt;
@@ -111,12 +76,12 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     this._program = program;
     for (const step of this._program) {
       const constructorZ = this._supportedProcessors[step.name];
-      const processor: ContractCastEventProcessor = new constructorZ(
+      const processor: Instruction = new constructorZ(
         this._info.getId(),
         this._info.getAddress(),
         this._info.getChainId()
       );
-      if (!processor.validatConf(step.args)) {
+      if (!processor.validateArgs(step.args)) {
         throw new UserInputError(
           'Failed to load program, configuration is wrong',
           ErrorsEnum.invalidUserInput
@@ -127,11 +92,10 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
   }
 
   async executeStep<N extends string, T>(
-    step: ProcessorStep,
+    step: InstructionCall,
     event: Web3Event<N, T>
   ): Promise<void> {
     if (!this._halt && !this._error) {
-      log.d(`Executing Step for ${this._info.getId()}  - ${step.name}`);
       const constructorZ = this._supportedProcessors[step.name];
       const processor = new constructorZ(
         this._info.getId(),
@@ -143,8 +107,8 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
       this._stack.pop();
     }
   }
-  
-  initGlobalVariables(rootName: string, obj: any) {
+
+  private _initGlobalVariables(rootName: string, obj: any) {
     Object.keys(obj).forEach((key) => {
       const valueType = typeof obj[key];
       switch (valueType) {
@@ -153,41 +117,48 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
         case 'undefined':
         case 'boolean':
         case 'symbol':
-        case 'bigint':          
+        case 'bigint':
           this._globalVariables[`${rootName}.${key}`] = obj[key];
           break;
         case 'object':
-          this.initGlobalVariables(`${rootName}.${key}`, obj[key])
+          this._initGlobalVariables(`${rootName}.${key}`, obj[key]);
           break;
         default:
           break;
       }
-    })
+    });
   }
-
 
   async execute<N extends string, T>(event: Web3Event<N, T>) {
     log.d(`Executing Program for ${this._info.getId()}  `);
     //1. Initialize Virtual Machine State
-    this._error = null;
-    this._errorStack = null;
-    this._halt = false;
-    this._globalVariables = {};
-    this._stack.clear();
-    this.initGlobalVariables('event', event);
-    this.initGlobalVariables('cast', this.getCast());
+    this._initVM();
+    this._initGlobalVariables('event', event);
+    this._initGlobalVariables('cast', this.getCast());
     try {
-      for (const step of this._program) {
-        await this.executeStep(
-          step,
-          event,
-        )
-      }
+      await this.executeProgram(this._program, event);
     } catch (e: Error | any) {
       log.e(
         `Failed to execute Program ${this._info.getId()} ` +
           `on Step ${this.getCurrentStackItem()?.name} ${e.message} ${e.stack}`
       );
+    }
+  }
+
+  private _initVM() {
+    this._error = null;
+    this._errorStack = null;
+    this._halt = false;
+    this._globalVariables = {};
+    this._stack.clear();
+  }
+
+  async executeProgram<N extends string, T>(
+    program: Program,
+    event: Web3Event<N, T>
+  ): Promise<void> {
+    for (const step of this._program) {
+      await this.executeStep(step, event);
     }
   }
 }
