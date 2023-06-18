@@ -2,17 +2,17 @@ import { Web3Event } from '@/types/events';
 import { z } from 'zod';
 import log from '@/services/log';
 import {
-  ContractCastEventProcessor,
-  ArgumentsSchema,
-  ProcessorArgs,
+  Instruction,
+  ArgsSchema,
+  InstructionArgs,
   VirtualMachine,
-} from '@/types/processor';
+} from '@/types/vm';
 import { Queue } from 'bullmq';
 
-export class WebHookEventProcessor implements ContractCastEventProcessor {
+export class WebHookEventProcessor implements Instruction {
   PROCESSOR_NAME = 'bull-producer';
 
-  validatConf(_conf: ProcessorArgs | undefined): boolean {
+  validateArgs(_conf: InstructionArgs | undefined): boolean {
     const queueNameSchema = z.string().min(2);
     const queueName = _conf?.queueName ?? '';
     const redisHostSchema = z.string().url();
@@ -35,7 +35,7 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
     return this.PROCESSOR_NAME;
   }
 
-  getArgsSchema(): ArgumentsSchema {
+  getArgsSchema(): ArgsSchema {
     return {
       queueName: {
         type: 'string',
@@ -54,6 +54,7 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
 
   async onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): Promise<void> {
     const step = vm.getCurrentStackItem();
+    const castID = vm.getGlobalVariable('cast.id');
     try {
       const queueName = (step?.args?.queueName.value as string) ?? null;
       const redisHost = (step?.args?.redisHost.value as string) ?? null;
@@ -70,7 +71,7 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
         await queue.add(event.event as string, event);
       }
     } catch (e: Error| any) {
-      log.e(`[${this.PROCESSOR_NAME}] Failed to execute on ${vm.getCast().id} ${e.message}`);
+      log.e(`[${this.PROCESSOR_NAME}] Failed to execute on ${castID} ${e.message}`);
       vm.setError(e.message, e.stack);
     }
   }

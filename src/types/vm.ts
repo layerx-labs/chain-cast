@@ -3,15 +3,15 @@ import { Web3Event } from './events';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type VariableDict = { [key: string]: any };
 
-export type ProcessorStep = {
+export type InstructionCall = {
   name: string;
-  args: ProcessorArgs;
-  branches?: ProcessorStep[];
+  args: InstructionArgs;
+  branches?: Program[];
 };
 
-export type ProcessorArgs = {
+export type InstructionArgs = {
   [key: string]: {
-    type: 'number' | 'string' | 'boolean' | 'number[]' | 'string[]' | 'date';
+    type: 'number' | 'string' | 'boolean' | 'number[]' | 'string[]' | 'date'| 'any';
     required: boolean | false;
     value: number | string | boolean | number[] | string[] | undefined;
   };
@@ -24,47 +24,45 @@ export type ArgFieldType = {
   required: boolean;
 };
 
-export type ArgumentsSchema = {
+export type ArgsSchema = {
   [key: string]: ArgFieldType;
 };
 
-export type ContractCastEventProcessor = {
+export type Instruction = {
   name(): string;
-  getArgsSchema(): ArgumentsSchema;
-  validatConf(conf: ProcessorArgs | undefined): boolean;
+  getArgsSchema(): ArgsSchema;
+  validateArgs(conf: InstructionArgs | undefined): boolean;
   onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): void;
 };
 
 export type PlugInConstructor<M> = new (id: string, address: string, chainId: number) => M;
 
-export type SupportPlugInsMap = {
-  [key: string]: PlugInConstructor<ContractCastEventProcessor>;
+export type InstructionMap = {
+  [key: string]: PlugInConstructor<Instruction>;
 };
 
-export type Program = ProcessorStep[]; 
+export type Program = InstructionCall[]; 
 
 /**
  * Stack Virtual Machine
  */
 export type VirtualMachine = {
-  getCast(): {
-    id: string;
-    chainId: number;
-    address: string;
-  };
-  getVariables(): VariableDict;
-  getVariable(name: string): any;
+  getGlobalVariables(): VariableDict;
+  getGlobalVariable(path: string): any;
+  executeProgram<N extends string, T>(
+    program: Program,
+    event: Web3Event<N, T>): Promise<void>;
   execute<N extends string, T>(event: Web3Event<N, T>): Promise<void>;
   executeStep<N extends string, T>(
-    step: ProcessorStep,
+    step: InstructionCall,
     event: Web3Event<N, T>
   ): Promise<void> | void;
-  getCurrentStackItem(): ProcessorStep | undefined;
-  getStack(): ProcessorStep[];
+  getCurrentStackItem(): InstructionCall | undefined;
+  getStack(): InstructionCall[];
   isHalted(): boolean;
   halt(halt: boolean): void;
   getError(): string | null;
   setError(message: string, stack: any): void
-  loadProgram(program: ProcessorStep[]): void;
+  loadProgram(program: InstructionCall[]): void;
 
 };

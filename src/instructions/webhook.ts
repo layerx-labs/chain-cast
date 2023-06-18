@@ -3,16 +3,16 @@ import { z } from 'zod';
 import log from '@/services/log';
 import axios from 'axios';
 import {
-  ContractCastEventProcessor,
-  ArgumentsSchema,
-  ProcessorArgs,
+  Instruction,
+  ArgsSchema,
+  InstructionArgs,
   VirtualMachine,
-} from '@/types/processor';
+} from '@/types/vm';
 
-export class WebHookEventProcessor implements ContractCastEventProcessor {
+export class WebHookEventProcessor implements Instruction {
   PROCESSOR_NAME = 'webhook';
 
-  validatConf(_conf: ProcessorArgs | undefined): boolean {
+  validateArgs(_conf: InstructionArgs | undefined): boolean {
     const urlSchema = z.string().url();
     const url = _conf?.url ?? '';
     if (!_conf || !urlSchema.safeParse(url).success) {
@@ -24,7 +24,7 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
   name(): string {
     return this.PROCESSOR_NAME;
   }
-  getArgsSchema(): ArgumentsSchema {
+  getArgsSchema(): ArgsSchema {
     return {
       url: {
         type: 'string',
@@ -39,9 +39,12 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
 
   async onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): Promise<void> {
     const step = vm.getCurrentStackItem();
+    const castID = vm.getGlobalVariable('cast.id');
+    const castAddres = vm.getGlobalVariable('cast.address');
+    const castChainId = vm.getGlobalVariable('cast.chainId');
     log.d(
       `[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` +
-        ` on cast ${vm.getCast().id} address ${vm.getCast().address}`
+        ` on cast ${castID} address ${castAddres}`
     );
 
     const url = (step?.args?.url.value as string) ?? null;
@@ -51,9 +54,9 @@ export class WebHookEventProcessor implements ContractCastEventProcessor {
       const response = await axios.post(url, {
         event,
         metadata: {
-          id: vm.getCast().id,
-          address: vm.getCast().address,
-          chainId: vm.getCast().chainId,
+          id: castID,
+          address: castAddres,
+          chainId: castChainId,
         },
       });
       if (response.status == 200) {

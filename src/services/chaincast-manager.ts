@@ -2,11 +2,11 @@ import log from '@/services/log';
 import { ContractCastType, PrismaClient, Prisma } from '@prisma/client';
 
 import {
-  SupportPlugInsMap,
-  ContractCastEventProcessor,
+  InstructionMap,
+  Instruction,
   PlugInConstructor,
-  ProcessorStep,
-} from '@/types/processor';
+  InstructionCall,
+} from '@/types/vm';
 import { ContractCast, ContractCastConstructor } from '../types';
 
 /**
@@ -15,7 +15,7 @@ import { ContractCast, ContractCastConstructor } from '../types';
 export class ChainCastManager<C extends ContractCast> {
   private _casts: { [key: string]: C };
   private _db: PrismaClient;
-  private _supportedProcessors: SupportPlugInsMap = {};
+  private _supportedProcessors: InstructionMap = {};
   private _creator: ContractCastConstructor<C>;
 
   constructor(creator: ContractCastConstructor<C>, db: PrismaClient) {
@@ -75,7 +75,7 @@ export class ChainCastManager<C extends ContractCast> {
     }
   }
 
-  registerProcessor<M extends ContractCastEventProcessor>(
+  registerProcessor<M extends Instruction>(
     name: string,
     pConstructor: PlugInConstructor<M>
   ) {
@@ -115,7 +115,7 @@ export class ChainCastManager<C extends ContractCast> {
       this._supportedProcessors
     );
     this._casts[cast.id] = contractCast;
-    const obj: ProcessorStep[] = JSON.parse(cast?.program?.toString() ?? '{}');
+    const obj: InstructionCall[] = JSON.parse(cast?.program?.toString() ?? '{}');
     await contractCast.loadProgram(obj);
     await contractCast.start();
   }

@@ -7,8 +7,8 @@ import { schema } from './graphql/schema';
 import express from 'express';
 import { useMaskedErrors } from '@envelop/core';
 import { errorHandlingFunction } from './middleware/errors';
-import { LoggerContractCastEventProcessor } from '@/processors/logger';
-import { WebHookEventProcessor } from '@/processors/webhook';
+import { LoggerContractCastEventProcessor } from 'src/instructions/logger';
+import { WebHookEventProcessor } from 'src/instructions/webhook';
 
 
 const chainCastBanner=`
