@@ -68,7 +68,7 @@ export class WebHookEventProcessor implements Instruction {
         log.w(
           `[${this.PROCESSOR_NAME}] Weekhook failed to be called ` +
             `${response.status} ${response.statusText} on url `,
-          url
+          args.url
         );
       }
     }

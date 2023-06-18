@@ -4,23 +4,23 @@ import { Instruction, VirtualMachine, InstructionArgs, ArgsSchema, Program } fro
 
 export type Expression = {
   variable: string;
-  operator: '>' | '>=' | '<=' | '<' | '=' | '!=';
+  condition: '>' | '>=' | '<=' | '<' | '=' | '!=';
   compareTo: 'number' | 'boolean' | 'string' | 'null';
 };
 
-export type NextStep = 'goto_0' | 'goto_1' | 'halt';
+export type Action = 'goto_0' | 'goto_1' | 'halt';
 
 export type ArgsType = {
   OR?: [Expression];
   AND?: [Expression];
-  onTrue: NextStep;
-  onFalse: NextStep;
+  onTrue: Action;
+  onFalse: Action;
   branch_0?: Program;
   branch_1?: Program;
 };
 
-export class IFProcessor implements Instruction {
-  PROCESSOR_NAME = 'if';
+export class Condition implements Instruction {
+  PROCESSOR_NAME = 'condition';
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateArgs(_conf: InstructionArgs | undefined): boolean {
     return true;
@@ -58,7 +58,7 @@ export class IFProcessor implements Instruction {
       res = !this._evaluateExpressions(vm, args.OR);
     }
 
-    async function branchOrHalt(condition: NextStep) {
+    async function nextAction(condition: Action) {
       switch (condition) {
         case 'goto_0': {
           if (args.branch_0) {
@@ -78,16 +78,16 @@ export class IFProcessor implements Instruction {
     }
 
     if (res == true) {
-      await branchOrHalt(args.onTrue);
+      await nextAction(args.onTrue);
     } else {
-      await branchOrHalt(args.onFalse);
+      await nextAction(args.onFalse);
     }
   }
 
   private _evaluateExpressions(vm: VirtualMachine, expressions: [Expression]) {
     for (const expression of expressions) {
       const variable = vm.getGlobalVariable(expression.variable);
-      const operator = expression.operator;
+      const operator = expression.condition;
       const compareTo = expression.compareTo;
 
       switch (operator) {
