@@ -9,7 +9,7 @@ export type CreateContractCastArgType = {
     type: ContractCastType;
     chainId: number;
     startFrom?: number;
-    program: unknown;
+    program: string;
   };
 };
 
@@ -28,7 +28,10 @@ const createContractCast: Resolver<
   if (oldContractCast) {
     throw new UserInputError('Chain Cast already found', ErrorsEnum.alreadyExists);
   }
-
+  //const buff = Buffer.from(args.data.program, 'base64');
+  //let decodedProgram  = buff.toString('ascii');
+  // 1. Validate the program 
+  //....
   const contractCast = await ctx.db.contractCast.create({
     data: {
       address: args.data.address,

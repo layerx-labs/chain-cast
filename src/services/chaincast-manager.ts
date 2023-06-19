@@ -1,5 +1,5 @@
 import log from '@/services/log';
-import { ContractCastType, PrismaClient, Prisma } from '@prisma/client';
+import { ContractCastType, PrismaClient } from '@prisma/client';
 
 import { InstructionMap, Instruction, InstructionConstructor, InstructionCall } from '@/types/vm';
 import { ContractCast, ContractCastConstructor } from '../types';
@@ -54,7 +54,7 @@ export class ChainCastManager<C extends ContractCast> {
     chainId: number;
     blockNumber: number;
     transactionIndex: number;
-    program: object | Prisma.JsonValue;
+    program: string;
   }) {
     try {
       this._setupCast(cast);
@@ -98,7 +98,7 @@ export class ChainCastManager<C extends ContractCast> {
     chainId: number;
     blockNumber: number;
     transactionIndex: number;
-    program: Prisma.JsonValue;
+    program: string;
   }) {
     const contractCast: C = new this._creator(
       cast.id,
@@ -110,7 +110,8 @@ export class ChainCastManager<C extends ContractCast> {
       this._supportedProcessors
     );
     this._casts[cast.id] = contractCast;
-    const obj: InstructionCall[] = JSON.parse(cast?.program?.toString() ?? '{}');
+    const decodedProgram = Buffer.from(cast?.program ?? 'W10=', 'base64').toString('ascii') ;
+    const obj: InstructionCall[] =  JSON.parse(decodedProgram);
     await contractCast.loadProgram(obj);
     await contractCast.start();
   }

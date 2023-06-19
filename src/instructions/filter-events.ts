@@ -36,7 +36,7 @@ export class FilterEvents implements Instruction {
       `[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` +
         ` on cast ${castID} address ${castAddres}`
     );
-    const eventsToForward = (step?.args?.eventNames.value as string[]) ?? [];
+    const eventsToForward = (step?.args?.eventNames as string[]) ?? [];
     if (!eventsToForward.includes(event.event as string)) {
       vm.halt(true);
     }

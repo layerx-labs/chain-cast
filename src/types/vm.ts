@@ -8,11 +8,7 @@ export type InstructionCall = {
 };
 
 export type InstructionArgs = {
-  [key: string]: {
-    type: 'number' | 'string' | 'boolean' | 'number[]' | 'string[]' | 'date' | 'any';
-    required: boolean | false;
-    value: any;
-  };
+  [key: string]: unknown;
 };
 
 export type Variable = { [key: string]: number | string | boolean | number[] | string[] };

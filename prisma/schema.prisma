@@ -30,7 +30,7 @@ model ContractCast {
    chainId                Int
    blockNumber            Int @default(0)
    transactionIndex                Int @default(0)
-   program                Json
+   program                String
    createdAt              DateTime  @default(now())
    @@unique([chainId, address])
 }

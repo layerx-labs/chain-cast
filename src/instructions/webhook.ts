@@ -52,9 +52,9 @@ export class WebHook implements Instruction {
     );
 
     const args: ArgsType = {
-      bodyInput: (step?.args?.bodyInput.value as string) ?? '',
-      url: (step?.args?.url.value as string) ?? '',
-      authorizationKey: (step?.args?.authorizationKey?.value as string) ?? '',
+      bodyInput: (step?.args?.bodyInput as string) ?? '',
+      url: (step?.args?.url as string) ?? '',
+      authorizationKey: (step?.args?.authorizationKey as string) ?? '',
     };
 
     if (args.url) {

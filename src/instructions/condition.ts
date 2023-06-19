@@ -45,10 +45,10 @@ export class Condition implements Instruction {
     );
 
     const args: ArgsType = {
-      AND: step?.args?.AND.value ?? [],
-      OR: step?.args?.OR.value ?? [],
-      onTrue: step?.args?.onTrue.value,
-      onFalse: step?.args?.onFalse.value,
+      AND: step?.args?.AND as [Expression] ?? [],
+      OR: step?.args?.OR as [Expression] ?? [],
+      onTrue: step?.args?.onTrue as Action,
+      onFalse: step?.args?.onFalse as Action,
     };
 
     let res = false;
