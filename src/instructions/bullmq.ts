@@ -65,10 +65,10 @@ export class BullMQProducer implements Instruction {
 
 
       const args: ArgsType = {
-        bodyInput: (step?.args?.bodyInput?.value as string) ?? '',
-        queueName: (step?.args?.queueName?.value as string) ?? '',
-        redisHost: (step?.args?.redisHost?.value as string) ?? '',
-        redisPort: (step?.args?.redisPort?.value as number) ?? '',
+        bodyInput: (step?.args?.bodyInput as string) ?? '',
+        queueName: (step?.args?.queueName as string) ?? '',
+        redisHost: (step?.args?.redisHost as string) ?? '',
+        redisPort: (step?.args?.redisPort as number) ?? '',
       };
       const body = vm.getGlobalVariableFromPath(args.bodyInput);
     

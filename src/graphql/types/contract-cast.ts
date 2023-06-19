@@ -15,9 +15,7 @@ builder.prismaObject('ContractCast', {
     type: t.expose('type', {
       type: ContractCastTypeEnum,
     }),
-    program: t.expose('program', {
-      type: 'JSON',
-    }),
+    program: t.exposeString('program'),
     createdAt: t.expose('createdAt', {
       type: 'Date',
     }),

@@ -30,12 +30,12 @@ export class Debug implements Instruction {
   onAction(vm: VirtualMachine): void {
     const step = vm.getCurrentStackItem();
     const args: ArgsType = {
-        variablesToDebug: (step?.args?.variablesToDebug?.value as string[]) ?? [], 
+        variablesToDebug: (step?.args?.variablesToDebug as string[]) ?? [], 
     };
     for( const variable of  args.variablesToDebug) {
         const value = vm.getGlobalVariableFromPath(variable);
         log.d(
-            `[${this.PROCESSOR_NAME}] ${variable}=${value}`
+            `[${this.PROCESSOR_NAME}] ${variable}=${value.toString()}`
           );
     }
   }
