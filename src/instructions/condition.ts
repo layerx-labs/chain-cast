@@ -36,8 +36,9 @@ export class Condition implements Instruction {
 
   async onEvent<N extends string, T>(vm: VirtualMachine, event: Web3Event<N, T>): Promise<void> {
     const step = vm.getCurrentStackItem();
-    const castID = vm.getGlobalVariable('cast.id');
-    const castAddres = vm.getGlobalVariable('cast.address');
+    const castID = vm.getGlobalVariable('cast')?.id;
+    const castAddres = vm.getGlobalVariable('cast')?.address;
+    
     log.d(
       `[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` +
         ` on cast ${castID} address ${castAddres}`
@@ -86,7 +87,7 @@ export class Condition implements Instruction {
 
   private _evaluateExpressions(vm: VirtualMachine, expressions: [Expression]) {
     for (const expression of expressions) {
-      const variable = vm.getGlobalVariable(expression.variable);
+      const variable = vm.getGlobalVariableFromPath(expression.variable);
       const operator = expression.condition;
       const compareTo = expression.compareTo;
 

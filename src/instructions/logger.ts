@@ -17,11 +17,11 @@ export class LoggerContractCastEventProcessor implements Instruction {
   }
 
   onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): void {
-    const castID = vm.getGlobalVariable('cast.id');
-    const castAddres = vm.getGlobalVariable('cast.address');
+    const castID = vm.getGlobalVariable('cast').id ?? '';
+    const castAddress = vm.getGlobalVariable('cast').address ?? '';
     log.d(
       `[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` +
-        ` on cast ${castID} address ${castAddres}`
+        ` on cast ${castID} address ${castAddress}`
     );
   }
 }
