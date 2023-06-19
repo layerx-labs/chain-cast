@@ -1,15 +1,16 @@
-import { Web3Event } from '@/types/events';
 import { z } from 'zod';
 import log from '@/services/log';
 import axios from 'axios';
 import { Instruction, ArgsSchema, InstructionArgs, VirtualMachine } from '@/types/vm';
 
 export type ArgsType = {
+  bodyInput: string;
   url: string;
   authorizationKey?: string;
 };
 
 export class WebHookEventProcessor implements Instruction {
+  
   PROCESSOR_NAME = 'webhook';
 
   validateArgs(_conf: InstructionArgs | undefined): boolean {
@@ -26,6 +27,10 @@ export class WebHookEventProcessor implements Instruction {
   }
   getArgsSchema(): ArgsSchema {
     return {
+      body: {
+        type: 'string',
+        required: true,
+      },
       url: {
         type: 'string',
         required: true,
@@ -37,28 +42,31 @@ export class WebHookEventProcessor implements Instruction {
     };
   }
 
-  async onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): Promise<void> {
+  async onAction(vm: VirtualMachine): Promise<void> {
     const step = vm.getCurrentStackItem();
     const castID = vm.getGlobalVariable('cast')?.id ?? '';
-    const castAddres = vm.getGlobalVariable('cast')?.address ?? '';
+    const castAddress = vm.getGlobalVariable('cast')?.address ?? '';
     const castChainId = vm.getGlobalVariable('cast')?.chainId ?? '';
     log.d(
-      `[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` +
-        ` on cast ${castID} address ${castAddres}`
+      `[${this.PROCESSOR_NAME}] Action Received on cast ${castID} address ${castAddress}`
     );
 
     const args: ArgsType = {
+      bodyInput: (step?.args?.bodyInput.value as string) ?? '',
       url: (step?.args?.url.value as string) ?? '',
       authorizationKey: (step?.args?.authorizationKey?.value as string) ?? '',
     };
 
     if (args.url) {
-      log.d(`[${this.PROCESSOR_NAME}] Calling webhook for ${args.url} for ${event.event}`);
+      const body = vm.getGlobalVariableFromPath(args.bodyInput);
+      log.d(
+        `[${this.PROCESSOR_NAME}] Calling webhook for ${args.url} for variable ${args.bodyInput}`
+      );
       const response = await axios.post(args.url, {
-        event,
+        body,
         metadata: {
           id: castID,
-          address: castAddres,
+          address: castAddress,
           chainId: castChainId,
         },
       });

@@ -1,8 +1,14 @@
-import { Web3Event } from '@/types/events';
 import { z } from 'zod';
 import log from '@/services/log';
 import { Instruction, ArgsSchema, InstructionArgs, VirtualMachine } from '@/types/vm';
 import { Queue } from 'bullmq';
+
+export type ArgsType = {
+  bodyInput: string;
+  queueName: string;
+  redisHost: string;
+  redisPort: number;
+};
 
 export class WebHookEventProcessor implements Instruction {
   PROCESSOR_NAME = 'bull-producer';
@@ -32,6 +38,10 @@ export class WebHookEventProcessor implements Instruction {
 
   getArgsSchema(): ArgsSchema {
     return {
+      bodyInput: {
+        type: 'string',
+        required: true,
+      },
       queueName: {
         type: 'string',
         required: true,
@@ -47,22 +57,30 @@ export class WebHookEventProcessor implements Instruction {
     };
   }
 
-  async onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): Promise<void> {
+  async onAction(vm: VirtualMachine): Promise<void> {
     const step = vm.getCurrentStackItem();
     const castID = vm.getGlobalVariable('cast')?.id  ?? "";
+    const event = vm.getGlobalVariable('event')  ?? {};
     try {
-      const queueName = (step?.args?.queueName.value as string) ?? null;
-      const redisHost = (step?.args?.redisHost.value as string) ?? null;
-      const redisPort = (step?.args?.redisHost.value as number) ?? 0;
-      if (queueName && redisHost && redisPort) {
-        const queue = new Queue(queueName, {
+
+
+      const args: ArgsType = {
+        bodyInput: (step?.args?.bodyInput?.value as string) ?? '',
+        queueName: (step?.args?.queueName?.value as string) ?? '',
+        redisHost: (step?.args?.redisHost?.value as string) ?? '',
+        redisPort: (step?.args?.redisPort?.value as number) ?? '',
+      };
+      const body = vm.getGlobalVariableFromPath(args.bodyInput);
+    
+      if (args.queueName && args.redisHost && args.redisPort && body) {
+        const queue = new Queue(args.queueName, {
           connection: {
-            host: redisHost,
-            port: redisPort,
+            host: args.redisHost,
+            port: args.redisPort,
           },
         });
 
-        log.d(`[${this.PROCESSOR_NAME}] Adding ${event.event} to queue ${queueName}`);
+        log.d(`[${this.PROCESSOR_NAME}] Adding ${args.bodyInput} to queue ${args.queueName}`);
         await queue.add(event.event as string, event);
       }
     } catch (e: Error | any) {

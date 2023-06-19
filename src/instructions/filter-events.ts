@@ -1,4 +1,3 @@
-import { Web3Event } from '@/types/events';
 import log from '@/services/log';
 import { Instruction, VirtualMachine, InstructionArgs, ArgsSchema } from '@/types/vm';
 import { z } from 'zod';
@@ -28,8 +27,9 @@ export class FilterEventsProcessor implements Instruction {
     };
   }
 
-  onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): void {
+  onAction(vm: VirtualMachine): void {
     const step = vm.getCurrentStackItem();
+    const event = vm.getGlobalVariable('event')  ?? {};
     const castID = vm.getGlobalVariable('cast')?.id ?? '' ;
     const castAddres = vm.getGlobalVariable('cast')?.address ?? '';
     log.d(

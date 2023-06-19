@@ -1,4 +1,3 @@
-import { Web3Event } from '@/types/events';
 import log from '@/services/log';
 import { Instruction, VirtualMachine, InstructionArgs } from '@/types/vm';
 
@@ -16,7 +15,8 @@ export class Logger implements Instruction {
     return {};
   }
 
-  onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): void {
+  onAction(vm: VirtualMachine): void {
+    const event = vm.getGlobalVariable('event')  ?? {};
     const castID = vm.getGlobalVariable('cast').id ?? '';
     const castAddress = vm.getGlobalVariable('cast').address ?? '';
     log.d(

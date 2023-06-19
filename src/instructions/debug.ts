@@ -1,7 +1,5 @@
-import { Web3Event } from '@/types/events';
 import log from '@/services/log';
 import { Instruction, VirtualMachine, InstructionArgs, ArgsSchema } from '@/types/vm';
-
 
 export type ArgsType = {
     variablesToDebug: string[];
@@ -29,7 +27,7 @@ export class Debug implements Instruction {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): void {
+  onAction(vm: VirtualMachine): void {
     const step = vm.getCurrentStackItem();
     const args: ArgsType = {
         variablesToDebug: (step?.args?.variablesToDebug?.value as string[]) ?? [], 

@@ -1,5 +1,3 @@
-import { Web3Event } from './events';
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type VariableDict = { [key: string]: any };
 
@@ -32,7 +30,7 @@ export type Instruction = {
   name(): string;
   getArgsSchema(): ArgsSchema;
   validateArgs(conf: InstructionArgs | undefined): boolean;
-  onEvent<N extends string, T>(vm: VirtualMachine, event: Web3Event<N, T>): void;
+  onAction(vm: VirtualMachine): void;
 };
 
 export type PlugInConstructor<M> = new (id: string, address: string, chainId: number) => M;
@@ -51,12 +49,9 @@ export type VirtualMachine = {
   getGlobalVariable(name: string): any;
   getGlobalVariableFromPath(path: string): any;
   setGlobalVariable(name: string, value: any): void;
-  executeProgram<N extends string, T>(program: Program, event: Web3Event<N, T>): Promise<void>;
-  execute<N extends string, T>(event: Web3Event<N, T>): Promise<void>;
-  executeStep<N extends string, T>(
-    step: InstructionCall,
-    event: Web3Event<N, T>
-  ): Promise<void> | void;
+  executeProgram(program: Program): Promise<void>;
+  execute<N extends string, T>(trigger: Trigger<N, T>): Promise<void>;
+  executeStep(step: InstructionCall): Promise<void> | void;
   getCurrentStackItem(): InstructionCall | undefined;
   getStack(): InstructionCall[];
   isHalted(): boolean;
@@ -65,3 +60,8 @@ export type VirtualMachine = {
   setError(message: string, stack: any): void;
   loadProgram(program: InstructionCall[]): void;
 };
+
+export type Trigger<N extends string,T> = {
+  name: N,
+  payload: T,
+} 

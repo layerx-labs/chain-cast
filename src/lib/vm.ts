@@ -1,4 +1,3 @@
-import { Web3Event } from '@/types/events';
 import log from '@/services/log';
 import {
   InstructionMap,
@@ -7,6 +6,7 @@ import {
   VirtualMachine,
   Program,
   VariableDict,
+  Trigger,
 } from '@/types/vm';
 import { CastInfo } from '../types';
 import { UserInputError } from '@/middleware/errors';
@@ -101,10 +101,7 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     }
   }
 
-  async executeStep<N extends string, T>(
-    step: InstructionCall,
-    event: Web3Event<N, T>
-  ): Promise<void> {
+  async executeStep(step: InstructionCall): Promise<void> {
     if (!this._halt && !this._error) {
       const constructorZ = this._supportedInstructions[step.name];
       const instruction = new constructorZ(
@@ -113,19 +110,19 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
         this._info.getChainId()
       );
       this._stack.push(step);
-      await instruction.onEvent(this, event);
+      await instruction.onAction(this);
       this._stack.pop();
     }
   }
   
-  async execute<N extends string, T>(event: Web3Event<N, T>) {
+  async execute<N extends string, T>(trigger: Trigger<N, T>) {
     log.d(`Executing Program for ${this._info.getId()}  `);
     //1. Initialize Virtual Machine State
     this._initVM();
-    this.setGlobalVariable('event', event);
+    this.setGlobalVariable(trigger.name, trigger.payload);
     this.setGlobalVariable('cast', this.getCast());
     try {
-      await this.executeProgram(this._program, event);
+      await this.executeProgram(this._program);
     } catch (e: Error | any) {
       log.e(
         `Failed to execute Program ${this._info.getId()} ` +
@@ -142,12 +139,9 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     this._stack.clear();
   }
 
-  async executeProgram<N extends string, T>(
-    program: Program,
-    event: Web3Event<N, T>
-  ): Promise<void> {
-    for (const step of this._program) {
-      await this.executeStep(step, event);
+  async executeProgram(program: Program): Promise<void> {
+    for (const step of program) {
+      await this.executeStep(step);
     }
   }
 }
