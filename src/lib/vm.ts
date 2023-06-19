@@ -12,6 +12,7 @@ import { CastInfo } from '../types';
 import { UserInputError } from '@/middleware/errors';
 import { ErrorsEnum } from '../constants';
 import { Stack } from '@/lib/stack';
+import { getVariableFromPath } from '@/util/vm';
 
 /**
  *  Class to excute a program, a set of instructions in sequence
@@ -49,6 +50,15 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
   getGlobalVariable(name: string) {
     return this._globalVariables[name];
   }
+
+  getGlobalVariableFromPath(path: string) {
+    return getVariableFromPath(path, this._globalVariables);
+  }
+  
+  setGlobalVariable(name: string, value: any) {
+    this._globalVariables[name] = value;
+  }
+
   getCurrentStackItem(): InstructionCall | undefined {
     return this._stack.peek();
   }
@@ -107,34 +117,13 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
       this._stack.pop();
     }
   }
-
-  private _initGlobalVariables(rootName: string, obj: any) {
-    Object.keys(obj).forEach((key) => {
-      const valueType = typeof obj[key];
-      switch (valueType) {
-        case 'string':
-        case 'number':
-        case 'undefined':
-        case 'boolean':
-        case 'symbol':
-        case 'bigint':
-          this._globalVariables[`${rootName}.${key}`] = obj[key];
-          break;
-        case 'object':
-          this._initGlobalVariables(`${rootName}.${key}`, obj[key]);
-          break;
-        default:
-          break;
-      }
-    });
-  }
-
+  
   async execute<N extends string, T>(event: Web3Event<N, T>) {
     log.d(`Executing Program for ${this._info.getId()}  `);
     //1. Initialize Virtual Machine State
     this._initVM();
-    this._initGlobalVariables('event', event);
-    this._initGlobalVariables('cast', this.getCast());
+    this.setGlobalVariable('event', event);
+    this.setGlobalVariable('cast', this.getCast());
     try {
       await this.executeProgram(this._program, event);
     } catch (e: Error | any) {

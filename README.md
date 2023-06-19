@@ -86,3 +86,19 @@ Note: API, Redis and Waka(Queue Worker) applications will be started
 - `npm run test:coverage`: Run all the tests and the coverage report
 - `npm run prettier`: Prettify the javascript source code files
 - `npm run lint`: Run the ES Lint on the code
+
+## Program Example 
+
+```json
+
+[{
+    "name": "logger"
+}, {
+    "name": "webhook",
+    "args": {
+        "url": "https://webhook.site/06218e87-7b2e-48c8-a467-746c1b031d17"
+    }
+}]
+
+
+```
