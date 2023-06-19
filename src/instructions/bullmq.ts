@@ -49,7 +49,7 @@ export class WebHookEventProcessor implements Instruction {
 
   async onEvent<N, T>(vm: VirtualMachine, event: Web3Event<N, T>): Promise<void> {
     const step = vm.getCurrentStackItem();
-    const castID = vm.getGlobalVariable('cast.id');
+    const castID = vm.getGlobalVariable('cast')?.id  ?? "";
     try {
       const queueName = (step?.args?.queueName.value as string) ?? null;
       const redisHost = (step?.args?.redisHost.value as string) ?? null;

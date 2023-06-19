@@ -48,7 +48,9 @@ export type Program = InstructionCall[];
  */
 export type VirtualMachine = {
   getGlobalVariables(): VariableDict;
-  getGlobalVariable(path: string): any;
+  getGlobalVariable(name: string): any;
+  getGlobalVariableFromPath(path: string): any;
+  setGlobalVariable(name: string, value: any): void;
   executeProgram<N extends string, T>(program: Program, event: Web3Event<N, T>): Promise<void>;
   execute<N extends string, T>(event: Web3Event<N, T>): Promise<void>;
   executeStep<N extends string, T>(
