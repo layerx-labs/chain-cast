@@ -7,10 +7,20 @@ type DeleteContractCastArgType = {
   id: string;
 };
 
-export const deleteContractCast: Resolver<
-  ContractCast,
-  DeleteContractCastArgType
-> = async (_1, args, ctx) => {
+export const deleteContractCast: Resolver<ContractCast, DeleteContractCastArgType> = async (
+  _1,
+  args,
+  ctx
+) => {
+  const contractCastToDelete = await ctx.db.contractCast.findUnique({
+    where: {
+      id: args.id,
+    },
+  });
+  if (!contractCastToDelete) {
+    throw new UserInputError('Chain Cast not found', ErrorsEnum.objectNotFound);
+  }
+  await ctx.manager.deleteCast(args.id);
   const contractCast = await ctx.db.contractCast.delete({
     where: {
       id: args.id,
@@ -26,12 +36,8 @@ export const deleteContractCast: Resolver<
       transactionIndex: true,
     },
   });
-  if (!contractCast) {
-    throw new UserInputError('Chain Cast not found', ErrorsEnum.objectNotFound);
-  }
   ctx.log.i(
     `Deleted Chain Cast id ${contractCast.id} ${contractCast.chainId} ` + `${contractCast.address}`
   );
-  ctx.manager.deleteCast(contractCast.id);
   return contractCast;
 };
