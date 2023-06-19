@@ -33,10 +33,10 @@ export type Instruction = {
   onAction(vm: VirtualMachine): void;
 };
 
-export type PlugInConstructor<M> = new (id: string, address: string, chainId: number) => M;
+export type InstructionConstructor<M> = new (id: string, address: string, chainId: number) => M;
 
 export type InstructionMap = {
-  [key: string]: PlugInConstructor<Instruction>;
+  [key: string]: InstructionConstructor<Instruction>;
 };
 
 export type Program = InstructionCall[];

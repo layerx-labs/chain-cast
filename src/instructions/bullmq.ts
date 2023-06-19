@@ -10,7 +10,7 @@ export type ArgsType = {
   redisPort: number;
 };
 
-export class WebHookEventProcessor implements Instruction {
+export class BullMQProducer implements Instruction {
   PROCESSOR_NAME = 'bull-producer';
 
   validateArgs(_conf: InstructionArgs | undefined): boolean {

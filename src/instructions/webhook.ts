@@ -9,7 +9,7 @@ export type ArgsType = {
   authorizationKey?: string;
 };
 
-export class WebHookEventProcessor implements Instruction {
+export class WebHook implements Instruction {
   
   PROCESSOR_NAME = 'webhook';
 
@@ -27,7 +27,7 @@ export class WebHookEventProcessor implements Instruction {
   }
   getArgsSchema(): ArgsSchema {
     return {
-      body: {
+      bodyInput: {
         type: 'string',
         required: true,
       },

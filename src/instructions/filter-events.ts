@@ -2,7 +2,7 @@ import log from '@/services/log';
 import { Instruction, VirtualMachine, InstructionArgs, ArgsSchema } from '@/types/vm';
 import { z } from 'zod';
 
-export class FilterEventsProcessor implements Instruction {
+export class FilterEvents implements Instruction {
   PROCESSOR_NAME = 'filter-events';
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateArgs(_conf: InstructionArgs | undefined): boolean {
