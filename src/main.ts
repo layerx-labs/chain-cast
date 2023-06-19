@@ -8,7 +8,10 @@ import express from 'express';
 import { useMaskedErrors } from '@envelop/core';
 import { errorHandlingFunction } from './middleware/errors';
 import { Logger } from 'src/instructions/logger';
-import { WebHookEventProcessor } from 'src/instructions/webhook';
+import { WebHook } from 'src/instructions/webhook';
+import { Debug } from './instructions/debug';
+import { Condition } from './instructions/condition';
+import { BullMQProducer } from './instructions/bullmq';
 
 
 const chainCastBanner=`
@@ -58,9 +61,12 @@ async function run() {
   app.use(yoga.graphqlEndpoint, yoga);
   log.i('Starting Chain Cast Manager Service...');
 
-  ctx.manager.registerProcessor('logger', Logger);
-  ctx.manager.registerProcessor('webhook', WebHookEventProcessor);
-
+  ctx.manager.registerInstruction('logger', Logger);
+  ctx.manager.registerInstruction('debug', Debug);
+  ctx.manager.registerInstruction('webhook', WebHook);
+  ctx.manager.registerInstruction('condition', Condition);
+  ctx.manager.registerInstruction('bullmq-producer', BullMQProducer);
+  
   await ctx.manager.start();
 
   /** Start the GraphQL Server */

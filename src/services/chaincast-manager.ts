@@ -1,7 +1,7 @@
 import log from '@/services/log';
 import { ContractCastType, PrismaClient, Prisma } from '@prisma/client';
 
-import { InstructionMap, Instruction, PlugInConstructor, InstructionCall } from '@/types/vm';
+import { InstructionMap, Instruction, InstructionConstructor, InstructionCall } from '@/types/vm';
 import { ContractCast, ContractCastConstructor } from '../types';
 
 /**
@@ -70,7 +70,10 @@ export class ChainCastManager<C extends ContractCast> {
     }
   }
 
-  registerProcessor<M extends Instruction>(name: string, pConstructor: PlugInConstructor<M>) {
+  registerInstruction<M extends Instruction>(
+    name: string,
+    pConstructor: InstructionConstructor<M>
+  ) {
     this._supportedProcessors[name] = pConstructor;
   }
 
