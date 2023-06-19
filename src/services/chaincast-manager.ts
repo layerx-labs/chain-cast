@@ -110,8 +110,8 @@ export class ChainCastManager<C extends ContractCast> {
       this._supportedProcessors
     );
     this._casts[cast.id] = contractCast;
-    const decodedProgram = Buffer.from(cast?.program ?? 'W10=', 'base64').toString('ascii') ;
-    const obj: InstructionCall[] =  JSON.parse(decodedProgram);
+    const decodedProgram = Buffer.from(cast?.program ?? 'W10=', 'base64').toString('ascii');
+    const obj: InstructionCall[] = JSON.parse(decodedProgram);
     await contractCast.loadProgram(obj);
     await contractCast.start();
   }

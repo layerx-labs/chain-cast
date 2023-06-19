@@ -54,7 +54,7 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
   getGlobalVariableFromPath(path: string) {
     return getVariableFromPath(path, this._globalVariables);
   }
-  
+
   setGlobalVariable(name: string, value: any) {
     this._globalVariables[name] = value;
   }
@@ -114,7 +114,7 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
       this._stack.pop();
     }
   }
-  
+
   async execute<N extends string, T>(trigger: Trigger<N, T>) {
     log.d(`Executing Program for ${this._info.getId()}  `);
     //1. Initialize Virtual Machine State

@@ -3,20 +3,19 @@ import log from '@/services/log';
 import axios from 'axios';
 import { Instruction, ArgsSchema, InstructionArgs, VirtualMachine } from '@/types/vm';
 
-export type ArgsType = {
-  bodyInput: string;
-  url: string;
-  authorizationKey?: string;
-};
+const ArgsTypeSchema = z.object({
+  url: z.string().url(),
+  bodyInput: z.string().min(2),
+  authorizationKey: z.string().optional(),
+});
+
+type ArgsType = z.infer<typeof ArgsTypeSchema>;
 
 export class WebHook implements Instruction {
-  
   PROCESSOR_NAME = 'webhook';
 
-  validateArgs(_conf: InstructionArgs | undefined): boolean {
-    const urlSchema = z.string().url();
-    const url = _conf?.url ?? '';
-    if (!_conf || !urlSchema.safeParse(url).success) {
+  validateArgs(args: InstructionArgs | undefined): boolean {
+    if (!ArgsTypeSchema.safeParse(args).success) {
       return false;
     }
     return true;
@@ -47,9 +46,7 @@ export class WebHook implements Instruction {
     const castID = vm.getGlobalVariable('cast')?.id ?? '';
     const castAddress = vm.getGlobalVariable('cast')?.address ?? '';
     const castChainId = vm.getGlobalVariable('cast')?.chainId ?? '';
-    log.d(
-      `[${this.PROCESSOR_NAME}] Action Received on cast ${castID} address ${castAddress}`
-    );
+    log.d(`[${this.PROCESSOR_NAME}] Action Received on cast ${castID} address ${castAddress}`);
 
     const args: ArgsType = {
       bodyInput: (step?.args?.bodyInput as string) ?? '',

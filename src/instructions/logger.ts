@@ -16,7 +16,7 @@ export class Logger implements Instruction {
   }
 
   onAction(vm: VirtualMachine): void {
-    const event = vm.getGlobalVariable('event')  ?? {};
+    const event = vm.getGlobalVariable('event') ?? {};
     const castID = vm.getGlobalVariable('cast').id ?? '';
     const castAddress = vm.getGlobalVariable('cast').address ?? '';
     log.d(

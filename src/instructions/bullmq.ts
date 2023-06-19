@@ -3,30 +3,20 @@ import log from '@/services/log';
 import { Instruction, ArgsSchema, InstructionArgs, VirtualMachine } from '@/types/vm';
 import { Queue } from 'bullmq';
 
-export type ArgsType = {
-  bodyInput: string;
-  queueName: string;
-  redisHost: string;
-  redisPort: number;
-};
+const ArgsTypeSchema = z.object({
+  bodyInput: z.string().min(2),
+  queueName: z.string().min(2),
+  redisHost: z.string().url(),
+  redisPort: z.number().gt(0).lt(65500),
+});
+
+type ArgsType = z.infer<typeof ArgsTypeSchema>;
 
 export class BullMQProducer implements Instruction {
   PROCESSOR_NAME = 'bull-producer';
 
-  validateArgs(_conf: InstructionArgs | undefined): boolean {
-    const queueNameSchema = z.string().min(2);
-    const queueName = _conf?.queueName ?? '';
-    const redisHostSchema = z.string().url();
-    const redisHost = _conf?.redisHost ?? '';
-    const redisPortSchema = z.number().gt(0).lt(65500);
-    const redisPort = _conf?.redisHost ?? 0;
-
-    if (
-      !_conf ||
-      !queueNameSchema.safeParse(queueName).success ||
-      !redisHostSchema.safeParse(redisHost).success ||
-      !redisPortSchema.safeParse(redisPort).success
-    ) {
+  validateArgs(args: InstructionArgs | undefined): boolean {
+    if (!args || ArgsTypeSchema.safeParse(args).success) {
       return false;
     }
     return true;
@@ -59,11 +49,9 @@ export class BullMQProducer implements Instruction {
 
   async onAction(vm: VirtualMachine): Promise<void> {
     const step = vm.getCurrentStackItem();
-    const castID = vm.getGlobalVariable('cast')?.id  ?? "";
-    const event = vm.getGlobalVariable('event')  ?? {};
+    const castID = vm.getGlobalVariable('cast')?.id ?? '';
+    const event = vm.getGlobalVariable('event') ?? {};
     try {
-
-
       const args: ArgsType = {
         bodyInput: (step?.args?.bodyInput as string) ?? '',
         queueName: (step?.args?.queueName as string) ?? '',
@@ -71,7 +59,7 @@ export class BullMQProducer implements Instruction {
         redisPort: (step?.args?.redisPort as number) ?? '',
       };
       const body = vm.getGlobalVariableFromPath(args.bodyInput);
-    
+
       if (args.queueName && args.redisHost && args.redisPort && body) {
         const queue = new Queue(args.queueName, {
           connection: {
