@@ -29,8 +29,8 @@ export class FilterEvents implements Instruction {
 
   onAction(vm: VirtualMachine): void {
     const step = vm.getCurrentStackItem();
-    const event = vm.getGlobalVariable('event')  ?? {};
-    const castID = vm.getGlobalVariable('cast')?.id ?? '' ;
+    const event = vm.getGlobalVariable('event') ?? {};
+    const castID = vm.getGlobalVariable('cast')?.id ?? '';
     const castAddres = vm.getGlobalVariable('cast')?.address ?? '';
     log.d(
       `[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` +

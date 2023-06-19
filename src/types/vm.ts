@@ -3,7 +3,7 @@ export type VariableDict = { [key: string]: any };
 
 export type InstructionCall = {
   name: string;
-  args: InstructionArgs;
+  args?: InstructionArgs;
   branches?: Program[];
 };
 
@@ -57,7 +57,7 @@ export type VirtualMachine = {
   loadProgram(program: InstructionCall[]): void;
 };
 
-export type Trigger<N extends string,T> = {
-  name: N,
-  payload: T,
-} 
+export type Trigger<N extends string, T> = {
+  name: N;
+  payload: T;
+};

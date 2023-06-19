@@ -144,7 +144,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
       `New Event ${event.event} goint to be executed by the program ` +
         `${event.blockNumber}:${event.transactionIndex}`
     );
-    await this._vm.execute({name: "event", payload: event});
+    await this._vm.execute({ name: 'event', payload: event });
     this._lastEventBlockNumber = event.blockNumber;
     this._lastEventTransactionIndex = event.transactionIndex;
   }
