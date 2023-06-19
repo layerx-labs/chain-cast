@@ -1,4 +1,3 @@
-import { Web3Event } from '@/types/events';
 import log from '@/services/log';
 import { Instruction, VirtualMachine, InstructionArgs, ArgsSchema, Program } from '@/types/vm';
 
@@ -34,11 +33,12 @@ export class Condition implements Instruction {
     return {};
   }
 
-  async onEvent<N extends string, T>(vm: VirtualMachine, event: Web3Event<N, T>): Promise<void> {
+  async onAction(vm: VirtualMachine): Promise<void> {
     const step = vm.getCurrentStackItem();
     const castID = vm.getGlobalVariable('cast')?.id;
     const castAddres = vm.getGlobalVariable('cast')?.address;
-    
+    const event = vm.getGlobalVariable('event')  ?? {};
+
     log.d(
       `[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` +
         ` on cast ${castID} address ${castAddres}`
@@ -63,13 +63,13 @@ export class Condition implements Instruction {
       switch (condition) {
         case 'goto_0': {
           if (args.branch_0) {
-            await vm.executeProgram(args.branch_0, event);
+            await vm.executeProgram(args.branch_0);
           }
           break;
         }
         case 'goto_1':
           if (args.branch_1) {
-            await vm.executeProgram(args.branch_1, event);
+            await vm.executeProgram(args.branch_1);
           }
           break;
         case 'halt':

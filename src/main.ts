@@ -7,7 +7,7 @@ import { schema } from './graphql/schema';
 import express from 'express';
 import { useMaskedErrors } from '@envelop/core';
 import { errorHandlingFunction } from './middleware/errors';
-import { LoggerContractCastEventProcessor } from 'src/instructions/logger';
+import { Logger } from 'src/instructions/logger';
 import { WebHookEventProcessor } from 'src/instructions/webhook';
 
 
@@ -58,7 +58,7 @@ async function run() {
   app.use(yoga.graphqlEndpoint, yoga);
   log.i('Starting Chain Cast Manager Service...');
 
-  ctx.manager.registerProcessor('logger', LoggerContractCastEventProcessor);
+  ctx.manager.registerProcessor('logger', Logger);
   ctx.manager.registerProcessor('webhook', WebHookEventProcessor);
 
   await ctx.manager.start();

@@ -16,7 +16,7 @@ import { chainsSupported } from '@/constants/chains';
 import { InstructionMap, InstructionCall } from '@/types/vm';
 import { ContractCast } from '../types';
 import db from '@/services/prisma';
-import { ChainCastVirtualMachine } from '@/services/vm';
+import { ChainCastVirtualMachine } from '@/lib/vm';
 
 /**
  * An implementation that creates a stream of events for an Ethereum Smart Contract
@@ -144,7 +144,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
       `New Event ${event.event} goint to be executed by the program ` +
         `${event.blockNumber}:${event.transactionIndex}`
     );
-    await this._vm.execute(event);
+    await this._vm.execute({name: "event", payload: event});
     this._lastEventBlockNumber = event.blockNumber;
     this._lastEventTransactionIndex = event.transactionIndex;
   }
