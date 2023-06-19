@@ -2,7 +2,7 @@ import { Web3Event } from '@/types/events';
 import log from '@/services/log';
 import { Instruction, VirtualMachine, InstructionArgs } from '@/types/vm';
 
-export class LoggerContractCastEventProcessor implements Instruction {
+export class Logger implements Instruction {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateArgs(_conf: InstructionArgs | undefined): boolean {
     return true;
