@@ -11,14 +11,15 @@ import {
 import { CastInfo } from '../types';
 import { Stack } from '@/lib/stack';
 import { getVariableFromPath } from '@/util/vm';
-import { ChainCastProgram } from './program';
 
 /**
  *  Class to excute a program, a set of instructions in sequence
  */
-export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMachine {
+export class ChainCastVirtualMachine< CI extends CastInfo>
+  implements VirtualMachine
+{
   private _supportedInstructions: InstructionMap;
-  private _program: Program;
+  private _program: Program | null = null;
   private _instructions: Instruction[] = [];
   private _info: CI;
 
@@ -34,7 +35,7 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     this._supportedInstructions = supportedInstructions;
     this._info = info;
     this._stack = new Stack<InstructionCall>();
-    this._program = new ChainCastProgram(supportedInstructions);
+    // this._program = new ChainCastProgram(supportedInstructions);
   }
 
   getCast(): { id: string; chainId: number; address: string } {
@@ -81,10 +82,9 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     this._errorStack = stack;
   }
 
-  loadProgram(instructions: InstructionCall[]) {
-    this._program.load(instructions);   
+  loadProgram<P extends Program>(program: P): void {
+    this._program = program;
   }
-
 
   async executeInstruction(step: InstructionCall): Promise<void> {
     if (!this._halt && !this._error) {
@@ -97,6 +97,10 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
   }
 
   async execute<N extends string, T>(trigger: Trigger<N, T>) {
+    if (!this._program) {
+      log.w(`No program loaded to execute on ${this._info.getId()}`);
+      return;
+    }
     log.d(`Executing Program for ${this._info.getId()}  `);
     //1. Initialize Virtual Machine State
     this._initVM();

@@ -13,7 +13,7 @@ import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
 import EVMContractListener from './contract-listener';
 import { chainsSupported } from '@/constants/chains';
-import { InstructionMap, InstructionCall } from '@/types/vm';
+import { InstructionMap, Program } from '@/types/vm';
 import { ContractCast } from '../types';
 import db from '@/services/prisma';
 import { ChainCastVirtualMachine } from '@/lib/vm';
@@ -78,7 +78,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     return this._transactionIndex;
   }
 
-  async loadProgram(program: InstructionCall[]) {
+  async loadProgram(program: Program) {
     this._vm.loadProgram(program);
   }
 

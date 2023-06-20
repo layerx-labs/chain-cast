@@ -10,25 +10,29 @@ export class ChainCastProgram implements Program {
     this._supportedInstructions = supportedInstructions;
   }
 
-  load(instructionCalls: InstructionCall[]) {
-    for (const instructionCall of instructionCalls) {
-      const constructorZ = this._supportedInstructions[instructionCall.name];
+  load(stringCode: string ) {
+    const decodedProgram = Buffer.from(stringCode, 'base64').toString('ascii');
+    const calls = JSON.parse(decodedProgram);    
+    for (const call of calls) {
+      const constructorZ = this._supportedInstructions[call.name];
       const instruction: Instruction = new constructorZ();
-      if (!instruction.validateArgs(instructionCall.args)) {
+      if (!instruction.validateArgs(call.args)) {
         throw new UserInputError(
           'Failed to load program, configuration is wrong',
           ErrorsEnum.invalidUserInput
         );
       }
-      this._instructionCalls.push(instructionCall);
+      this._instructionCalls.push(call);
     }
   }
 
-  compile(): boolean {
-    for (const instructionCall of this._instructionCalls) {
-      const constructorZ = this._supportedInstructions[instructionCall.name];
+  compile(stringCode: string): boolean {
+    const decodedProgram = Buffer.from(stringCode, 'base64').toString('ascii');
+    const calls = JSON.parse(decodedProgram);       
+    for (const call of calls) {
+      const constructorZ = this._supportedInstructions[call.name];
       const instruction: Instruction = new constructorZ();
-      if (!instruction.validateArgs(instructionCall.args)) {
+      if (!instruction.validateArgs(call.args)) {
         return false;
       }
     }
