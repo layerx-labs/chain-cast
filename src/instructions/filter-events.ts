@@ -1,6 +1,10 @@
 import log from '@/services/log';
-import { Instruction, VirtualMachine, InstructionArgs, ArgsSchema } from '@/types/vm';
+import { Instruction, VirtualMachine, InstructionArgs } from '@/types/vm';
 import { z } from 'zod';
+
+const ArgsTypeSchema = z.object({
+  eventNames: z.string().array().nonempty(),
+});
 
 export class FilterEvents implements Instruction {
   PROCESSOR_NAME = 'filter-events';
@@ -18,13 +22,8 @@ export class FilterEvents implements Instruction {
     return this.PROCESSOR_NAME;
   }
 
-  getArgsSchema(): ArgsSchema {
-    return {
-      eventNames: {
-        type: 'string[]',
-        required: true,
-      },
-    };
+  getArgsSchema(): typeof ArgsTypeSchema {
+    return ArgsTypeSchema;
   }
 
   onAction(vm: VirtualMachine): void {

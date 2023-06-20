@@ -1,17 +1,16 @@
 import log from '@/services/log';
-import { Instruction, VirtualMachine, InstructionArgs, ArgsSchema } from '@/types/vm';
+import { Instruction, VirtualMachine, InstructionArgs } from '@/types/vm';
 import { z } from 'zod';
 
-export type ArgsType = {
-  variablesToDebug: string[];
-};
+const ArgsTypeSchema = z.object({
+  variablesToDebug:  z.array(z.string()),
+});
+type ArgsType = z.infer<typeof ArgsTypeSchema>;
 
 export class Debug implements Instruction {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateArgs(args: InstructionArgs | undefined): boolean {
-    const variablesToDebugSchema = z.array(z.string());
-    const variablesToDebug = args?.variablesToDebug ?? '';
-    if (!variablesToDebugSchema.safeParse(variablesToDebug).success) {
+    if (!args || ArgsTypeSchema.safeParse(args).success) {
       return false;
     }
     return true;
@@ -22,13 +21,8 @@ export class Debug implements Instruction {
   name(): string {
     return this.PROCESSOR_NAME;
   }
-  getArgsSchema(): ArgsSchema {
-    return {
-      variablesToDebug: {
-        type: 'string[]',
-        required: true,
-      },
-    };
+  getArgsSchema(): typeof ArgsTypeSchema {
+    return ArgsTypeSchema;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

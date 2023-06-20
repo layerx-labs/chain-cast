@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type VariableDict = { [key: string]: any };
-
+import { z } from 'zod';
 export type InstructionCall = {
   name: string;
   args?: InstructionArgs;
@@ -18,24 +18,20 @@ export type ArgFieldType = {
   required: boolean;
 };
 
-export type ArgsSchema = {
-  [key: string]: ArgFieldType;
-};
+export type ArgsSchema<T extends z.ZodRawShape> = z.ZodObject<T>;
 
 export type Instruction = {
   name(): string;
-  getArgsSchema(): ArgsSchema;
+  getArgsSchema(): ArgsSchema<any>;
   validateArgs(conf: InstructionArgs | undefined): boolean;
   onAction(vm: VirtualMachine): void;
 };
 
-export type InstructionConstructor<M> = new (id: string, address: string, chainId: number) => M;
+export type InstructionConstructor<M> = new () => M;
 
 export type InstructionMap = {
   [key: string]: InstructionConstructor<Instruction>;
 };
-
-export type Program = InstructionCall[];
 
 /**
  * Stack Virtual Machine
@@ -45,9 +41,9 @@ export type VirtualMachine = {
   getGlobalVariable(name: string): any;
   getGlobalVariableFromPath(path: string): any;
   setGlobalVariable(name: string, value: any): void;
-  executeProgram(program: Program): Promise<void>;
+  executeInstructions(instructionCalls: InstructionCall[]): Promise<void>;
   execute<N extends string, T>(trigger: Trigger<N, T>): Promise<void>;
-  executeStep(step: InstructionCall): Promise<void> | void;
+  executeInstruction(instructionCall: InstructionCall): Promise<void> | void;
   getCurrentStackItem(): InstructionCall | undefined;
   getStack(): InstructionCall[];
   isHalted(): boolean;
@@ -61,3 +57,12 @@ export type Trigger<N extends string, T> = {
   name: N;
   payload: T;
 };
+
+
+export type Program = {
+  load(instructionCalls: InstructionCall[]): void | Promise<void>; 
+  compile() : boolean | Promise<boolean>; 
+  getInstructionCalls():  InstructionCall[];
+  getInstructionCall(index: number): InstructionCall;
+  getInstructionsCallLen(): number 
+}

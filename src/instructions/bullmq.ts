@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import log from '@/services/log';
-import { Instruction, ArgsSchema, InstructionArgs, VirtualMachine } from '@/types/vm';
+import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 import { Queue } from 'bullmq';
 
 const ArgsTypeSchema = z.object({
@@ -26,25 +26,8 @@ export class BullMQProducer implements Instruction {
     return this.PROCESSOR_NAME;
   }
 
-  getArgsSchema(): ArgsSchema {
-    return {
-      bodyInput: {
-        type: 'string',
-        required: true,
-      },
-      queueName: {
-        type: 'string',
-        required: true,
-      },
-      redisHost: {
-        type: 'string',
-        required: true,
-      },
-      redisPort: {
-        type: 'number',
-        required: false,
-      },
-    };
+  getArgsSchema(): typeof ArgsTypeSchema {
+    return ArgsTypeSchema;
   }
 
   async onAction(vm: VirtualMachine): Promise<void> {
