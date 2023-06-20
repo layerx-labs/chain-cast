@@ -12,7 +12,7 @@ const ArgsTypeSchema = z.object({
 type ArgsType = z.infer<typeof ArgsTypeSchema>;
 
 export class WebHook implements Instruction {
-  PROCESSOR_NAME = 'webhook';
+  INSTRUCTION_NAME = 'webhook';
 
   validateArgs(args: InstructionArgs | undefined): boolean {
     if (!ArgsTypeSchema.safeParse(args).success) {
@@ -22,7 +22,7 @@ export class WebHook implements Instruction {
   }
 
   name(): string {
-    return this.PROCESSOR_NAME;
+    return this.INSTRUCTION_NAME;
   }
   getArgsSchema(): typeof ArgsTypeSchema {
     return ArgsTypeSchema;
@@ -33,7 +33,7 @@ export class WebHook implements Instruction {
     const castID = vm.getGlobalVariable('cast')?.id ?? '';
     const castAddress = vm.getGlobalVariable('cast')?.address ?? '';
     const castChainId = vm.getGlobalVariable('cast')?.chainId ?? '';
-    log.d(`[${this.PROCESSOR_NAME}] Action Received on cast ${castID} address ${castAddress}`);
+    log.d(`[${this.INSTRUCTION_NAME}] Action Received on cast ${castID} address ${castAddress}`);
 
     const args: ArgsType = {
       bodyInput: (step?.args?.bodyInput as string) ?? '',
@@ -44,7 +44,7 @@ export class WebHook implements Instruction {
     if (args.url) {
       const body = vm.getGlobalVariableFromPath(args.bodyInput);
       log.d(
-        `[${this.PROCESSOR_NAME}] Calling webhook for ${args.url} for variable ${args.bodyInput}`
+        `[${this.INSTRUCTION_NAME}] Calling webhook for ${args.url} for variable ${args.bodyInput}`
       );
       const response = await axios.post(args.url, {
         body,
@@ -55,10 +55,10 @@ export class WebHook implements Instruction {
         },
       });
       if (response.status == 200) {
-        log.d(`[${this.PROCESSOR_NAME}] Weekhook called succesfully`);
+        log.d(`[${this.INSTRUCTION_NAME}] Weekhook called succesfully`);
       } else {
         log.w(
-          `[${this.PROCESSOR_NAME}] Weekhook failed to be called ` +
+          `[${this.INSTRUCTION_NAME}] Weekhook failed to be called ` +
             `${response.status} ${response.statusText} on url `,
           args.url
         );

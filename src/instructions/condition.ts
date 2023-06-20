@@ -32,7 +32,7 @@ const ArgsTypeSchema = z.object({
 });
 
 export class Condition implements Instruction {
-  PROCESSOR_NAME = 'condition';
+  INSTRUCTION_NAME = 'condition';
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateArgs(args: InstructionArgs | undefined): boolean {
     if (!args || ArgsTypeSchema.safeParse(args).success) {
@@ -42,7 +42,7 @@ export class Condition implements Instruction {
   }
 
   name(): string {
-    return this.PROCESSOR_NAME;
+    return this.INSTRUCTION_NAME;
   }
 
   getArgsSchema(): typeof ArgsTypeSchema {
@@ -56,7 +56,7 @@ export class Condition implements Instruction {
     const event = vm.getGlobalVariable('event') ?? {};
 
     log.d(
-      `[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` +
+      `[${this.INSTRUCTION_NAME}] Event Received from ${event.event} ` +
         ` on cast ${castID} address ${castAddres}`
     );
 

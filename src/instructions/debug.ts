@@ -16,10 +16,10 @@ export class Debug implements Instruction {
     return true;
   }
 
-  PROCESSOR_NAME = 'debug';
+  INSTRUCTION_NAME = 'debug';
 
   name(): string {
-    return this.PROCESSOR_NAME;
+    return this.INSTRUCTION_NAME;
   }
   getArgsSchema(): typeof ArgsTypeSchema {
     return ArgsTypeSchema;
@@ -33,7 +33,7 @@ export class Debug implements Instruction {
     };
     for (const variable of args.variablesToDebug) {
       const value = vm.getGlobalVariableFromPath(variable);
-      log.d(`[${this.PROCESSOR_NAME}] ${variable}=${value.toString()}`);
+      log.d(`[${this.INSTRUCTION_NAME}] ${variable}=${value.toString()}`);
     }
   }
 }
