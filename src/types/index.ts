@@ -1,7 +1,7 @@
 import { ChainCastManager } from '@/services/chaincast-manager';
 import { ContractCastType, PrismaClient } from '@prisma/client';
 import LogService, { LogLevel } from '@taikai/scribal';
-import { InstructionCall, InstructionMap } from './vm';
+import { InstructionMap, Program } from './vm';
 import { EventListenerHandler, Web3Event } from './events';
 import { EVMContractCast } from '@/lib/contract-cast';
 import { Web3Connection } from '@taikai/dappkit';
@@ -75,7 +75,7 @@ export type CastInfo = {
 };
 
 export type ContractCast = {
-  loadProgram(program: InstructionCall[]): Promise<void>;
+  loadProgram(program: Program): Promise<void>;
   start(): Promise<void>;
   stop(): Promise<void>;
   onEvent<N extends string, T>(event: Web3Event<N, T>): Promise<void>;

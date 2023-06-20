@@ -50,7 +50,7 @@ export type VirtualMachine = {
   halt(halt: boolean): void;
   getError(): string | null;
   setError(message: string, stack: any): void;
-  loadProgram(program: InstructionCall[]): void;
+  loadProgram<P extends Program>(program: P): void;
 };
 
 export type Trigger<N extends string, T> = {
@@ -60,8 +60,8 @@ export type Trigger<N extends string, T> = {
 
 
 export type Program = {
-  load(instructionCalls: InstructionCall[]): void | Promise<void>; 
-  compile() : boolean | Promise<boolean>; 
+  load(stringCode: string): void | Promise<void>; 
+  compile(stringCode: string) : boolean | Promise<boolean>; 
   getInstructionCalls():  InstructionCall[];
   getInstructionCall(index: number): InstructionCall;
   getInstructionsCallLen(): number 

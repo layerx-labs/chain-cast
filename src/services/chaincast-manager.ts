@@ -1,8 +1,9 @@
 import log from '@/services/log';
 import { ContractCastType, PrismaClient } from '@prisma/client';
 
-import { InstructionMap, Instruction, InstructionConstructor, InstructionCall } from '@/types/vm';
+import { InstructionMap, Instruction, InstructionConstructor } from '@/types/vm';
 import { ContractCast, ContractCastConstructor } from '../types';
+import { ChainCastProgram } from '@/lib/program';
 
 /**
  * The Service that manage all the contract casts lifecycles
@@ -77,6 +78,10 @@ export class ChainCastManager<C extends ContractCast> {
     this._supportedProcessors[name] = pConstructor;
   }
 
+  getSupportedInstructions() {
+    return  this._supportedProcessors;
+  }
+
   private async _loadCastsFromDb() {
     return await this._db.contractCast.findMany({
       select: {
@@ -110,9 +115,11 @@ export class ChainCastManager<C extends ContractCast> {
       this._supportedProcessors
     );
     this._casts[cast.id] = contractCast;
-    const decodedProgram = Buffer.from(cast?.program ?? 'W10=', 'base64').toString('ascii');
-    const obj: InstructionCall[] = JSON.parse(decodedProgram);
-    await contractCast.loadProgram(obj);
+    const program = new ChainCastProgram(
+      this._supportedProcessors,
+    );
+    program.load(cast.program);
+    await contractCast.loadProgram(program);
     await contractCast.start();
   }
 }
