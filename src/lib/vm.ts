@@ -15,9 +15,7 @@ import { getVariableFromPath } from '@/util/vm';
 /**
  *  Class to excute a program, a set of instructions in sequence
  */
-export class ChainCastVirtualMachine< CI extends CastInfo>
-  implements VirtualMachine
-{
+export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMachine {
   private _supportedInstructions: InstructionMap;
   private _program: Program | null = null;
   private _instructions: Instruction[] = [];

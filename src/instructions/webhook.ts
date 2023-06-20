@@ -25,7 +25,7 @@ export class WebHook implements Instruction {
     return this.PROCESSOR_NAME;
   }
   getArgsSchema(): typeof ArgsTypeSchema {
-    return ArgsTypeSchema;    
+    return ArgsTypeSchema;
   }
 
   async onAction(vm: VirtualMachine): Promise<void> {

@@ -79,7 +79,7 @@ export class ChainCastManager<C extends ContractCast> {
   }
 
   getSupportedInstructions() {
-    return  this._supportedProcessors;
+    return this._supportedProcessors;
   }
 
   private async _loadCastsFromDb() {
@@ -115,9 +115,7 @@ export class ChainCastManager<C extends ContractCast> {
       this._supportedProcessors
     );
     this._casts[cast.id] = contractCast;
-    const program = new ChainCastProgram(
-      this._supportedProcessors,
-    );
+    const program = new ChainCastProgram(this._supportedProcessors);
     program.load(cast.program);
     await contractCast.loadProgram(program);
     await contractCast.start();
