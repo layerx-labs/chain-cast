@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import log from '@/services/log';
 import axios from 'axios';
-import { Instruction, ArgsSchema, InstructionArgs, VirtualMachine } from '@/types/vm';
+import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 
 const ArgsTypeSchema = z.object({
   url: z.string().url(),
@@ -24,21 +24,8 @@ export class WebHook implements Instruction {
   name(): string {
     return this.PROCESSOR_NAME;
   }
-  getArgsSchema(): ArgsSchema {
-    return {
-      bodyInput: {
-        type: 'string',
-        required: true,
-      },
-      url: {
-        type: 'string',
-        required: true,
-      },
-      authorizationKey: {
-        type: 'string',
-        required: false,
-      },
-    };
+  getArgsSchema(): typeof ArgsTypeSchema {
+    return ArgsTypeSchema;    
   }
 
   async onAction(vm: VirtualMachine): Promise<void> {

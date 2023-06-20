@@ -4,22 +4,21 @@ import {
   InstructionCall,
   Instruction,
   VirtualMachine,
-  Program,
   VariableDict,
   Trigger,
+  Program,
 } from '@/types/vm';
 import { CastInfo } from '../types';
-import { UserInputError } from '@/middleware/errors';
-import { ErrorsEnum } from '../constants';
 import { Stack } from '@/lib/stack';
 import { getVariableFromPath } from '@/util/vm';
+import { ChainCastProgram } from './program';
 
 /**
  *  Class to excute a program, a set of instructions in sequence
  */
 export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMachine {
   private _supportedInstructions: InstructionMap;
-  private _program: Program = [];
+  private _program: Program;
   private _instructions: Instruction[] = [];
   private _info: CI;
 
@@ -35,6 +34,7 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     this._supportedInstructions = supportedInstructions;
     this._info = info;
     this._stack = new Stack<InstructionCall>();
+    this._program = new ChainCastProgram(supportedInstructions);
   }
 
   getCast(): { id: string; chainId: number; address: string } {
@@ -81,34 +81,15 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     this._errorStack = stack;
   }
 
-  loadProgram(program: Program) {
-    this._instructions = [];
-    this._program = program;
-    for (const step of this._program) {
-      const constructorZ = this._supportedInstructions[step.name];
-      const instruction: Instruction = new constructorZ(
-        this._info.getId(),
-        this._info.getAddress(),
-        this._info.getChainId()
-      );
-      if (!instruction.validateArgs(step.args)) {
-        throw new UserInputError(
-          'Failed to load program, configuration is wrong',
-          ErrorsEnum.invalidUserInput
-        );
-      }
-      this._instructions.push(instruction);
-    }
+  loadProgram(instructions: InstructionCall[]) {
+    this._program.load(instructions);   
   }
 
-  async executeStep(step: InstructionCall): Promise<void> {
+
+  async executeInstruction(step: InstructionCall): Promise<void> {
     if (!this._halt && !this._error) {
       const constructorZ = this._supportedInstructions[step.name];
-      const instruction = new constructorZ(
-        this._info.getId(),
-        this._info.getAddress(),
-        this._info.getChainId()
-      );
+      const instruction = new constructorZ();
       this._stack.push(step);
       await instruction.onAction(this);
       this._stack.pop();
@@ -122,7 +103,7 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     this.setGlobalVariable(trigger.name, trigger.payload);
     this.setGlobalVariable('cast', this.getCast());
     try {
-      await this.executeProgram(this._program);
+      await this.executeInstructions(this._program.getInstructionCalls());
     } catch (e: Error | any) {
       log.e(
         `Failed to execute Program ${this._info.getId()} ` +
@@ -139,9 +120,9 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     this._stack.clear();
   }
 
-  async executeProgram(program: Program): Promise<void> {
-    for (const step of program) {
-      await this.executeStep(step);
+  async executeInstructions(instructionCalls: InstructionCall[]): Promise<void> {
+    for (const call of instructionCalls) {
+      await this.executeInstruction(call);
     }
   }
 }

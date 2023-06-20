@@ -1,5 +1,5 @@
 import log from '@/services/log';
-import { Instruction, VirtualMachine, InstructionArgs, ArgsSchema } from '@/types/vm';
+import { Instruction, VirtualMachine, InstructionArgs } from '@/types/vm';
 import { z } from 'zod';
 
 type Expression = z.infer<typeof ExpressionSchema>;
@@ -32,6 +32,7 @@ const ArgsTypeSchema = z.object({
 });
 
 export class Condition implements Instruction {
+  
   PROCESSOR_NAME = 'condition';
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateArgs(args: InstructionArgs | undefined): boolean {
@@ -45,8 +46,8 @@ export class Condition implements Instruction {
     return this.PROCESSOR_NAME;
   }
 
-  getArgsSchema(): ArgsSchema {
-    return {};
+  getArgsSchema(): typeof ArgsTypeSchema {
+    return ArgsTypeSchema;
   }
 
   async onAction(vm: VirtualMachine): Promise<void> {
@@ -81,13 +82,13 @@ export class Condition implements Instruction {
       switch (condition) {
         case 'goto_0': {
           if (args.branch_0) {
-            await vm.executeProgram(args.branch_0);
+            await vm.executeInstructions(args.branch_0);
           }
           break;
         }
         case 'goto_1':
           if (args.branch_1) {
-            await vm.executeProgram(args.branch_1);
+            await vm.executeInstructions(args.branch_1);
           }
           break;
         case 'halt':
