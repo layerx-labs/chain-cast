@@ -13,7 +13,7 @@ const ArgsTypeSchema = z.object({
 type ArgsType = z.infer<typeof ArgsTypeSchema>;
 
 export class BullMQProducer implements Instruction {
-  PROCESSOR_NAME = 'bull-producer';
+  INSTRUCTION_NAME = 'bull-producer';
 
   validateArgs(args: InstructionArgs | undefined): boolean {
     if (!args || ArgsTypeSchema.safeParse(args).success) {
@@ -23,7 +23,7 @@ export class BullMQProducer implements Instruction {
   }
 
   name(): string {
-    return this.PROCESSOR_NAME;
+    return this.INSTRUCTION_NAME;
   }
 
   getArgsSchema(): typeof ArgsTypeSchema {
@@ -51,11 +51,13 @@ export class BullMQProducer implements Instruction {
           },
         });
 
-        log.d(`[${this.PROCESSOR_NAME}] Adding ${args.bodyInput} to queue ${args.queueName}`);
+        log.d(`[${this.INSTRUCTION_NAME}] Adding ${args.bodyInput} to queue ${args.queueName}`);
         await queue.add(event.event as string, event);
+      } else {
+        log.w(`[${this.INSTRUCTION_NAME}] Skipping execution ${castID} invalid arguments`);
       }
     } catch (e: Error | any) {
-      log.e(`[${this.PROCESSOR_NAME}] Failed to execute on ${castID} ${e.message}`);
+      log.e(`[${this.INSTRUCTION_NAME}] Failed to execute on ${castID} ${e.message}`);
       vm.setError(e.message, e.stack);
     }
   }

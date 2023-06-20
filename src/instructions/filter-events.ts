@@ -7,7 +7,7 @@ const ArgsTypeSchema = z.object({
 });
 
 export class FilterEvents implements Instruction {
-  PROCESSOR_NAME = 'filter-events';
+  INSTRUCTION_NAME = 'filter-events';
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateArgs(_conf: InstructionArgs | undefined): boolean {
     const eventNamesSchema = z.string().array().nonempty();
@@ -19,7 +19,7 @@ export class FilterEvents implements Instruction {
   }
 
   name(): string {
-    return this.PROCESSOR_NAME;
+    return this.INSTRUCTION_NAME;
   }
 
   getArgsSchema(): typeof ArgsTypeSchema {
@@ -32,7 +32,7 @@ export class FilterEvents implements Instruction {
     const castID = vm.getGlobalVariable('cast')?.id ?? '';
     const castAddres = vm.getGlobalVariable('cast')?.address ?? '';
     log.d(
-      `[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` +
+      `[${this.INSTRUCTION_NAME}] Event Received from ${event.event} ` +
         ` on cast ${castID} address ${castAddres}`
     );
     const eventsToForward = (step?.args?.eventNames as string[]) ?? [];
