@@ -3,7 +3,7 @@ import { Instruction, VirtualMachine, InstructionArgs } from '@/types/vm';
 import { z } from 'zod';
 
 const ArgsTypeSchema = z.object({
-  variablesToDebug:  z.array(z.string()),
+  variablesToDebug: z.array(z.string()),
 });
 type ArgsType = z.infer<typeof ArgsTypeSchema>;
 

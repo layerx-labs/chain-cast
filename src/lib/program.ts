@@ -10,9 +10,8 @@ export class ChainCastProgram implements Program {
     this._supportedInstructions = supportedInstructions;
   }
 
-  load(stringCode: string ) {
-    const decodedProgram = Buffer.from(stringCode, 'base64').toString('ascii');
-    const calls = JSON.parse(decodedProgram);    
+  load(stringCode: string) {
+    const calls = this._decodeCode(stringCode);
     for (const call of calls) {
       const constructorZ = this._supportedInstructions[call.name];
       const instruction: Instruction = new constructorZ();
@@ -27,8 +26,7 @@ export class ChainCastProgram implements Program {
   }
 
   compile(stringCode: string): boolean {
-    const decodedProgram = Buffer.from(stringCode, 'base64').toString('ascii');
-    const calls = JSON.parse(decodedProgram);       
+    const calls = this._decodeCode(stringCode);
     for (const call of calls) {
       const constructorZ = this._supportedInstructions[call.name];
       const instruction: Instruction = new constructorZ();
@@ -37,6 +35,12 @@ export class ChainCastProgram implements Program {
       }
     }
     return true;
+  }
+
+  private _decodeCode(stringCode: string) {
+    const decodedProgram = Buffer.from(stringCode, 'base64').toString('ascii');
+    const calls = JSON.parse(decodedProgram);
+    return calls;
   }
 
   getInstructionCalls(): InstructionCall[] {
