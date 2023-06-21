@@ -15,7 +15,9 @@ export class WebHook implements Instruction {
   INSTRUCTION_NAME = 'webhook';
 
   validateArgs(args: InstructionArgs | undefined): boolean {
-    if (!ArgsTypeSchema.safeParse(args).success) {
+    const res = ArgsTypeSchema.safeParse(args)
+    if (!res.success) {
+      log.d(`Failed to compile instruction webhook - ${res.error}`)
       return false;
     }
     return true;
