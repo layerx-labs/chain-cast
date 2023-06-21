@@ -21,7 +21,7 @@ export type EventListenerHandler = {
 
 export type EventRecoverHandler = {
   onEvent<N extends string, T>(event: Web3Event<N, T>): void;
-  onEventRecoverProgress(blockNumber: number): void | Promise<void>;
+  onEventRecoverProgress(blockNumber: number, txIndex: number): void | Promise<void>;
 };
 
 export type ContractEventListener = {
