@@ -116,6 +116,8 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
         txCount >= this._lastEventTransactionIndex + 1
       ) {
         await this._updateCastIndex(currentBlock, this._lastEventTransactionIndex + 1);
+      } else if (this._blockNumber > this._lastEventBlockNumber) {
+        await this._updateCastIndex(this._blockNumber, this._transactionIndex + 1);
       } else {
         await this._updateCastIndex(
           this._lastEventBlockNumber,
@@ -319,7 +321,12 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
         }
       }
       startBlock = endBlock + 1;
-      await this._updateCastIndex(startBlock, 0);
+      const txCount = await this._web3Con.eth.getBlockTransactionCount(this._blockNumber);
+      this._blockNumber = endBlock;
+      this._transactionIndex = txCount ?? -1;
+      // Save the last read block and its transaction index
+      // to avoid reading the same events again on the next recovery
+      await this._updateCastIndex(this._blockNumber, this._transactionIndex + 1);
     } while (startBlock <= toBlock);
   }
 }
