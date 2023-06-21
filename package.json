@@ -63,6 +63,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^8.8.1",
     "@envelop/core": "^4.0.0",
     "@envelop/graphql-middleware": "^5.0.0",
     "@graphql-yoga/node": "^3.9.1",
