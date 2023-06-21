@@ -7,9 +7,7 @@ import { EventEmitter } from 'node:events';
  * This Class listen for events on a contract of type M and
  * forward the event to the EventListenerhandler
  */
-export class EVMContractListener<M extends Model>
-  implements ContractEventListener
-{
+export class EVMContractListener<M extends Model> implements ContractEventListener {
   private _contract: Model;
   private _isListening = false;
   private _handler: EventListenerHandler | null = null;
@@ -46,7 +44,7 @@ export class EVMContractListener<M extends Model>
   }
 
   setHandler(handler: EventListenerHandler): void {
-    this._handler = handler
+    this._handler = handler;
   }
 
   /**

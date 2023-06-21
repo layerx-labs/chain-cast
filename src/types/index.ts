@@ -101,8 +101,6 @@ export type ContractEventListenerConstructor<M, H extends EventListenerHandler> 
   handler: H
 ) => M;
 
-
-
 export type ContractListenerConstructor<M extends Model> = new (
   web3Con: Web3Connection,
   address: string
