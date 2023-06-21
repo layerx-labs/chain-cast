@@ -1,13 +1,4 @@
-import {
-  BountyToken,
-  ERC1155Standard,
-  ERC20,
-  Erc721Standard,
-  Model,
-  NetworkRegistry,
-  Network_v2,
-  Web3Connection,
-} from '@taikai/dappkit';
+import { Web3Connection } from '@taikai/dappkit';
 import { ContractEventListener, EventListenerHandler, Web3Event } from '@/types/events';
 import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
@@ -18,6 +9,8 @@ import db from '@/services/prisma';
 import { ChainCastVirtualMachine } from '@/lib/vm';
 import { ContractListenerFactory } from './contract-listener-factory';
 import EVMContractListener from './contract-listener';
+import { ModelFactory } from './model-factory';
+import { EVMContractEventRetriever } from './contract-event-retriever';
 
 /**
  * An implementation that creates a stream of events for an Ethereum Smart Contract
@@ -162,14 +155,9 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   }
 
   private async _setupListener(type: ContractCastType) {
-    const factory = new ContractListenerFactory();    
+    const factory = new ContractListenerFactory();
     try {
-      this._listener = factory.create(
-        EVMContractListener,
-        type,
-        this._chainId,
-        this._address,
-      );
+      this._listener = factory.create(EVMContractListener, type, this._chainId, this._address);
       this._listener.setHandler(this);
       await this._listener.startListening();
     } catch (e: any) {
@@ -191,6 +179,10 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     await this._setupListener(this._type);
   }
 
+  async onEventRecoverProgress(blockNumber: number): Promise<void> {
+    await this._updateCastIndex(blockNumber, 0);
+  }
+
   private async _recoverEvents() {
     const currentBlock = await this._web3Con.eth.getBlockNumber();
 
@@ -201,98 +193,11 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
         `Starting Recovering events stream ${this._id} ` +
           `from=[${fromBlock}] txIndex=[${fromTxIndex}] to=[${currentBlock}]`
       );
-      switch (this._type) {
-        case ContractCastType.BEPRO_FACTORY:
-          // Not Supported Yet
-          break;
-        case ContractCastType.BEPRO_NETWORK_V2:
-          await this._recoverContractEvents(
-            this._web3Con,
-            Network_v2,
-            fromBlock,
-            fromTxIndex,
-            currentBlock
-          );
-          break;
-        case ContractCastType.BEPRO_REGISTRY:
-          await this._recoverContractEvents(
-            this._web3Con,
-            NetworkRegistry,
-            fromBlock,
-            fromTxIndex,
-            currentBlock
-          );
-          break;
-        case ContractCastType.BEPRO_POP:
-          await this._recoverContractEvents(
-            this._web3Con,
-            BountyToken,
-            fromBlock,
-            fromTxIndex,
-            currentBlock
-          );
-          break;
-        case ContractCastType.ERC20:
-          await this._recoverContractEvents(
-            this._web3Con,
-            ERC20,
-            fromBlock,
-            fromTxIndex,
-            currentBlock
-          );
-          break;
-        case ContractCastType.ERC721:
-          await this._recoverContractEvents(
-            this._web3Con,
-            Erc721Standard,
-            fromBlock,
-            fromTxIndex,
-            currentBlock
-          );
-          break;
-        case ContractCastType.ERC1155:
-          await this._recoverContractEvents(
-            this._web3Con,
-            ERC1155Standard,
-            fromBlock,
-            fromTxIndex,
-            currentBlock
-          );
-          break;
-      }
-    }
-  }
+      const model = new ModelFactory().create(this._type, this._chainId, this._address);
 
-  private async _recoverContractEvents<M extends Model>(
-    web3Con: Web3Connection,
-    TCreator: new (web3Con: Web3Connection, address: string) => M,
-    fromBlock: number,
-    fromTxIndex: number,
-    toBlock: number
-  ) {
-    let startBlock = fromBlock;
-    do {
-      const endBlock = Math.min(startBlock + 100, toBlock);
-      log.d(
-        `Finding Events stream=${this._id} ` +
-          `from=[${startBlock}] ` +
-          `fromIndex=[${fromTxIndex}] to=[${endBlock}]`
-      );
-      const options = {
-        fromBlock: startBlock,
-        toBlock: endBlock,
-      };
-      const network = new TCreator(web3Con, this._address);
-      const events = await network.contract.self.getPastEvents('allEvents', options);
-      for (const event of events) {
-        if (!(event.blockNumber == fromBlock && event.transactionIndex < fromTxIndex)) {
-          this.onEvent(event);
-        } else {
-          log.d(`Skipping event ${event.blockNumber} and ${event.transactionIndex} on ${this._id}`);
-        }
-      }
-      startBlock = endBlock + 1;
-      await this._updateCastIndex(startBlock, 0);
-    } while (startBlock <= toBlock);
+      const retriever = new EVMContractEventRetriever(model);
+      retriever.setHandler(this);
+      await retriever.recover(fromBlock, fromTxIndex, currentBlock);
+    }
   }
 }
