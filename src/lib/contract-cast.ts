@@ -185,8 +185,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
 
   private async _recoverEvents() {
     const currentBlock = await this._web3Con.eth.getBlockNumber();
-
-    if (this._blockNumber < currentBlock) {
+    if (this._blockNumber <= currentBlock ) {
       const fromBlock = this._blockNumber;
       const fromTxIndex = this._transactionIndex;
       log.i(
@@ -194,7 +193,6 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
           `from=[${fromBlock}] txIndex=[${fromTxIndex}] to=[${currentBlock}]`
       );
       const model = new ModelFactory().create(this._type, this._chainId, this._address);
-
       const retriever = new EVMContractEventRetriever(model);
       retriever.setHandler(this);
       await retriever.recover(fromBlock, fromTxIndex, currentBlock);
