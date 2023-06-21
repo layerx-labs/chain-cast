@@ -10,9 +10,9 @@ export class FilterEvents implements Instruction {
   INSTRUCTION_NAME = 'filter-events';
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateArgs(_conf: InstructionArgs | undefined): boolean {
-    const eventNamesSchema = z.string().array().nonempty();
-    const eventNames = _conf?.eventNames ?? [];
-    if (!_conf || !eventNamesSchema.safeParse(eventNames).success) {
+    const res = ArgsTypeSchema.safeParse(_conf);
+    if (!res.success) {
+      log.d(`Failed to compile instruction filter-events - ${res.error}`)
       return false;
     }
     return true;

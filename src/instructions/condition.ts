@@ -34,8 +34,10 @@ const ArgsTypeSchema = z.object({
 export class Condition implements Instruction {
   INSTRUCTION_NAME = 'condition';
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  validateArgs(args: InstructionArgs | undefined): boolean {
-    if (!args || ArgsTypeSchema.safeParse(args).success) {
+  validateArgs(args: InstructionArgs): boolean {
+    const res = ArgsTypeSchema.safeParse(args);
+    if (!res.success) {
+      log.d(`Failed to compile instruction condition - ${res.error}`)
       return false;
     }
     return true;

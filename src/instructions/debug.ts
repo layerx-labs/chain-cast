@@ -10,7 +10,9 @@ type ArgsType = z.infer<typeof ArgsTypeSchema>;
 export class Debug implements Instruction {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateArgs(args: InstructionArgs | undefined): boolean {
-    if (!args || ArgsTypeSchema.safeParse(args).success) {
+    const res = ArgsTypeSchema.safeParse(args)
+    if (!res.success) {
+      log.d(`Failed to compile instruction debug - ${res.error}`)
       return false;
     }
     return true;
