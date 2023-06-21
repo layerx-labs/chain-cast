@@ -33,7 +33,6 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     this._supportedInstructions = supportedInstructions;
     this._info = info;
     this._stack = new Stack<InstructionCall>();
-    // this._program = new ChainCastProgram(supportedInstructions);
   }
 
   getCast(): { id: string; chainId: number; address: string } {

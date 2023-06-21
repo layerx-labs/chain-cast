@@ -4,7 +4,7 @@ import LogService, { LogLevel } from '@taikai/scribal';
 import { InstructionMap, Program } from './vm';
 import { EventListenerHandler, Web3Event } from './events';
 import { EVMContractCast } from '@/lib/contract-cast';
-import { Web3Connection } from '@taikai/dappkit';
+import { Model, Web3Connection } from '@taikai/dappkit';
 
 export type AppContext = {
   db: PrismaClient;
@@ -99,4 +99,11 @@ export type ContractEventListenerConstructor<M, H extends EventListenerHandler> 
   wsUrl: string,
   address: string,
   handler: H
+) => M;
+
+
+
+export type ContractListenerConstructor<M extends Model> = new (
+  web3Con: Web3Connection,
+  address: string
 ) => M;

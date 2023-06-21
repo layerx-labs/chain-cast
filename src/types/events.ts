@@ -21,6 +21,7 @@ export type EventListenerHandler = {
 
 export type ContractEventListener = {
   getEvents(): string[];
+  setHandler(handler: EventListenerHandler): void
   isListening(): boolean;
   startListening(): void;
   stopListening(): void;
