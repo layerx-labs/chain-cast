@@ -117,10 +117,12 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
       ) {
         await this._updateCastIndex(currentBlock, this._lastEventTransactionIndex + 1);
       } else if (this._lastEventBlockNumber >= this._blockNumber) {
-        await this._updateCastIndex(
-          this._lastEventBlockNumber,
-          this._lastEventTransactionIndex + 1
-        );
+        const txIndex =
+          this._lastEventBlockNumber == this._blockNumber
+            ? Math.max(this._transactionIndex, this._lastEventTransactionIndex)
+            : this._lastEventTransactionIndex;
+
+        await this._updateCastIndex(this._lastEventBlockNumber, txIndex + 1);
       } else {
         log.i('Not updating the cast index, no new events were processed');
       }
