@@ -116,13 +116,13 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
         txCount >= this._lastEventTransactionIndex + 1
       ) {
         await this._updateCastIndex(currentBlock, this._lastEventTransactionIndex + 1);
-      } else if (this._blockNumber > this._lastEventBlockNumber) {
-        await this._updateCastIndex(this._blockNumber, this._transactionIndex + 1);
-      } else {
+      } else if (this._lastEventBlockNumber >= this._blockNumber) {
         await this._updateCastIndex(
           this._lastEventBlockNumber,
           this._lastEventTransactionIndex + 1
         );
+      } else {
+        log.i('Not updating the cast index, no new events were processed');
       }
     }
   }
