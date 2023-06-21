@@ -56,9 +56,7 @@ export class WebHook implements Instruction {
           chainId: castChainId,
         },
       });
-      if (response.status == 200) {
-        log.d(`[${this.INSTRUCTION_NAME}] Weekhook called succesfully`);
-      } else {
+      if (response.status != 200) {      
         log.w(
           `[${this.INSTRUCTION_NAME}] Weekhook failed to be called ` +
             `${response.status} ${response.statusText} on url `,

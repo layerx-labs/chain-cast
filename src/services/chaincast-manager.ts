@@ -64,6 +64,14 @@ export class ChainCastManager<C extends ContractCast> {
     }
   }
 
+  async updateCast(id: string, stringCode: string) {
+    if (this._casts[id]) {
+      const program = new ChainCastProgram(this._supportedProcessors);
+      program.load(stringCode);
+      await this._casts[id].loadProgram(program);
+    }
+  }
+
   async deleteCast(id: string) {
     if (this._casts[id]) {
       await this._casts[id].stop();
