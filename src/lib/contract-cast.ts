@@ -11,12 +11,13 @@ import {
 import { ContractEventListener, EventListenerHandler, Web3Event } from '@/types/events';
 import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
-import EVMContractListener from './contract-listener';
 import { chainsSupported } from '@/constants/chains';
 import { InstructionMap, Program } from '@/types/vm';
 import { ContractCast } from '../types';
 import db from '@/services/prisma';
 import { ChainCastVirtualMachine } from '@/lib/vm';
+import { ContractListenerFactory } from './contract-listener-factory';
+import EVMContractListener from './contract-listener';
 
 /**
  * An implementation that creates a stream of events for an Ethereum Smart Contract
@@ -160,19 +161,17 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     log.e(`Error listening on cast ${this._id} ${error.message} ${this._type} `, error.stack);
   }
 
-  private async _setupListener<M extends Model>(
-    TCreator: new (web3Con: Web3Connection, address: string) => M
-  ) {
-    const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this._chainId);
+  private async _setupListener(type: ContractCastType) {
+    const factory = new ContractListenerFactory();    
     try {
-      const listener: ContractEventListener = new EVMContractListener(
-        TCreator,
-        chain.wsUrl,
+      this._listener = factory.create(
+        EVMContractListener,
+        type,
+        this._chainId,
         this._address,
-        this
       );
-      this._listener = listener;
-      await listener.startListening();
+      this._listener.setHandler(this);
+      await this._listener.startListening();
     } catch (e: any) {
       log.e(
         `Failed to setup ${this._id} ${this._chainId} ${this._type} ` +
@@ -189,30 +188,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
       `Starting Consuming Events for stream ${this._id} ${this._chainId} ${this._type} ` +
         `on ${this._address}`
     );
-
-    switch (this._type) {
-      case ContractCastType.BEPRO_FACTORY:
-        // Not Supported Yet
-        break;
-      case ContractCastType.BEPRO_NETWORK_V2:
-        await this._setupListener(Network_v2);
-        break;
-      case ContractCastType.BEPRO_REGISTRY:
-        await this._setupListener(NetworkRegistry);
-        break;
-      case ContractCastType.BEPRO_POP:
-        await this._setupListener(BountyToken);
-        break;
-      case ContractCastType.ERC20:
-        await this._setupListener(ERC20);
-        break;
-      case ContractCastType.ERC721:
-        await this._setupListener(Erc721Standard);
-        break;
-      case ContractCastType.ERC1155:
-        await this._setupListener(ERC1155Standard);
-        break;
-    }
+    await this._setupListener(this._type);
   }
 
   private async _recoverEvents() {
