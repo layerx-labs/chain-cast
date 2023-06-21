@@ -179,8 +179,8 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     await this._setupListener(this._type);
   }
 
-  async onEventRecoverProgress(blockNumber: number): Promise<void> {
-    await this._updateCastIndex(blockNumber, 0);
+  async onEventRecoverProgress(blockNumber: number, txIndex: number): Promise<void> {
+    await this._updateCastIndex(blockNumber, txIndex);
   }
 
   private async _recoverEvents() {

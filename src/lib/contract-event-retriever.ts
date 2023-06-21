@@ -42,6 +42,7 @@ export class EVMContractEventRetriever<M extends Model> implements ContractEvent
           }
         }
         startBlock = endBlock + 1;
+        await  this._handler?.onEventRecoverProgress(startBlock, 0)
       } while (startBlock <= toBlock);
     } finally {
       this._isRecovering = false;
