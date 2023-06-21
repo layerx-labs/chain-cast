@@ -11,6 +11,7 @@ import { WebHook } from 'src/instructions/webhook';
 import { Debug } from './instructions/debug';
 import { Condition } from './instructions/condition';
 import { BullMQProducer } from './instructions/bullmq';
+import { ElasticSearch } from './instructions/elastic-search';
 
 
 const chainCastBanner=`
@@ -61,6 +62,7 @@ async function run() {
   log.i('Starting Chain Cast Manager Service...');
 
   ctx.manager.registerInstruction('debug', Debug);
+  ctx.manager.registerInstruction('elasticsearch',ElasticSearch)
   ctx.manager.registerInstruction('webhook', WebHook);
   ctx.manager.registerInstruction('condition', Condition);
   ctx.manager.registerInstruction('bullmq-producer', BullMQProducer);

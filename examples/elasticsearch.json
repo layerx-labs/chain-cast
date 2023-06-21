@@ -1,0 +1,19 @@
+[{
+    "name": "debug",
+    "args": {
+        "variablesToDebug": [
+            "event.event",
+            "event.blockNumber",
+            "cast.id"
+        ]
+    }    
+}, {
+    "name": "elasticsearch",
+    "args": {
+        "bodyInput": "event",
+        "indexName": "chaincast", 
+        "url": "https://taikai-****",
+        "username": "***",
+        "password": "****"
+    }
+}]
