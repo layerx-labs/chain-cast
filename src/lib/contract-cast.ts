@@ -31,7 +31,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   private _listener: ContractEventListener | null = null;
   private _vm: ChainCastVirtualMachine<typeof this>;
   private _web3Con: Web3Connection;
-  private _lastEventBlockNumber = -1;
+  private _lastEventBlockNumber = 0;
   private _lastEventTransactionIndex = -1;
 
   constructor(
@@ -117,7 +117,10 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
       ) {
         await this._updateCastIndex(currentBlock, this._lastEventTransactionIndex + 1);
       } else {
-        await this._updateCastIndex(currentBlock + 1);
+        await this._updateCastIndex(
+          this._lastEventBlockNumber,
+          this._lastEventTransactionIndex + 1
+        );
       }
     }
   }
@@ -144,7 +147,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
       `New Event ${event.event} goint to be executed by the program ` +
         `${event.blockNumber}:${event.transactionIndex}`
     );
-    await this._vm.execute({name: "event", payload: event});
+    await this._vm.execute({ name: 'event', payload: event });
     this._lastEventBlockNumber = event.blockNumber;
     this._lastEventTransactionIndex = event.transactionIndex;
   }
