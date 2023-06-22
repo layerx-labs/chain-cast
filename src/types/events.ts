@@ -20,6 +20,7 @@ export type EventListenerHandler = {
 };
 
 export type EventRecoverHandler = {
+  shouldStop(): boolean;
   onEvent<N extends string, T>(event: Web3Event<N, T>): void;
   onEventRecoverProgress(blockNumber: number, txIndex: number): void | Promise<void>;
 };

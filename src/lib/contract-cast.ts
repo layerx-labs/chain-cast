@@ -4,13 +4,14 @@ import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
 import { chainsSupported } from '@/constants/chains';
 import { InstructionMap, Program } from '@/types/vm';
-import { ContractCast } from '../types';
+import { ContractCast, ContractCastStatusEnum } from '../types';
 import db from '@/services/prisma';
 import { ChainCastVirtualMachine } from '@/lib/vm';
 import { ContractListenerFactory } from './contract-listener-factory';
 import EVMContractListener from './contract-listener';
 import { ModelFactory } from './model-factory';
 import { EVMContractEventRetriever } from './contract-event-retriever';
+
 
 /**
  * An implementation that creates a stream of events for an Ethereum Smart Contract
@@ -26,7 +27,8 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   private _vm: ChainCastVirtualMachine<typeof this>;
   private _web3Con: Web3Connection;
   private _lastEventBlockNumber = -1;
-  private _lastEventTransactionIndex = -1;
+  private _lastEventTransactionIndex = 0;
+  private _status: ContractCastStatusEnum = ContractCastStatusEnum.IDLE;
 
   constructor(
     id: string,
@@ -50,6 +52,10 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
       web3Host: chain.rpcUrl,
     });
     this._web3Con = web3Con;
+  }
+
+  getStatus(): ContractCastStatusEnum {
+    return this._status;
   }
 
   getId() {
@@ -88,8 +94,12 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   async start() {
     log.d(`Starting the Contract Cast ${this._id}`);
     try {
+      this._status = ContractCastStatusEnum.RECOVERING;
       await this._recoverEvents();
-      await this._startContractListening();
+      if (this._status !== ContractCastStatusEnum.TERMINATED) {
+        await this._startContractListening();
+        this._status = ContractCastStatusEnum.LISTENING;
+      }
     } catch (e: Error | any) {
       log.e(`Failed to start Contract Cast ${this._id} ${e.message}  ${e.stack}`);
     }
@@ -100,18 +110,23 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
    */
   async stop() {
     if (this._listener?.isListening()) {
-      await this._listener.stopListening();
-      const currentBlock = await this._web3Con.eth.getBlockNumber();
-      const txCount = await this._web3Con.eth.getBlockTransactionCount(currentBlock);
-      log.d(`Stopping the Contract Cast ${this._id}`);
-      if (
-        currentBlock == this._lastEventBlockNumber &&
-        this._lastEventTransactionIndex &&
-        txCount >= this._lastEventTransactionIndex + 1
-      ) {
-        await this._updateCastIndex(currentBlock, this._lastEventTransactionIndex + 1);
-      } else {
-        await this._updateCastIndex(currentBlock + 1);
+      try {
+        await this._listener.stopListening();
+        const currentBlock = await this._web3Con.eth.getBlockNumber();
+        const txCount = await this._web3Con.eth.getBlockTransactionCount(currentBlock);
+        log.d(`Stopping the Contract Cast ${this._id}`);
+        if (
+          currentBlock == this._lastEventBlockNumber &&
+          this._lastEventTransactionIndex &&
+          txCount >= this._lastEventTransactionIndex + 1
+        ) {
+          await this._updateCastIndex(currentBlock, this._lastEventTransactionIndex + 1);
+        } else {
+          await this._updateCastIndex(currentBlock + 1);
+        }
+        this._status = ContractCastStatusEnum.TERMINATED;
+      } catch (e: Error | any) {
+        log.e(`Failed to stop Contract Cast ${this._id} ${e.message}  ${e.stack}`);
       }
     }
   }
@@ -129,6 +144,9 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     });
   }
 
+  shouldStop(): boolean {
+    return this._status === ContractCastStatusEnum.TERMINATED;
+  }
   /**
    *
    * @param event
@@ -185,7 +203,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
 
   private async _recoverEvents() {
     const currentBlock = await this._web3Con.eth.getBlockNumber();
-    if (this._blockNumber <= currentBlock ) {
+    if (this._blockNumber <= currentBlock) {
       const fromBlock = this._blockNumber;
       const fromTxIndex = this._transactionIndex;
       log.i(
