@@ -112,17 +112,23 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     if (this._listener?.isListening()) {
       try {
         await this._listener.stopListening();
-        const currentBlock = await this._web3Con.eth.getBlockNumber();
-        const txCount = await this._web3Con.eth.getBlockTransactionCount(currentBlock);
         log.d(`Stopping the Contract Cast ${this._id}`);
-        if (
-          currentBlock == this._lastEventBlockNumber &&
-          this._lastEventTransactionIndex &&
-          txCount >= this._lastEventTransactionIndex + 1
-        ) {
-          await this._updateCastIndex(currentBlock, this._lastEventTransactionIndex + 1);
-        } else {
-          await this._updateCastIndex(currentBlock + 1);
+        /**
+         * If the Cast is in recovery state the recover process will save the
+         * latest block position and transaction Index;
+         * */
+        if (this._status !== ContractCastStatusEnum.RECOVERING) {
+          const currentBlock = await this._web3Con.eth.getBlockNumber();
+          const txCount = await this._web3Con.eth.getBlockTransactionCount(currentBlock);
+          if (
+            currentBlock == this._lastEventBlockNumber &&
+            this._lastEventTransactionIndex &&
+            txCount >= this._lastEventTransactionIndex + 1
+          ) {
+            await this._updateCastIndex(currentBlock, this._lastEventTransactionIndex + 1);
+          } else {
+            await this._updateCastIndex(currentBlock + 1);
+          }
         }
         this._status = ContractCastStatusEnum.TERMINATED;
       } catch (e: Error | any) {
@@ -132,6 +138,8 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   }
 
   async _updateCastIndex(blockNumber: number, transactionIndex?: number) {
+    this._blockNumber = blockNumber;
+    this._transactionIndex = transactionIndex ?? 0;
     log.d(`Saving Chain Cast index on ${this.getId()} at ${blockNumber}:${transactionIndex ?? 0}`);
     await db.contractCast.update({
       where: {
@@ -177,7 +185,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     try {
       this._listener = factory.create(EVMContractListener, type, this._chainId, this._address);
       this._listener.setHandler(this);
-      await this._listener.startListening();
+      await this._listener.startListening(this._blockNumber);
     } catch (e: any) {
       log.e(
         `Failed to setup ${this._id} ${this._chainId} ${this._type} ` +
