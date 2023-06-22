@@ -50,10 +50,10 @@ export class EVMContractListener<M extends Model> implements ContractEventListen
   /**
    * Start Listening for the events specified on the contract
    */
-  async startListening(): Promise<void> {
+  async startListening(blockNumber: number): Promise<void> {
     if (!this.isListening() && this._handler) {
       await this._contract.start();
-      await this.enablehandler(this._handler);
+      await this.enablehandler(this._handler, blockNumber);
       this._isListening = true;
     }
   }
@@ -63,16 +63,17 @@ export class EVMContractListener<M extends Model> implements ContractEventListen
    * Always to start the listener on the Block Number
    * @param handler
    */
-  private async enablehandler<handler extends EventListenerHandler>(handler: handler) {
-    const currentBlock = await this._contract.web3.eth.getBlockNumber();
-    const startBlock = currentBlock + 1;
+  private async enablehandler<handler extends EventListenerHandler>(
+    handler: handler,
+    blockNumber: number
+  ) {
     const options = {
       filter: {
         value: [],
       },
-      fromBlock: startBlock,
+      fromBlock: blockNumber,
     };
-    log.d(`Listening for events on ${this._contract.contractAddress} from ${startBlock} `);
+    log.d(`Listening for events on ${this._contract.contractAddress} from ${blockNumber} `);
     this._listener = this._contract.contract.events
       .allEvents(options)
       .on('changed', (changed: any) => handler.onEventChanged(changed))

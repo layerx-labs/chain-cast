@@ -29,7 +29,7 @@ export type ContractEventListener = {
   getEvents(): string[];
   setHandler(handler: EventListenerHandler): void;
   isListening(): boolean;
-  startListening(): void;
+  startListening(blockNumber: number): void;
   stopListening(): void;
 };
 
