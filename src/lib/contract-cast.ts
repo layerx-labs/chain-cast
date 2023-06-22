@@ -26,8 +26,6 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   private _listener: ContractEventListener | null = null;
   private _vm: ChainCastVirtualMachine<typeof this>;
   private _web3Con: Web3Connection;
-  private _lastEventBlockNumber = -1;
-  private _lastEventTransactionIndex = 0;
   private _status: ContractCastStatusEnum = ContractCastStatusEnum.IDLE;
 
   constructor(
@@ -121,11 +119,11 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
           const currentBlock = await this._web3Con.eth.getBlockNumber();
           const txCount = await this._web3Con.eth.getBlockTransactionCount(currentBlock);
           if (
-            currentBlock == this._lastEventBlockNumber &&
-            this._lastEventTransactionIndex &&
-            txCount >= this._lastEventTransactionIndex + 1
+            currentBlock == this._blockNumber &&
+            this._transactionIndex &&
+            txCount >= this._transactionIndex + 1
           ) {
-            await this._updateCastIndex(currentBlock, this._lastEventTransactionIndex + 1);
+            await this._updateCastIndex(currentBlock, this._transactionIndex + 1);
           } else {
             await this._updateCastIndex(currentBlock + 1);
           }
@@ -165,8 +163,8 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
         `${event.blockNumber}:${event.transactionIndex}`
     );
     await this._vm.execute({ name: 'event', payload: event });
-    this._lastEventBlockNumber = event.blockNumber;
-    this._lastEventTransactionIndex = event.transactionIndex;
+    this._blockNumber = event.blockNumber;
+    this._transactionIndex = event.transactionIndex;
   }
 
   onEventChanged(changed: any): void {

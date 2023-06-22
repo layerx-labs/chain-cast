@@ -77,8 +77,8 @@ export type CastInfo = {
 export enum ContractCastStatusEnum  {
   IDLE,
   RECOVERING,
-  LISTENING, 
-  TERMINATED
+  LISTENING,
+  TERMINATED 
 }
 
 export type ContractCast = {

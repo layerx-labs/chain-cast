@@ -12,6 +12,7 @@ import { Debug } from './instructions/debug';
 import { Condition } from './instructions/condition';
 import { BullMQProducer } from './instructions/bullmq';
 import { ElasticSearch } from './instructions/elastic-search';
+import { Transform } from './instructions/transform';
 
 
 const chainCastBanner=`
@@ -66,6 +67,7 @@ async function run() {
   ctx.manager.registerInstruction('webhook', WebHook);
   ctx.manager.registerInstruction('condition', Condition);
   ctx.manager.registerInstruction('bullmq-producer', BullMQProducer);
+  ctx.manager.registerInstruction('transform', Transform);
   
   await ctx.manager.start();
 
