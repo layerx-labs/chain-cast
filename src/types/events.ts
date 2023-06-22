@@ -19,9 +19,22 @@ export type EventListenerHandler = {
   onConnected(message: string): void;
 };
 
+export type EventRecoverHandler = {
+  shouldStop(): boolean;
+  onEvent<N extends string, T>(event: Web3Event<N, T>): void;
+  onEventRecoverProgress(blockNumber: number, txIndex: number): void | Promise<void>;
+};
+
 export type ContractEventListener = {
   getEvents(): string[];
+  setHandler(handler: EventListenerHandler): void;
   isListening(): boolean;
-  startListening(): void;
+  startListening(blockNumber: number): void;
   stopListening(): void;
+};
+
+export type ContractEventRetriever = {
+  setHandler(handler: EventRecoverHandler): void;
+  recover(fromBlock: number, fromTxIndex: number, toBlock: number): Promise<void>;
+  isRecovering(): boolean;
 };

@@ -2,6 +2,7 @@ import { ChainIds } from '@/types/index';
 import { builder } from '../builder';
 import { ContractCastTypeEnum } from '@/graphql/types/contract-cast';
 import createContractCast from '../resolvers/contract-cast/create';
+import updateContractCast from '../resolvers/contract-cast/update';
 import { deleteContractCast } from '../resolvers/contract-cast/delete';
 import web3 from 'web3';
 
@@ -26,9 +27,11 @@ export const CreateContractCastDataInput = builder.inputType('CreateContractCast
         ],
       },
     }),
-    program: t.field({
-      type: "JSON",
+    program: t.string({
       required: true,      
+      validate: {
+        maxLength: 0,
+      },
     }),
     startFrom: t.int({
       required: false,
@@ -41,6 +44,32 @@ export const CreateContractCastDataInput = builder.inputType('CreateContractCast
   }),
 });
 
+
+
+export const UpdateContractCastDataInput = builder.inputType('UpdateContractCastDataInput', {
+  fields: (t) => ({
+    program: t.string({
+      required: true,      
+      validate: {
+        maxLength: 0,
+      },
+    }),   
+  }),
+});
+
+
+export const UpdateWhereContractCastDataInput = builder.inputType(
+  'UpdateWhereContractCastDataInput',
+  {
+    fields: (t) => ({
+      id: t.string({
+        required: true,
+      }),
+    }),
+  }
+);
+
+
 builder.mutationField('createContractCast', (t) =>
   t.prismaField({
     type: 'ContractCast',
@@ -51,6 +80,23 @@ builder.mutationField('createContractCast', (t) =>
       }),
     },
     resolve: async (_q, root, args, ctx, info) => createContractCast(root, args, ctx, info),
+  })
+);
+
+builder.mutationField('updateContractCast', (t) =>
+  t.prismaField({
+    type: 'ContractCast',
+    args: {
+      where: t.arg({
+        type: UpdateWhereContractCastDataInput,
+        required: true,
+      }),
+      data: t.arg({
+        type: UpdateContractCastDataInput,
+        required: true,
+      }),
+    },
+    resolve: async (_q, root, args, ctx, info) => updateContractCast(root, args, ctx, info),
   })
 );
 

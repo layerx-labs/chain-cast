@@ -8,7 +8,8 @@ CREATE TABLE "ContractCast" (
     "address" TEXT NOT NULL,
     "chainId" INTEGER NOT NULL,
     "blockNumber" INTEGER NOT NULL DEFAULT 0,
-    "program" JSONB NOT NULL,
+    "transactionIndex" INTEGER NOT NULL DEFAULT 0,
+    "program" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "ContractCast_pkey" PRIMARY KEY ("id")

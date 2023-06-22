@@ -1,54 +1,74 @@
 import log from '@/services/log';
-import { Instruction, VirtualMachine, InstructionArgs, ArgsSchema, Program } from '@/types/vm';
+import { Instruction, VirtualMachine, InstructionArgs } from '@/types/vm';
+import { z } from 'zod';
 
-export type Expression = {
-  variable: string;
-  condition: '>' | '>=' | '<=' | '<' | '=' | '!=';
-  compareTo: 'number' | 'boolean' | 'string' | 'null';
-};
+type Expression = z.infer<typeof ExpressionSchema>;
+type ArgsType = z.infer<typeof ArgsTypeSchema>;
+type Action = z.infer<typeof ActionSchema>;
 
-export type Action = 'goto_0' | 'goto_1' | 'halt';
+const ProgramSchema = z.array(
+  z.object({
+    name: z.string().min(2),
+    args: z.any().optional(),
+    branches: z.any(),
+  })
+);
 
-export type ArgsType = {
-  OR?: [Expression];
-  AND?: [Expression];
-  onTrue: Action;
-  onFalse: Action;
-  branch_0?: Program;
-  branch_1?: Program;
-};
+const ExpressionSchema = z.object({
+  variable: z.string().min(2),
+  condition: z.enum(['>', '>=', '<=', '<', '=', '!=']),
+  compareTo: z.enum(['number', 'boolean', 'string', 'null']),
+});
+
+const ActionSchema = z.enum(['goto_0', 'goto_1', 'halt']);
+
+const ArgsTypeSchema = z.object({
+  OR: z.array(ExpressionSchema),
+  AND: z.array(ExpressionSchema),
+  onTrue: ActionSchema,
+  onFalse: ActionSchema,
+  branch_0: ProgramSchema,
+  branch_1: ProgramSchema,
+});
 
 export class Condition implements Instruction {
-  PROCESSOR_NAME = 'condition';
+  INSTRUCTION_NAME = 'condition';
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  validateArgs(_conf: InstructionArgs | undefined): boolean {
+  validateArgs(args: InstructionArgs): boolean {
+    const res = ArgsTypeSchema.safeParse(args);
+    if (!res.success) {
+      log.d(`Failed to compile instruction condition - ${res.error}`)
+      return false;
+    }
     return true;
   }
 
   name(): string {
-    return this.PROCESSOR_NAME;
+    return this.INSTRUCTION_NAME;
   }
 
-  getArgsSchema(): ArgsSchema {
-    return {};
+  getArgsSchema(): typeof ArgsTypeSchema {
+    return ArgsTypeSchema;
   }
 
   async onAction(vm: VirtualMachine): Promise<void> {
     const step = vm.getCurrentStackItem();
     const castID = vm.getGlobalVariable('cast')?.id;
     const castAddres = vm.getGlobalVariable('cast')?.address;
-    const event = vm.getGlobalVariable('event')  ?? {};
+    const event = vm.getGlobalVariable('event') ?? {};
 
     log.d(
-      `[${this.PROCESSOR_NAME}] Event Received from ${event.event} ` +
+      `[${this.INSTRUCTION_NAME}] Event Received from ${event.event} ` +
         ` on cast ${castID} address ${castAddres}`
     );
 
     const args: ArgsType = {
-      AND: step?.args?.AND.value ?? [],
-      OR: step?.args?.OR.value ?? [],
-      onTrue: step?.args?.onTrue.value,
-      onFalse: step?.args?.onFalse.value,
+      AND: (step?.args?.AND as Expression[]) ?? [],
+      OR: (step?.args?.OR as Expression[]) ?? [],
+      onTrue: step?.args?.onTrue as Action,
+      onFalse: step?.args?.onFalse as Action,
+      branch_0: [],
+      branch_1: [],
     };
 
     let res = false;
@@ -63,13 +83,13 @@ export class Condition implements Instruction {
       switch (condition) {
         case 'goto_0': {
           if (args.branch_0) {
-            await vm.executeProgram(args.branch_0);
+            await vm.executeInstructions(args.branch_0);
           }
           break;
         }
         case 'goto_1':
           if (args.branch_1) {
-            await vm.executeProgram(args.branch_1);
+            await vm.executeInstructions(args.branch_1);
           }
           break;
         case 'halt':
@@ -85,7 +105,7 @@ export class Condition implements Instruction {
     }
   }
 
-  private _evaluateExpressions(vm: VirtualMachine, expressions: [Expression]) {
+  private _evaluateExpressions(vm: VirtualMachine, expressions: Expression[]) {
     for (const expression of expressions) {
       const variable = vm.getGlobalVariableFromPath(expression.variable);
       const operator = expression.condition;

@@ -1,20 +1,16 @@
 import { ContractEventListener, EventListenerHandler } from '@/types/events';
-import { Model, Web3Connection } from '@taikai/dappkit';
+import { Model } from '@taikai/dappkit';
 import log from '@/services/log';
 import { EventEmitter } from 'node:events';
-import { ModelConstructor } from '../types';
 
 /**
  * This Class listen for events on a contract of type M and
  * forward the event to the EventListenerhandler
  */
-export class EVMContractListener<M extends Model, H extends EventListenerHandler>
-  implements ContractEventListener
-{
-  private _web3Con: Web3Connection;
+export class EVMContractListener<M extends Model> implements ContractEventListener {
   private _contract: Model;
   private _isListening = false;
-  private _handler: H;
+  private _handler: EventListenerHandler | null = null;
   private _listener: EventEmitter | null = null;
 
   /**
@@ -25,13 +21,8 @@ export class EVMContractListener<M extends Model, H extends EventListenerHandler
    * @param events
    * @param handler
    */
-  constructor(modelConstructor: ModelConstructor<M>, wsUrl: string, address: string, handler: H) {
-    this._web3Con = new Web3Connection({
-      debug: false,
-      web3Host: wsUrl,
-    });
-    this._handler = handler;
-    this._contract = new modelConstructor(this._web3Con, address);
+  constructor(model: M) {
+    this._contract = model;
   }
 
   /**
@@ -52,13 +43,17 @@ export class EVMContractListener<M extends Model, H extends EventListenerHandler
     return this._isListening;
   }
 
+  setHandler(handler: EventListenerHandler): void {
+    this._handler = handler;
+  }
+
   /**
    * Start Listening for the events specified on the contract
    */
-  async startListening(): Promise<void> {
-    if (!this.isListening()) {
+  async startListening(blockNumber: number): Promise<void> {
+    if (!this.isListening() && this._handler) {
       await this._contract.start();
-      await this.enablehandler(this._handler);
+      await this.enablehandler(this._handler, blockNumber);
       this._isListening = true;
     }
   }
@@ -68,16 +63,17 @@ export class EVMContractListener<M extends Model, H extends EventListenerHandler
    * Always to start the listener on the Block Number
    * @param handler
    */
-  private async enablehandler<handler extends EventListenerHandler>(handler: handler) {
-    const currentBlock = await this._web3Con.eth.getBlockNumber();
-    const startBlock = currentBlock + 1;
+  private async enablehandler<handler extends EventListenerHandler>(
+    handler: handler,
+    blockNumber: number
+  ) {
     const options = {
       filter: {
         value: [],
       },
-      fromBlock: startBlock,
+      fromBlock: blockNumber,
     };
-    log.d(`Listening for events on ${this._contract.contractAddress} from ${startBlock} `);
+    log.d(`Listening for events on ${this._contract.contractAddress} from ${blockNumber} `);
     this._listener = this._contract.contract.events
       .allEvents(options)
       .on('changed', (changed: any) => handler.onEventChanged(changed))

@@ -1,77 +1,50 @@
 import { z } from 'zod';
 import log from '@/services/log';
-import { Instruction, ArgsSchema, InstructionArgs, VirtualMachine } from '@/types/vm';
+import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 import { Queue } from 'bullmq';
 
-export type ArgsType = {
-  bodyInput: string;
-  queueName: string;
-  redisHost: string;
-  redisPort: number;
-};
+const ArgsTypeSchema = z.object({
+  bodyInput: z.string().min(2),
+  queueName: z.string().min(2),
+  redisHost: z.string().url(),
+  redisPort: z.number().gt(0).lt(65500),
+});
+
+type ArgsType = z.infer<typeof ArgsTypeSchema>;
 
 export class BullMQProducer implements Instruction {
-  PROCESSOR_NAME = 'bull-producer';
+  INSTRUCTION_NAME = 'bull-producer';
 
-  validateArgs(_conf: InstructionArgs | undefined): boolean {
-    const queueNameSchema = z.string().min(2);
-    const queueName = _conf?.queueName ?? '';
-    const redisHostSchema = z.string().url();
-    const redisHost = _conf?.redisHost ?? '';
-    const redisPortSchema = z.number().gt(0).lt(65500);
-    const redisPort = _conf?.redisHost ?? 0;
-
-    if (
-      !_conf ||
-      !queueNameSchema.safeParse(queueName).success ||
-      !redisHostSchema.safeParse(redisHost).success ||
-      !redisPortSchema.safeParse(redisPort).success
-    ) {
+  validateArgs(args: InstructionArgs): boolean {
+    const res =  ArgsTypeSchema.safeParse(args);
+    if (!res.success) {
+      log.d(`Failed to compile bullmq instruction - ${res.error}`)
       return false;
     }
     return true;
   }
 
   name(): string {
-    return this.PROCESSOR_NAME;
+    return this.INSTRUCTION_NAME;
   }
 
-  getArgsSchema(): ArgsSchema {
-    return {
-      bodyInput: {
-        type: 'string',
-        required: true,
-      },
-      queueName: {
-        type: 'string',
-        required: true,
-      },
-      redisHost: {
-        type: 'string',
-        required: true,
-      },
-      redisPort: {
-        type: 'number',
-        required: false,
-      },
-    };
+  getArgsSchema(): typeof ArgsTypeSchema {
+    return ArgsTypeSchema;
   }
 
   async onAction(vm: VirtualMachine): Promise<void> {
     const step = vm.getCurrentStackItem();
-    const castID = vm.getGlobalVariable('cast')?.id  ?? "";
-    const event = vm.getGlobalVariable('event')  ?? {};
+    const castID = vm.getGlobalVariable('cast')?.id ?? '';
+    const event = vm.getGlobalVariable('event') ?? {};
     try {
-
-
       const args: ArgsType = {
-        bodyInput: (step?.args?.bodyInput?.value as string) ?? '',
-        queueName: (step?.args?.queueName?.value as string) ?? '',
-        redisHost: (step?.args?.redisHost?.value as string) ?? '',
-        redisPort: (step?.args?.redisPort?.value as number) ?? '',
+        bodyInput: (step?.args?.bodyInput as string) ?? '',
+        queueName: (step?.args?.queueName as string) ?? '',
+        redisHost: (step?.args?.redisHost as string) ?? '',
+        redisPort: (step?.args?.redisPort as number) ?? '',
       };
       const body = vm.getGlobalVariableFromPath(args.bodyInput);
-    
+
       if (args.queueName && args.redisHost && args.redisPort && body) {
         const queue = new Queue(args.queueName, {
           connection: {
@@ -80,11 +53,13 @@ export class BullMQProducer implements Instruction {
           },
         });
 
-        log.d(`[${this.PROCESSOR_NAME}] Adding ${args.bodyInput} to queue ${args.queueName}`);
+        log.d(`[${this.INSTRUCTION_NAME}] Adding ${args.bodyInput} to queue ${args.queueName}`);
         await queue.add(event.event as string, event);
+      } else {
+        log.w(`[${this.INSTRUCTION_NAME}] Skipping execution ${castID} invalid arguments`);
       }
     } catch (e: Error | any) {
-      log.e(`[${this.PROCESSOR_NAME}] Failed to execute on ${castID} ${e.message}`);
+      log.e(`[${this.INSTRUCTION_NAME}] Failed to execute on ${castID} ${e.message}`);
       vm.setError(e.message, e.stack);
     }
   }

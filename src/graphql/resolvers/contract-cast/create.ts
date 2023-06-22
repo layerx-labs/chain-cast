@@ -1,5 +1,6 @@
 import { ErrorsEnum } from '@/constants/index';
 import { Resolver } from '@/graphql/types';
+import { ChainCastProgram } from '@/lib/program';
 import { UserInputError } from '@/middleware/errors';
 import { ContractCast, ContractCastType } from '@prisma/client';
 
@@ -9,14 +10,15 @@ export type CreateContractCastArgType = {
     type: ContractCastType;
     chainId: number;
     startFrom?: number;
-    program: unknown;
+    program: string;
   };
 };
 
-const createContractCast: Resolver<
-  ContractCast,
-  CreateContractCastArgType
-> = async (_1, args, ctx) => {
+const createContractCast: Resolver<ContractCast, CreateContractCastArgType> = async (
+  _1,
+  args,
+  ctx
+) => {
   const oldContractCast = await ctx.db.contractCast.findUnique({
     where: {
       chainId_address: {
@@ -28,7 +30,12 @@ const createContractCast: Resolver<
   if (oldContractCast) {
     throw new UserInputError('Chain Cast already found', ErrorsEnum.alreadyExists);
   }
+  const stringCode = args.data.program;
+  const program = new ChainCastProgram(ctx.manager.getSupportedInstructions());
 
+  if (!program.compile(stringCode)) {
+    throw new UserInputError('Invalid Code for Chain Cast', ErrorsEnum.invalidUserInput);
+  }
   const contractCast = await ctx.db.contractCast.create({
     data: {
       address: args.data.address,

@@ -1,8 +1,9 @@
 import log from '@/services/log';
-import { ContractCastType, PrismaClient, Prisma } from '@prisma/client';
+import { ContractCastType, PrismaClient } from '@prisma/client';
 
-import { InstructionMap, Instruction, InstructionConstructor, InstructionCall } from '@/types/vm';
+import { InstructionMap, Instruction, InstructionConstructor } from '@/types/vm';
 import { ContractCast, ContractCastConstructor } from '../types';
+import { ChainCastProgram } from '@/lib/program';
 
 /**
  * The Service that manage all the contract casts lifecycles
@@ -54,12 +55,20 @@ export class ChainCastManager<C extends ContractCast> {
     chainId: number;
     blockNumber: number;
     transactionIndex: number;
-    program: object | Prisma.JsonValue;
+    program: string;
   }) {
     try {
       this._setupCast(cast);
     } catch (e: any) {
       log.e(`Failed to add chain cast ${cast.id} ${e.message} ${e.stack}`);
+    }
+  }
+
+  async updateCast(id: string, stringCode: string) {
+    if (this._casts[id]) {
+      const program = new ChainCastProgram(this._supportedProcessors);
+      program.load(stringCode);
+      await this._casts[id].loadProgram(program);
     }
   }
 
@@ -75,6 +84,10 @@ export class ChainCastManager<C extends ContractCast> {
     pConstructor: InstructionConstructor<M>
   ) {
     this._supportedProcessors[name] = pConstructor;
+  }
+
+  getSupportedInstructions() {
+    return this._supportedProcessors;
   }
 
   private async _loadCastsFromDb() {
@@ -98,7 +111,7 @@ export class ChainCastManager<C extends ContractCast> {
     chainId: number;
     blockNumber: number;
     transactionIndex: number;
-    program: Prisma.JsonValue;
+    program: string;
   }) {
     const contractCast: C = new this._creator(
       cast.id,
@@ -110,8 +123,9 @@ export class ChainCastManager<C extends ContractCast> {
       this._supportedProcessors
     );
     this._casts[cast.id] = contractCast;
-    const obj: InstructionCall[] = JSON.parse(cast?.program?.toString() ?? '{}');
-    await contractCast.loadProgram(obj);
+    const program = new ChainCastProgram(this._supportedProcessors);
+    program.load(cast.program);
+    await contractCast.loadProgram(program);
     await contractCast.start();
   }
 }

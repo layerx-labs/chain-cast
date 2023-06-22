@@ -1,6 +1,10 @@
 # Chain Cast TODO 
 
-* Validate the Program when it is created on the API
 * Implement the Unit Test
-* Make Contract Cast listener as a generic type 
+* Implement Authentication
 * Create the Dockerfile
+* Encrypt the program on the database
+* PriceOracle Instruction based on CoinGecko
+* Format Intruction that receives a Handlebar template
+* Telegram Channel Publisher
+* Discord 

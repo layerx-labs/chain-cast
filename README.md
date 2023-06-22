@@ -37,6 +37,8 @@ The following technologies and components are used in the project setup:
 * ERC20
 * ERC721
 
+## Main Features
+
 ## :jigsaw: Quick Start Development 
 
 1. Create an environment file (.env) and configure the required variables
