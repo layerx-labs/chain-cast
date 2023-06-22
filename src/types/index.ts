@@ -74,7 +74,15 @@ export type CastInfo = {
   getBlockNumber(): number;
 };
 
+export enum ContractCastStatusEnum  {
+  IDLE,
+  RECOVERING,
+  LISTENING, 
+  TERMINATED
+}
+
 export type ContractCast = {
+  getStatus(): ContractCastStatusEnum;
   loadProgram(program: Program): Promise<void>;
   start(): Promise<void>;
   stop(): Promise<void>;
@@ -91,6 +99,7 @@ export type ContractCastConstructor<T> = new (
   transactionIndex: number,
   processors: InstructionMap
 ) => T;
+
 
 export type ModelConstructor<M> = new (web3Con: Web3Connection, address: string) => M;
 
