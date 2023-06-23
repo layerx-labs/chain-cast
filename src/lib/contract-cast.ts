@@ -91,8 +91,12 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   async start() {
     log.d(`Starting the Contract Cast ${this._id}`);
     try {
+
       this._status = ContractCastStatusEnum.RECOVERING;
+      log.d(`Starting Recovering ${this._id}`);
+
       await this._recoverEvents();
+      log.d(`Stopping Recovering ${this._id}`);      
       if (this._status !== ContractCastStatusEnum.TERMINATED) {
         await this._startContractListening();
         this._status = ContractCastStatusEnum.LISTENING;
@@ -126,6 +130,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
           } else {
             await this._updateCastIndex(currentBlock + 1);
           }
+          console.log("Stopping");
         }
         this._status = ContractCastStatusEnum.TERMINATED;
       } catch (e: Error | any) {
@@ -203,6 +208,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   }
 
   async onEventRecoverProgress(blockNumber: number, txIndex: number): Promise<void> {
+    console.log("Recovering progress...");
     await this._updateCastIndex(blockNumber, txIndex);
   }
 
