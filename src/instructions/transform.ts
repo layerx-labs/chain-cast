@@ -2,6 +2,7 @@ import { z } from 'zod';
 import log from '@/services/log';
 import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 import inflection from 'inflection';
+import Handlebars  from 'handlebars';
 
 const TextTransformSchema = z
   .object({
@@ -18,7 +19,9 @@ const TextTransformSchema = z
       'bigint',
       'int',
       'number',
+      'split'
     ]),
+    split: z.string().min(1).optional(),
     output: z.string().min(2),
   })
   .optional();
@@ -50,12 +53,23 @@ const ObjectTransformSchema = z
   })
   .optional();
 
+  const TemplateTransformSchema = z
+  .object({
+    context: z.array(z.string().min(2)),
+    template: z.string().min(2),
+    output: z.string().min(2),
+  })
+  .optional();
+
 const ArgsTypeSchema = z.object({
   number: NumberTransformSchema,
   text: TextTransformSchema,
   array: ArrayTransformSchema,
   obj: ObjectTransformSchema,
+  template: TemplateTransformSchema,
 });
+
+
 
 type ArgsType = z.infer<typeof ArgsTypeSchema>;
 
@@ -104,9 +118,25 @@ export class Transform implements Instruction {
       this.arrayTransform(vm, args.array);
     } else if (args.obj) {
       log.d(`[${this.INSTRUCTION_NAME}] Obj Transfrom ${args.obj.variable} ${args.obj.transform}`);
-      this.arrayTransform(vm, args.array);
       this.objTransform(vm, args.obj);
+    }  else if (args.template) {
+      log.d(`[${this.INSTRUCTION_NAME}] template Transfrom ` + 
+        `${args.template.context} ${args.template.template}`);
+      this.templateTransform(vm, args.template);
     }
+  }
+
+  private templateTransform(vm: VirtualMachine, templt: z.infer<typeof TemplateTransformSchema>) {
+    const context: {[key: string]: unknown} = {};    
+    if(templt) {     
+      templt.context.forEach((variable, index: number)=> {
+        context[`var${index}`] = vm.getGlobalVariableFromPath(variable);
+      })
+      const template = Handlebars.compile(templt.template);   
+      const result = template(context);
+      vm.setGlobalVariable(templt?.output ?? '', result);
+    }
+    
   }
 
   private arrayTransform(vm: VirtualMachine, array: z.infer<typeof ArrayTransformSchema>) {
@@ -197,7 +227,7 @@ export class Transform implements Instruction {
   private textTransform(vm: VirtualMachine, text: z.infer<typeof TextTransformSchema>) {
     const inputText: string = vm.getGlobalVariableFromPath(text?.variable ?? '');
     if (inputText && typeof inputText === 'string') {
-      let output: string | number | bigint = inputText;
+      let output: string | number | bigint | any[] = inputText;
       switch (text?.transform) {
         case 'capitalize':
           output = inflection.capitalize(inputText);
@@ -229,6 +259,9 @@ export class Transform implements Instruction {
         case 'number':
           output = Number(inputText);
           break;
+        case 'split':
+            output = inputText.split(text?.split ?? ",");
+            break;
       }
       log.d(`[${this.INSTRUCTION_NAME}] Transform Result ${text?.output} = ${output}`);
       vm.setGlobalVariable(text?.output ?? '', output);
