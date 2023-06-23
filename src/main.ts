@@ -12,10 +12,14 @@ import { Debug } from './instructions/debug';
 import { Condition } from './instructions/condition';
 import { BullMQProducer } from './instructions/bullmq';
 import { ElasticSearch } from './instructions/elastic-search';
-import { Transform } from './instructions/transform';
+import { TransformObject } from './instructions/transform-object';
 import { Set } from './instructions/set';
 import { FilterEvents } from './instructions/filter-events';
 import { SpreadSheet } from './instructions/spreadsheet';
+import { TransformString } from './instructions/transform-string';
+import { TransformNumber } from './instructions/transform-number';
+import { TransformArray } from './instructions/transform-array';
+import { TransformTemplate } from './instructions/transform-template';
 
 
 const chainCastBanner=`
@@ -70,7 +74,11 @@ async function run() {
   ctx.manager.registerInstruction('webhook', WebHook);
   ctx.manager.registerInstruction('condition', Condition);
   ctx.manager.registerInstruction('bullmq-producer', BullMQProducer);
-  ctx.manager.registerInstruction('transform', Transform);
+  ctx.manager.registerInstruction('transform-string', TransformString);
+  ctx.manager.registerInstruction('transform-number', TransformNumber);
+  ctx.manager.registerInstruction('transform-array', TransformArray);
+  ctx.manager.registerInstruction('transform-object', TransformObject);
+  ctx.manager.registerInstruction('transform-template', TransformTemplate);
   ctx.manager.registerInstruction('filter-events', FilterEvents);
   ctx.manager.registerInstruction('set', Set);
   ctx.manager.registerInstruction('spreadsheet', SpreadSheet);
