@@ -3,22 +3,23 @@ import { Instruction, VirtualMachine, InstructionArgs } from '@/types/vm';
 import { z } from 'zod';
 
 const ArgsTypeSchema = z.object({
-  variablesToDebug: z.array(z.string()),
+  variable: z.string().min(2),
+  value: z.any()
 });
 type ArgsType = z.infer<typeof ArgsTypeSchema>;
 
-export class Debug implements Instruction {
+export class Set implements Instruction {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateArgs(args: InstructionArgs | undefined): boolean {
     const res = ArgsTypeSchema.safeParse(args)
     if (!res.success) {
-      log.d(`Failed to compile instruction debug - ${res.error}`)
+      log.d(`Failed to compile instruction set - ${res.error}`)
       return false;
     }
     return true;
   }
 
-  INSTRUCTION_NAME = 'debug';
+  INSTRUCTION_NAME = 'set';
 
   name(): string {
     return this.INSTRUCTION_NAME;
@@ -31,16 +32,12 @@ export class Debug implements Instruction {
   onAction(vm: VirtualMachine): void {
     const step = vm.getCurrentStackItem();
     const args: ArgsType = {
-      variablesToDebug: (step?.args?.variablesToDebug as string[]) ?? [],
+        variable: (step?.args?.variable as string) ?? "",
+        value: (step?.args?.value as string) ?? "",
     };
-    for (const variable of args.variablesToDebug) {
-      const value = vm.getGlobalVariableFromPath(variable);
-      if(value) {
-        log.d(`[${this.INSTRUCTION_NAME}] ${variable}=${value.toString()}`);
-      } else {
-        log.d(`[${this.INSTRUCTION_NAME}] ${variable}=undefined}`);
-      }
-      
+    if (args.value && args.variable) {
+        log.d(`Setting variable ${args.variable} = ${args.value}`)
+        vm.setGlobalVariable(args.variable, args.value);
     }
   }
 }

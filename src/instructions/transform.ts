@@ -15,6 +15,9 @@ const TextTransformSchema = z
       'camelize',
       'underscore',
       'dasherize',
+      'bigint',
+      'int',
+      'number',
     ]),
     output: z.string().min(2),
   })
@@ -22,11 +25,9 @@ const TextTransformSchema = z
 
 const NumberTransformSchema = z
   .object({
-    variableLeft: z.string().min(2).optional(),
+    variableLeft: z.string().min(2),
     variableRight: z.string().min(2).optional(),
-    variableLeftLiteral: z.number().optional(),
-    variableRightLiteral: z.number().optional(),
-    transform: z.enum(['add', 'subtract', 'multiply', 'divide', 'pow']),
+    transform: z.enum(['add', 'subtract', 'multiply', 'divide', 'pow', 'bigint']),
     output: z.string().min(2),
   })
   .optional();
@@ -86,18 +87,29 @@ export class Transform implements Instruction {
     }
     const args: ArgsType = step.args;
     if (args.text) {
+      log.d(
+        `[${this.INSTRUCTION_NAME}] Text Transfrom ${args.text.variable} ${args.text.transform}`
+      );
       this.textTransform(vm, args.text);
     } else if (args.number) {
+      log.d(
+        `[${this.INSTRUCTION_NAME}] Text Transfrom ${args.number.variableLeft} ${args.number.transform}`
+      );
       this.numberTransform(vm, args.number);
     } else if (args.array) {
+      log.d(
+        `[${this.INSTRUCTION_NAME}] Array Transfrom ${args.array.variable} ${args.array.transform}`
+      );
       this.arrayTransform(vm, args.array);
     } else if (args.obj) {
+      log.d(`[${this.INSTRUCTION_NAME}] Obj Transfrom ${args.obj.variable} ${args.obj.transform}`);
+      this.arrayTransform(vm, args.array);
       this.objTransform(vm, args.obj);
     }
   }
 
   private arrayTransform(vm: VirtualMachine, array: z.infer<typeof ArrayTransformSchema>) {
-    const input: any[] = vm.getGlobalVariable(array?.variable ?? '');
+    const input: any[] = vm.getGlobalVariableFromPath(array?.variable ?? '');
     const position: number = array?.position ?? 0;
     if (input) {
       let output: unknown[] | number = input;
@@ -115,13 +127,16 @@ export class Transform implements Instruction {
           output = input.shift();
           break;
       }
+      log.d(`[${this.INSTRUCTION_NAME}] Transform Result ${array?.output} = ${output}`);
       vm.setGlobalVariable(array?.output ?? '', output);
+    } else {
+      log.d(`[${this.INSTRUCTION_NAME}] skipping array transform`);
     }
   }
 
   private objTransform(vm: VirtualMachine, obj: z.infer<typeof ObjectTransformSchema>) {
-    const input = vm.getGlobalVariable(obj?.variable ?? '') || {};
-    const key: string | symbol | number = vm.getGlobalVariable(obj?.key ?? '') as string;
+    const input = vm.getGlobalVariableFromPath(obj?.variable ?? '') || {};
+    const key: string | symbol | number = vm.getGlobalVariableFromPath(obj?.key ?? '') as string;
     if (input) {
       let output: unknown = input;
       switch (obj?.transform) {
@@ -138,18 +153,19 @@ export class Transform implements Instruction {
           output = input[key];
           break;
       }
+      log.d(`[${this.INSTRUCTION_NAME}] Transform Result ${obj?.output} = ${output}`);
       vm.setGlobalVariable(obj?.output ?? '', output);
+    } else {
+      log.d(`[${this.INSTRUCTION_NAME}] skipping obj transform`);
     }
   }
 
   private numberTransform(vm: VirtualMachine, number: z.infer<typeof NumberTransformSchema>) {
-    const input1: number =
-      vm.getGlobalVariable(number?.variableLeft ?? '') || number?.variableLeftLiteral;
-    const input2: number =
-      vm.getGlobalVariable(number?.variableRight ?? '') || number?.variableRightLiteral;
+    const input1: number = vm.getGlobalVariableFromPath(number?.variableLeft ?? '');
+    const input2: number = vm.getGlobalVariableFromPath(number?.variableRight ?? '') || 0;
 
-    if (input1 && typeof input1 == 'number' && input2 && typeof input2 == 'number') {
-      let output = input1;
+    if (input1 && (typeof input1 === 'number')) {
+      let output: number | bigint = input1;
       switch (number?.transform) {
         case 'add':
           output = input1 + input2;
@@ -166,15 +182,22 @@ export class Transform implements Instruction {
         case 'pow':
           output = Math.pow(input1, input2);
           break;
-      }
+        case 'bigint':
+          output = BigInt(input1);
+          break;
+      } 
+      log.d(`[${this.INSTRUCTION_NAME}] Transform Result ${number?.output} = ${output}`);
       vm.setGlobalVariable(number?.output ?? '', output);
+    } else {
+      log.d(`[${this.INSTRUCTION_NAME}] skipping number transform ${typeof input1}`);
     }
   }
 
   private textTransform(vm: VirtualMachine, text: z.infer<typeof TextTransformSchema>) {
-    const inputText: string = vm.getGlobalVariable(text?.variable ?? '');
-    if (inputText && typeof inputText == 'string') {
-      let output = inputText;
+
+    const inputText: string = vm.getGlobalVariableFromPath(text?.variable ?? '');
+    if (inputText && (typeof inputText === 'string')) {
+      let output: string | number | bigint = inputText;
       switch (text?.transform) {
         case 'capitalize':
           output = inflection.capitalize(inputText);
@@ -197,8 +220,20 @@ export class Transform implements Instruction {
         case 'dasherize':
           output = inflection.dasherize(inputText);
           break;
+        case 'bigint':
+          output = BigInt(inputText);
+          break;
+        case 'int':
+          output = parseInt(inputText);
+          break;
+        case 'number':
+          output = Number(inputText);
+          break;
       }
+      log.d(`[${this.INSTRUCTION_NAME}] Transform Result ${text?.output} = ${output}`);
       vm.setGlobalVariable(text?.output ?? '', output);
+    }  else {
+      log.d(`[${this.INSTRUCTION_NAME}] skipping text transform ${typeof inputText}`);
     }
   }
 }
