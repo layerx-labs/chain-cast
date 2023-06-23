@@ -40,7 +40,7 @@ async function run() {
     hostname: os.hostname(),
     ...appConfig.logs,
   });
-  log.i('Starting Chain Cast ...');
+  log.i(`Starting Chain Cast ${process.pid}...`);
   const yoga = createYoga({
     schema,
     context: createContext,
@@ -83,7 +83,14 @@ async function run() {
   });
   
   log.i('Started Chain Cast GraphQL Server');
-  
+  process.on('SIGTERM', () => {
+    log.d('SIGTERM Received Shutting Down Chain Cast Manager...');
+
+    ctx.manager.stop().then(()=> {
+      log.d(byeMessage);
+       process.exit(0);
+    });    
+  });
   process.on('SIGINT', () => {
     log.d('SIGINT Received Shutting Down Chain Cast Manager...');
     ctx.manager.stop().then(()=> {
@@ -91,14 +98,6 @@ async function run() {
       process.exit(0);
     });    
   });
-  process.on('SIGTERM', () => {
-    log.d('SIGTERM Received Shutting Down Chain Cast Manager...');
-    ctx.manager.stop().then(()=> {
-      log.d(byeMessage);
-       process.exit(0);
-    });    
-  });
-
   process.on('uncaughtException', err => {
     log.e(`Uncaught Exception: ${err.message} ${err.stack}`)
     ctx.manager.stop().then(()=> {
