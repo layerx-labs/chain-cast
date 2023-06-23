@@ -93,7 +93,8 @@ export class Transform implements Instruction {
       this.textTransform(vm, args.text);
     } else if (args.number) {
       log.d(
-        `[${this.INSTRUCTION_NAME}] Text Transfrom ${args.number.variableLeft} ${args.number.transform}`
+        `[${this.INSTRUCTION_NAME}] Text Transfrom ` + 
+        `${args.number.variableLeft} ${args.number.transform}`
       );
       this.numberTransform(vm, args.number);
     } else if (args.array) {
@@ -164,7 +165,7 @@ export class Transform implements Instruction {
     const input1: number = vm.getGlobalVariableFromPath(number?.variableLeft ?? '');
     const input2: number = vm.getGlobalVariableFromPath(number?.variableRight ?? '') || 0;
 
-    if (input1 && (typeof input1 === 'number')) {
+    if (input1 && typeof input1 === 'number') {
       let output: number | bigint = input1;
       switch (number?.transform) {
         case 'add':
@@ -185,7 +186,7 @@ export class Transform implements Instruction {
         case 'bigint':
           output = BigInt(input1);
           break;
-      } 
+      }
       log.d(`[${this.INSTRUCTION_NAME}] Transform Result ${number?.output} = ${output}`);
       vm.setGlobalVariable(number?.output ?? '', output);
     } else {
@@ -194,9 +195,8 @@ export class Transform implements Instruction {
   }
 
   private textTransform(vm: VirtualMachine, text: z.infer<typeof TextTransformSchema>) {
-
     const inputText: string = vm.getGlobalVariableFromPath(text?.variable ?? '');
-    if (inputText && (typeof inputText === 'string')) {
+    if (inputText && typeof inputText === 'string') {
       let output: string | number | bigint = inputText;
       switch (text?.transform) {
         case 'capitalize':
@@ -232,7 +232,7 @@ export class Transform implements Instruction {
       }
       log.d(`[${this.INSTRUCTION_NAME}] Transform Result ${text?.output} = ${output}`);
       vm.setGlobalVariable(text?.output ?? '', output);
-    }  else {
+    } else {
       log.d(`[${this.INSTRUCTION_NAME}] skipping text transform ${typeof inputText}`);
     }
   }
