@@ -4,6 +4,7 @@ import { ChainCastProgram } from '@/lib/program';
 import { UserInputError } from '@/middleware/errors';
 import { ContractCast } from '@prisma/client';
 
+
 export type UpdateContractCastArgType = {
   where: {
     id: string;
