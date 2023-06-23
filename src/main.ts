@@ -13,6 +13,8 @@ import { Condition } from './instructions/condition';
 import { BullMQProducer } from './instructions/bullmq';
 import { ElasticSearch } from './instructions/elastic-search';
 import { Transform } from './instructions/transform';
+import { Set } from './instructions/set';
+import { FilterEvents } from './instructions/filter-events';
 
 
 const chainCastBanner=`
@@ -68,6 +70,8 @@ async function run() {
   ctx.manager.registerInstruction('condition', Condition);
   ctx.manager.registerInstruction('bullmq-producer', BullMQProducer);
   ctx.manager.registerInstruction('transform', Transform);
+  ctx.manager.registerInstruction('filter-events', FilterEvents);
+  ctx.manager.registerInstruction('set', Set);
   
   await ctx.manager.start();
 

@@ -90,6 +90,8 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
       this._stack.push(step);
       await instruction.onAction(this);
       this._stack.pop();
+    } else {
+      log.d(`Virtual Machine is halted or has errorr , rolling Back`);
     }
   }
 

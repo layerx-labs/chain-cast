@@ -12,7 +12,6 @@ import EVMContractListener from './contract-listener';
 import { ModelFactory } from './model-factory';
 import { EVMContractEventRetriever } from './contract-event-retriever';
 
-
 /**
  * An implementation that creates a stream of events for an Ethereum Smart Contract
  */

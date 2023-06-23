@@ -1,0 +1,70 @@
+[
+    {
+        "name": "set",
+        "args": {
+            "variable": "minTransfer",
+            "value": 100000
+        }
+    },
+    {
+        "name": "transform",
+        "args": {
+            "number": {
+                "variableLeft": "minTransfer",
+                "transform": "bigint",
+                "output": "minTransfer"
+            }
+        }
+    },
+    {
+        "name": "filter-events",
+        "args": {
+            "eventNames": [
+                "Transfer"
+            ]
+        }
+    },
+    {
+        "name": "transform",
+        "args": {
+            "text": {
+                "variable": "event.returnValues.value",
+                "transform": "bigint",
+                "output": "transferAmount"
+            }
+        }
+    },
+    {
+        "name": "debug",
+        "args": {
+            "variablesToDebug": [
+                "transferAmount",
+                "minTransfer"
+            ]
+        }
+    },
+    {
+        "name": "condition",
+        "args": {
+            "AND": [
+                {
+                    "variable": "transferAmount",
+                    "condition": ">",
+                    "compareTo": "minTransfer"
+                }
+            ],
+            "onTrue": "goto_0",
+            "onFalse": "goto_1",
+            "branch_0": [
+                {
+                    "name": "webhook",
+                    "args": {
+                        "url": "https://webhook.site/06218e87-7b2e-48c8-a467-746c1b031d17",
+                        "bodyInput": "event"
+                    }
+                }
+            ],
+            "branch_1": []
+        }
+    }
+]
