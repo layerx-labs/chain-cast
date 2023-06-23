@@ -7,13 +7,12 @@
         }
     },
     {
-        "name": "transform",
+        "name": "transform-number",
         "args": {
-            "number": {
                 "variableLeft": "minTransfer",
                 "transform": "bigint",
                 "output": "minTransfer"
-            }
+            
         }
     },
     {
@@ -25,19 +24,17 @@
         }
     },
     {
-        "name": "transform",
+        "name": "transform-string",
         "args": {
-            "text": {
                 "variable": "event.returnValues.value",
                 "transform": "bigint",
                 "output": "transferAmount"
-            }
+            
         }
     },
     {
-        "name": "transform",
+        "name": "transform-template",
         "args": {
-            "template": {
                 "context": [
                     "event.returnValues.from",
                     "event.returnValues.to",
@@ -47,17 +44,17 @@
                 ],
                 "template": "{{var0}},{{var1}},{{var2}},{{var3}},{{var4}}",
                 "output": "csvEnt"
-            }
+        
         }
     },
     {
-        "name": "transform",
+        "name": "transform-string",
         "args": {
-            "text": {
-                "variable": "csvEnt",
+                "variable": "csvEnt", 
+                "transform": "split",           
                 "split": ",",
                 "output": "rowData"
-            }
+            
         }
     },
     {
