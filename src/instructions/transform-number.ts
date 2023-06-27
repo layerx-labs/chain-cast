@@ -83,3 +83,4 @@ export class TransformNumber implements Instruction {
       log.d(`[${this.INSTRUCTION_NAME}] skipping number transform ${typeof input1}`);
     }
   }
+}
