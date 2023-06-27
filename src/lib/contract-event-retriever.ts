@@ -2,8 +2,6 @@ import { Model } from '@taikai/dappkit';
 import log from '@/services/log';
 import { ContractEventRetriever, EventRecoverHandler } from '@/types/events';
 import { retry } from '@/util/promise';
-import { EventData} from 'web3-eth-contract/types'
-import { PastLogsOptions} from 'web3-core';
 
 export class EVMContractEventRetriever<M extends Model> implements ContractEventRetriever {
   private _contract: Model;

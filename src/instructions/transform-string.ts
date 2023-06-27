@@ -62,7 +62,7 @@ export class TransformString implements Instruction {
         output: (step?.args?.output as string) ?? '',
       };
   
-    this.textTransform(vm, args.text);   
+    this.textTransform(vm, args);   
   }
 
   private textTransform(vm: VirtualMachine, text: z.infer<typeof TextTransformSchema>) {

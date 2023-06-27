@@ -2,7 +2,7 @@ import log from '@/services/log';
 import { ContractCastType, PrismaClient } from '@prisma/client';
 
 import { InstructionMap, Instruction, InstructionConstructor } from '@/types/vm';
-import { ContractCast, ContractCastConstructor } from '../types';
+import { ContractCast, ContractCastConstructor, SecretManager } from '../types';
 import { ChainCastProgram } from '@/lib/program';
 
 /**
@@ -13,6 +13,8 @@ export class ChainCastManager<C extends ContractCast> {
   private _db: PrismaClient;
   private _supportedProcessors: InstructionMap = {};
   private _creator: ContractCastConstructor<C>;
+
+
 
   constructor(creator: ContractCastConstructor<C>, db: PrismaClient) {
     this._casts = {};
