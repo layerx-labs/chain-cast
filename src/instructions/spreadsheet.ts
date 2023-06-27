@@ -70,7 +70,7 @@ export class SpreadSheet implements Instruction {
         // Send the update request to append the row
         const response = await sheets.spreadsheets.values.append(request);
     
-        console.log('Row sent successfully:', response.data);
+        log.d('Row sent successfully:', response.status);
       } catch (error) {
         console.error('Error sending row:', error);
       }

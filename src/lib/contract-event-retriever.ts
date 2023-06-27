@@ -1,6 +1,9 @@
 import { Model } from '@taikai/dappkit';
 import log from '@/services/log';
 import { ContractEventRetriever, EventRecoverHandler } from '@/types/events';
+import { retry } from '@/util/promise';
+import { EventData} from 'web3-eth-contract/types'
+import { PastLogsOptions} from 'web3-core';
 
 export class EVMContractEventRetriever<M extends Model> implements ContractEventRetriever {
   private _contract: Model;
@@ -28,12 +31,17 @@ export class EVMContractEventRetriever<M extends Model> implements ContractEvent
         const options = {
           fromBlock: startBlock,
           toBlock: endBlock,
-        };
+        }
 
-        const events = await this._contract.contract.self.getPastEvents('allEvents', options);
+       const func = async ()=> {
+          return this._contract.contract.self.getPastEvents('allEvents', options);
+       }
+
+       const events = await retry(func, [], 3, 3);
+        
         for (const event of events) {
           if (!(event.blockNumber == fromBlock && event.transactionIndex < fromTxIndex)) {
-            this._handler && this._handler.onEvent(event);
+            this._handler && await this._handler.onEvent(event);
           } else {
             log.d(
               `Skipping event ${event.blockNumber} and ${event.transactionIndex} ` + 

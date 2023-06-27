@@ -6,7 +6,7 @@ import { Queue } from 'bullmq';
 const ArgsTypeSchema = z.object({
   bodyInput: z.string().min(2),
   queueName: z.string().min(2),
-  redisHost: z.string().url(),
+  redisHost: z.string().min(2),
   redisPort: z.number().gt(0).lt(65500),
 });
 
@@ -34,7 +34,7 @@ export class BullMQProducer implements Instruction {
 
   async onAction(vm: VirtualMachine): Promise<void> {
     const step = vm.getCurrentStackItem();
-    const castID = vm.getGlobalVariable('cast')?.id ?? '';
+    const cast = vm.getGlobalVariable('cast') ?? {};
     const event = vm.getGlobalVariable('event') ?? {};
     try {
       const args: ArgsType = {
@@ -54,12 +54,15 @@ export class BullMQProducer implements Instruction {
         });
 
         log.d(`[${this.INSTRUCTION_NAME}] Adding ${args.bodyInput} to queue ${args.queueName}`);
-        await queue.add(event.event as string, event);
+        await queue.add(event.event as string, {
+          ...event,
+          ...cast,
+        });
       } else {
-        log.w(`[${this.INSTRUCTION_NAME}] Skipping execution ${castID} invalid arguments`);
+        log.w(`[${this.INSTRUCTION_NAME}] Skipping execution ${cast.id} invalid arguments`);
       }
     } catch (e: Error | any) {
-      log.e(`[${this.INSTRUCTION_NAME}] Failed to execute on ${castID} ${e.message}`);
+      log.e(`[${this.INSTRUCTION_NAME}] Failed to execute on ${cast.id} ${e.message}`);
       vm.setError(e.message, e.stack);
     }
   }
