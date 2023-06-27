@@ -5,10 +5,12 @@ import { InstructionMap, Program } from './vm';
 import { EventListenerHandler, Web3Event } from './events';
 import { EVMContractCast } from '@/lib/contract-cast';
 import { Model, Web3Connection } from '@taikai/dappkit';
+import { ChainCastSecretManager } from '@/services/secret-map';
 
 export type AppContext = {
   db: PrismaClient;
   log: LogService;
+  secrets: ChainCastSecretManager,
   manager: ChainCastManager<EVMContractCast>;
 };
 
@@ -19,6 +21,7 @@ export type __Config = {
   environment: Environment;
   version: string;
   port: number;
+  secret: string;
   cors: {
     enabled: boolean;
     origins: string[];
@@ -114,3 +117,15 @@ export type ContractListenerConstructor<M extends Model> = new (
   web3Con: Web3Connection,
   address: string
 ) => M;
+
+
+export type SecretMap = {[key: string]: string };
+
+export type SecretManager = {
+  load(): Promise<void> | void;
+  addSecret(name: string, value: string): void;
+  deleteSecret(name: string): void;
+  updateSecret(name: string, value: string): void;
+  getSecret(name: string): string | Buffer;
+  getSecrets(): SecretMap ;
+}

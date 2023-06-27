@@ -3,6 +3,7 @@ import { __Config, Environment } from '@/types/index';
 
 export const appConfig: __Config = {
   appName: 'chaincast',
+  secret: process.env?.SERVER_KEY ?? 'secret',
   environment: (process.env.ENVIRONMENT_TYPE as Environment) || 'development',
   version: '1.0.0',
   port: Number(process.env.CHAIN_CAST_API_PORT) || 4400,

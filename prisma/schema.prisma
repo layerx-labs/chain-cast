@@ -34,3 +34,14 @@ model ContractCast {
    createdAt              DateTime  @default(now())
    @@unique([chainId, address])
 }
+
+model Secret {
+   id                     String    @id @default(cuid()) @db.VarChar(30)  
+   name                   String    @unique
+   value                  String 
+   salt                   String    
+   createdAt              DateTime  @default(now())
+   updatedAt              DateTime  @updatedAt
+}
+
+
