@@ -1,7 +1,7 @@
 import { ChainCastManager } from '@/services/chaincast-manager';
 import { ContractCastType, PrismaClient } from '@prisma/client';
 import LogService, { LogLevel } from '@taikai/scribal';
-import { InstructionMap, Program } from './vm';
+import { InstructionMap, Program, VirtualMachine } from './vm';
 import { EventListenerHandler, Web3Event } from './events';
 import { Model, Web3Connection } from '@taikai/dappkit';
 import { ChainCastSecretManager } from '@/services/secret-manager';
@@ -9,7 +9,7 @@ import { ChainCastSecretManager } from '@/services/secret-manager';
 export type AppContext = {
   db: PrismaClient;
   log: LogService;
-  manager: ChainCastManager<ContractCast, ChainCastSecretManager>;
+  manager: ChainCastManager<ContractCast,VirtualMachine, ChainCastSecretManager>;
 };
 
 export type Environment = 'development' | 'staging' | 'production';
@@ -93,8 +93,9 @@ export type ContractCast = {
   onError(error: Error): void;
 };
 
-export type ContractCastConstructor<T, S> = new (
+export type ContractCastConstructor<T, S, VM> = new (
   creator: new () => S,
+  vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap)=> VM,
   id: string,
   type: ContractCastType,
   adress: string,

@@ -1,29 +1,33 @@
 import log from '@/services/log';
 import { ContractCastType, PrismaClient } from '@prisma/client';
 
-import { InstructionMap, Instruction, InstructionConstructor } from '@/types/vm';
-import { ContractCast, ContractCastConstructor, SecretManager } from '../types';
+import { InstructionMap, Instruction, InstructionConstructor, VirtualMachine } from '@/types/vm';
+import { CastInfo, ContractCast, ContractCastConstructor, SecretManager } from '../types';
 import { ChainCastProgram } from '@/lib/program';
 import { loadSecresFromDb } from '@/util/secrets';
 
 /**
  * The Service that manage all the contract casts lifecycles
  */
-export class ChainCastManager<C extends ContractCast, S extends SecretManager> {
+export class ChainCastManager<C extends ContractCast, 
+  VM extends VirtualMachine, S extends SecretManager> {
   private _casts: { [key: string]: C };
   private _db: PrismaClient;
   private _supportedProcessors: InstructionMap = {};
-  private _creator: ContractCastConstructor<C, S>;
+  private _creator: ContractCastConstructor<C, S, VM>;
   private _seretManagerCreator: new () => S;
+  private _vmCreator: new (info: CastInfo, supportedInstructions: InstructionMap)=> VM;
 
   constructor(
-     creator: ContractCastConstructor<C, S>,
+     creator: ContractCastConstructor<C, S, VM>,
+     vmCreator: new (info: CastInfo, supportedInstructions: InstructionMap)=> VM,
      seretManagerCretor: new () => S,
      db: PrismaClient) {
     this._seretManagerCreator = seretManagerCretor;
     this._casts = {};
     this._db = db;
     this._creator = creator;
+    this._vmCreator = vmCreator;
   }
 
   getCasts(): ContractCast[] {
@@ -126,6 +130,7 @@ export class ChainCastManager<C extends ContractCast, S extends SecretManager> {
   }) {
     const contractCast: C = new this._creator(
       this._seretManagerCreator,
+      this._vmCreator,
       cast.id,
       cast.type,
       cast.address,
