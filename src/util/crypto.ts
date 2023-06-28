@@ -3,10 +3,10 @@ import { appConfig } from '../config';
 
 /**
  * Encrypt a Secret to be saved on Storage
- * @param data 
- * @param iv 
- * @param encoding 
- * @returns 
+ * @param data
+ * @param iv
+ * @param encoding
+ * @returns
  */
 export function encryptSecret(data: string, iv: Buffer, encoding: BufferEncoding) {
   return _encryptData(appConfig.secret, data, iv, encoding);
@@ -14,27 +14,22 @@ export function encryptSecret(data: string, iv: Buffer, encoding: BufferEncoding
 
 /**
  * Decrypt a Secret to be saved on Storage
- * @param encodedData 
- * @param salt 
- * @param inEnc 
- * @param outEnc 
- * @returns 
+ * @param encodedData
+ * @param salt
+ * @param inEnc
+ * @param outEnc
+ * @returns
  */
 export function decrypSecret(
   encodedData: string,
-  salt: string| Buffer,
+  salt: string | Buffer,
   inEnc: BufferEncoding,
   outEnc: BufferEncoding
 ) {
   return _decipherData(appConfig.secret, encodedData, salt, inEnc, outEnc);
 }
 
-function _encryptData(
-  key: string,
-  data: string,
-  iv: Buffer,
-  outEnc: BufferEncoding
-) {
+function _encryptData(key: string, data: string, iv: Buffer, outEnc: BufferEncoding) {
   const algorithm = 'aes256';
   const hashKey = crypto.createHash('sha256').update(String(key)).digest();
   const cipher = crypto.createCipheriv(algorithm, hashKey, iv);
@@ -45,7 +40,7 @@ function _encryptData(
 function _decipherData(
   key: string,
   encodedData: string,
-  salt: string| Buffer,
+  salt: string | Buffer,
   inEnc: BufferEncoding,
   outEnc: BufferEncoding
 ) {

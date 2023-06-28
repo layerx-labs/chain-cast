@@ -12,7 +12,7 @@ export class FilterEvents implements Instruction {
   validateArgs(_conf: InstructionArgs | undefined): boolean {
     const res = ArgsTypeSchema.safeParse(_conf);
     if (!res.success) {
-      log.d(`Failed to compile instruction filter-events - ${res.error}`)
+      log.d(`Failed to compile instruction filter-events - ${res.error}`);
       return false;
     }
     return true;

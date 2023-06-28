@@ -10,9 +10,9 @@ type ArgsType = z.infer<typeof ArgsTypeSchema>;
 export class Debug implements Instruction {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validateArgs(args: InstructionArgs | undefined): boolean {
-    const res = ArgsTypeSchema.safeParse(args)
+    const res = ArgsTypeSchema.safeParse(args);
     if (!res.success) {
-      log.d(`Failed to compile instruction debug - ${res.error}`)
+      log.d(`Failed to compile instruction debug - ${res.error}`);
       return false;
     }
     return true;
@@ -35,12 +35,11 @@ export class Debug implements Instruction {
     };
     for (const variable of args.variablesToDebug) {
       const value = vm.getGlobalVariableFromPath(variable);
-      if(value) {
+      if (value) {
         log.d(`[${this.INSTRUCTION_NAME}] ${variable}=${value.toString()}`);
       } else {
         log.d(`[${this.INSTRUCTION_NAME}] ${variable}=undefined}`);
       }
-      
     }
   }
 }
