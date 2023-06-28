@@ -31,7 +31,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
 
   constructor(
     creator: new () => T,
-    vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap)=> VM,
+    vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap) => VM,
     id: string,
     type: ContractCastType,
     address: string,

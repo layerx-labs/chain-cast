@@ -9,20 +9,24 @@ import { loadSecresFromDb } from '@/util/secrets';
 /**
  * The Service that manage all the contract casts lifecycles
  */
-export class ChainCastManager<C extends ContractCast, 
-  VM extends VirtualMachine, S extends SecretManager> {
+export class ChainCastManager<
+  C extends ContractCast,
+  VM extends VirtualMachine,
+  S extends SecretManager
+> {
   private _casts: { [key: string]: C };
   private _db: PrismaClient;
   private _supportedProcessors: InstructionMap = {};
   private _creator: ContractCastConstructor<C, S, VM>;
   private _seretManagerCreator: new () => S;
-  private _vmCreator: new (info: CastInfo, supportedInstructions: InstructionMap)=> VM;
+  private _vmCreator: new (info: CastInfo, supportedInstructions: InstructionMap) => VM;
 
   constructor(
-     creator: ContractCastConstructor<C, S, VM>,
-     vmCreator: new (info: CastInfo, supportedInstructions: InstructionMap)=> VM,
-     seretManagerCretor: new () => S,
-     db: PrismaClient) {
+    creator: ContractCastConstructor<C, S, VM>,
+    vmCreator: new (info: CastInfo, supportedInstructions: InstructionMap) => VM,
+    seretManagerCretor: new () => S,
+    db: PrismaClient
+  ) {
     this._seretManagerCreator = seretManagerCretor;
     this._casts = {};
     this._db = db;

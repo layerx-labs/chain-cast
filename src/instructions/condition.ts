@@ -112,7 +112,7 @@ export class Condition implements Instruction {
       const variable = vm.getGlobalVariableFromPath(expression.variable);
       const operator = expression.condition;
       const compareTo = vm.getGlobalVariableFromPath(expression.compareTo);
-      log.d(`Comparing ${typeof variable} ${typeof compareTo}`)
+      log.d(`Comparing ${typeof variable} ${typeof compareTo}`);
       switch (operator) {
         case '>':
           if (!(variable > compareTo)) return false;

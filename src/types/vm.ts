@@ -59,7 +59,6 @@ export type Trigger<N extends string, T> = {
   payload: T;
 };
 
-
 export type Program = {
   load(stringCode: string): void | Promise<void>;
   compile(stringCode: string): boolean | Promise<boolean>;

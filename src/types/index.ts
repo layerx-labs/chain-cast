@@ -9,7 +9,7 @@ import { ChainCastSecretManager } from '@/services/secret-manager';
 export type AppContext = {
   db: PrismaClient;
   log: LogService;
-  manager: ChainCastManager<ContractCast,VirtualMachine, ChainCastSecretManager>;
+  manager: ChainCastManager<ContractCast, VirtualMachine, ChainCastSecretManager>;
 };
 
 export type Environment = 'development' | 'staging' | 'production';
@@ -75,18 +75,18 @@ export type CastInfo = {
   getBlockNumber(): number;
 };
 
-export enum ContractCastStatusEnum  {
+export enum ContractCastStatusEnum {
   IDLE,
   RECOVERING,
   LISTENING,
-  TERMINATED 
+  TERMINATED,
 }
 
 export type ContractCast = {
   getStatus(): ContractCastStatusEnum;
   loadProgram(program: Program): Promise<void>;
-  loadSecrets(secrets: SecretMap): Promise<void>
-  getSecretsManager(): SecretManager
+  loadSecrets(secrets: SecretMap): Promise<void>;
+  getSecretsManager(): SecretManager;
   start(): Promise<void>;
   stop(): Promise<void>;
   onEvent<N extends string, T>(event: Web3Event<N, T>): Promise<void>;
@@ -95,7 +95,7 @@ export type ContractCast = {
 
 export type ContractCastConstructor<T, S, VM> = new (
   creator: new () => S,
-  vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap)=> VM,
+  vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap) => VM,
   id: string,
   type: ContractCastType,
   adress: string,
@@ -104,7 +104,6 @@ export type ContractCastConstructor<T, S, VM> = new (
   transactionIndex: number,
   processors: InstructionMap
 ) => T;
-
 
 export type ModelConstructor<M> = new (web3Con: Web3Connection, address: string) => M;
 
@@ -120,14 +119,13 @@ export type ContractListenerConstructor<M extends Model> = new (
   address: string
 ) => M;
 
-
-export type SecretMap = {[key: string]: string };
+export type SecretMap = { [key: string]: string };
 
 export type SecretManager = {
-  addSecrets(secrets: SecretMap): void
+  addSecrets(secrets: SecretMap): void;
   addSecret(name: string, value: string): void;
   deleteSecret(name: string): void;
   updateSecret(name: string, value: string): void;
   getSecret(name: string): string | Buffer;
-  getSecrets(): SecretMap ;
-}
+  getSecrets(): SecretMap;
+};
