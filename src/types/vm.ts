@@ -1,6 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type VariableDict = { [key: string]: any };
 import { z } from 'zod';
+
 export type InstructionCall = {
   name: string;
   args?: InstructionArgs;
@@ -57,6 +58,7 @@ export type Trigger<N extends string, T> = {
   name: N;
   payload: T;
 };
+
 
 export type Program = {
   load(stringCode: string): void | Promise<void>;

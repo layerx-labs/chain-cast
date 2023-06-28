@@ -3,10 +3,9 @@ import { ContractEventListener, EventListenerHandler, Web3Event } from '@/types/
 import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
 import { chainsSupported } from '@/constants/chains';
-import { InstructionMap, Program } from '@/types/vm';
-import { ContractCast, ContractCastStatusEnum, SecretManager, SecretMap } from '../types';
+import { InstructionMap, Program, VirtualMachine } from '@/types/vm';
+import { CastInfo, ContractCast, ContractCastStatusEnum, SecretManager, SecretMap } from '../types';
 import db from '@/services/prisma';
-import { ChainCastVirtualMachine } from '@/lib/vm';
 import { ContractListenerFactory } from './contract-listener-factory';
 import EVMContractListener from './contract-listener';
 import { ModelFactory } from './model-factory';
@@ -15,7 +14,7 @@ import { EVMContractEventRetriever } from './contract-event-retriever';
 /**
  * An implementation that creates a stream of events for an Ethereum Smart Contract
  */
-export class EVMContractCast<T extends SecretManager>
+export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   implements ContractCast, EventListenerHandler
 {
   private _id: string;
@@ -25,13 +24,14 @@ export class EVMContractCast<T extends SecretManager>
   private _blockNumber: number;
   private _transactionIndex: number;
   private _listener: ContractEventListener | null = null;
-  private _vm: ChainCastVirtualMachine<typeof this>;
+  private _vm: VM;
   private _web3Con: Web3Connection;
   private _status: ContractCastStatusEnum = ContractCastStatusEnum.IDLE;
   private _secretManager: T;
 
   constructor(
     creator: new () => T,
+    vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap)=> VM,
     id: string,
     type: ContractCastType,
     address: string,
@@ -46,7 +46,7 @@ export class EVMContractCast<T extends SecretManager>
     this._chainId = chainId;
     this._blockNumber = blockNumber;
     this._transactionIndex = transactionIndex;
-    this._vm = new ChainCastVirtualMachine(this, supportedProcessors);
+    this._vm = new vmConstructor(this, supportedProcessors);
     const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this._chainId);
     const web3Con = new Web3Connection({
       debug: false,
