@@ -3,13 +3,13 @@ import { ContractCastType, PrismaClient } from '@prisma/client';
 import LogService, { LogLevel } from '@taikai/scribal';
 import { InstructionMap, Program } from './vm';
 import { EventListenerHandler, Web3Event } from './events';
-import { EVMContractCast } from '@/lib/contract-cast';
 import { Model, Web3Connection } from '@taikai/dappkit';
+import { ChainCastSecretManager } from '@/services/secret-manager';
 
 export type AppContext = {
   db: PrismaClient;
   log: LogService;
-  manager: ChainCastManager<EVMContractCast>;
+  manager: ChainCastManager<ContractCast, ChainCastSecretManager>;
 };
 
 export type Environment = 'development' | 'staging' | 'production';
@@ -93,7 +93,8 @@ export type ContractCast = {
   onError(error: Error): void;
 };
 
-export type ContractCastConstructor<T> = new (
+export type ContractCastConstructor<T, S> = new (
+  creator: new () => S,
   id: string,
   type: ContractCastType,
   adress: string,
