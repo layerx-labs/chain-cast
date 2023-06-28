@@ -17,7 +17,7 @@ export const CreateSecretDataInput = builder.inputType('CreateSecretDataInput', 
             minLength: 4,
           },
       }), 
-      contractCastId: t.id({
+      contractCastId: t.string({
         required: true,
         validate: {
             minLength: 4,
@@ -53,7 +53,7 @@ export const UpdateSecretDataInput = builder.inputType('UpdateSecretDataInput', 
             minLength: 4,
           },
       }),      
-      contractCastId: t.id({
+      contractCastId: t.string({
         required: true,
         validate: {
             minLength: 4,

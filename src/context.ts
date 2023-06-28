@@ -3,9 +3,11 @@ import { AppContext } from './types';
 import log from '@/services/log';
 import { ChainCastManager } from '@/services/chaincast-manager';
 import { EVMContractCast } from './lib/contract-cast';
+import { ChainCastSecretManager } from './services/secret-manager';
 
 const manager = new ChainCastManager(
   EVMContractCast,
+  ChainCastSecretManager,
   prisma,
 );
 
