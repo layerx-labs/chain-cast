@@ -17,7 +17,7 @@ const createSecret: Resolver<Secret, ArgsType> = async (
   ctx
 ) => {
   const initVector = crypto.randomBytes(16);
-  const encSecret = encryptSecret(args.data.name, initVector, 'base64');
+  const encSecret = encryptSecret(args.data.value, initVector, 'base64');
   const secret = await ctx.db.secret.upsert({
     where: {
       name_contractCastId: {

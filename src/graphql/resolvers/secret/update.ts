@@ -26,7 +26,7 @@ const updateSecret: Resolver<Secret, ArgsType> = async (_1, args, ctx) => {
     throw new UserInputError('Secret not found to update', ErrorsEnum.invalidUserInput);
   }
   const initVector = crypto.randomBytes(16);
-  const encSecret = encryptSecret(args.data.name, initVector, 'base64');
+  const encSecret = encryptSecret(args.data.value, initVector, 'base64');
   const res = await ctx.db.secret.update({
     where: {
       id: args.where.id,

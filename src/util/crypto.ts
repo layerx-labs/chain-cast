@@ -47,5 +47,6 @@ function _decipherData(
   const algorithm = 'aes256';
   const hashKey = crypto.createHash('sha256').update(String(key)).digest();
   const decipher = crypto.createDecipheriv(algorithm, hashKey, salt);
-  return decipher.update(encodedData, inEnc, outEnc) + decipher.final(outEnc);
+  const result = decipher.update(encodedData, inEnc, outEnc) + decipher.final(outEnc);
+  return result;
 }
