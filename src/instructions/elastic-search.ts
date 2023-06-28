@@ -6,7 +6,7 @@ import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 const ArgsTypeSchema = z.object({
   bodyInput: z.string().min(3),
   indexName: z.string().regex(/^[a-z1-9-_]+$/),
-  url: z.string().url(),
+  url: z.string().min(2),
   username: z.string().min(2),
   password: z.string().min(2),
 });
@@ -47,13 +47,17 @@ export class ElasticSearch implements Instruction {
 
     try {
       const body = vm.getGlobalVariableFromPath(args.bodyInput);
+      const username = vm.getGlobalVariable(args.username);
+      const password = vm.getGlobalVariable(args.password);
+      const elasticUrl = vm.getGlobalVariable(args.url);
       const client = new Client({
-        node: args.url,
+        node: elasticUrl,
         auth: {
-          username: args.username,
-          password: args.password,
+          username: username,
+          password: password,
         },
       });
+
       const response = await client.index({
         index: args.indexName,
         body: {
