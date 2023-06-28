@@ -4,13 +4,14 @@ import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
 import { chainsSupported } from '@/constants/chains';
 import { InstructionMap, Program } from '@/types/vm';
-import { ContractCast, ContractCastStatusEnum } from '../types';
+import { ContractCast, ContractCastStatusEnum, SecretManager, SecretMap } from '../types';
 import db from '@/services/prisma';
 import { ChainCastVirtualMachine } from '@/lib/vm';
 import { ContractListenerFactory } from './contract-listener-factory';
 import EVMContractListener from './contract-listener';
 import { ModelFactory } from './model-factory';
 import { EVMContractEventRetriever } from './contract-event-retriever';
+import { ChainCastSecretManager } from '@/services/secret-manager';
 
 /**
  * An implementation that creates a stream of events for an Ethereum Smart Contract
@@ -26,6 +27,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   private _vm: ChainCastVirtualMachine<typeof this>;
   private _web3Con: Web3Connection;
   private _status: ContractCastStatusEnum = ContractCastStatusEnum.IDLE;
+  private _secretManager: SecretManager; 
 
   constructor(
     id: string,
@@ -49,6 +51,15 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
       web3Host: chain.rpcUrl,
     });
     this._web3Con = web3Con;
+    this._secretManager = new ChainCastSecretManager();
+  }
+  
+  async loadSecrets(secrets: SecretMap): Promise<void> {
+      this._secretManager.addSecrets(secrets);
+  }
+
+  getSecretsManager(): SecretManager {
+    return this._secretManager;
   }
 
   getStatus(): ContractCastStatusEnum {

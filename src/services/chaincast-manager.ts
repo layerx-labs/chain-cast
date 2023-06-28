@@ -2,8 +2,9 @@ import log from '@/services/log';
 import { ContractCastType, PrismaClient } from '@prisma/client';
 
 import { InstructionMap, Instruction, InstructionConstructor } from '@/types/vm';
-import { ContractCast, ContractCastConstructor, SecretManager } from '../types';
+import { ContractCast, ContractCastConstructor } from '../types';
 import { ChainCastProgram } from '@/lib/program';
+import { loadSecresFromDb } from '@/util/secrets';
 
 /**
  * The Service that manage all the contract casts lifecycles
@@ -66,11 +67,16 @@ export class ChainCastManager<C extends ContractCast> {
     }
   }
 
+  getCast(id: string) {
+    return this._casts[id];
+  }
+
   async updateCast(id: string, stringCode: string) {
     if (this._casts[id]) {
       const program = new ChainCastProgram(this._supportedProcessors);
       program.load(stringCode);
       await this._casts[id].loadProgram(program);
+      await this._casts[id].loadSecrets(await loadSecresFromDb(this._db, id));
     }
   }
 
@@ -128,6 +134,7 @@ export class ChainCastManager<C extends ContractCast> {
     const program = new ChainCastProgram(this._supportedProcessors);
     program.load(cast.program);
     await contractCast.loadProgram(program);
+    await contractCast.loadSecrets(await loadSecresFromDb(this._db, cast.id));
     await contractCast.start();
   }
 }

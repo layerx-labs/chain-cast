@@ -16,7 +16,13 @@ export const CreateSecretDataInput = builder.inputType('CreateSecretDataInput', 
         validate: {
             minLength: 4,
           },
-      }),           
+      }), 
+      contractCastId: t.id({
+        required: true,
+        validate: {
+            minLength: 4,
+        },
+      })          
     }),
   });
 
@@ -46,7 +52,13 @@ export const UpdateSecretDataInput = builder.inputType('UpdateSecretDataInput', 
         validate: {
             minLength: 4,
           },
-      }),           
+      }),      
+      contractCastId: t.id({
+        required: true,
+        validate: {
+            minLength: 4,
+        },
+      })     
     }),
   });
 
