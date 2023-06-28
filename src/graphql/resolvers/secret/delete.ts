@@ -28,7 +28,9 @@ const deleteSecret: Resolver<Secret, ArgsType> = async (
       id: args.where.id,
     },
   });
-  ctx.secrets.deleteSecret(secret.name);
+  ctx.manager.getCast(secret.contractCastId)
+             .getSecretsManager()
+             .deleteSecret(secret.name);
   ctx.log.d(`Deleted secret ${res.id}`);
   return res;
 };

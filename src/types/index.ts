@@ -5,12 +5,10 @@ import { InstructionMap, Program } from './vm';
 import { EventListenerHandler, Web3Event } from './events';
 import { EVMContractCast } from '@/lib/contract-cast';
 import { Model, Web3Connection } from '@taikai/dappkit';
-import { ChainCastSecretManager } from '@/services/secret-map';
 
 export type AppContext = {
   db: PrismaClient;
   log: LogService;
-  secrets: ChainCastSecretManager,
   manager: ChainCastManager<EVMContractCast>;
 };
 
@@ -87,6 +85,8 @@ export enum ContractCastStatusEnum  {
 export type ContractCast = {
   getStatus(): ContractCastStatusEnum;
   loadProgram(program: Program): Promise<void>;
+  loadSecrets(secrets: SecretMap): Promise<void>
+  getSecretsManager(): SecretManager
   start(): Promise<void>;
   stop(): Promise<void>;
   onEvent<N extends string, T>(event: Web3Event<N, T>): Promise<void>;
@@ -122,7 +122,7 @@ export type ContractListenerConstructor<M extends Model> = new (
 export type SecretMap = {[key: string]: string };
 
 export type SecretManager = {
-  load(): Promise<void> | void;
+  addSecrets(secrets: SecretMap): void
   addSecret(name: string, value: string): void;
   deleteSecret(name: string): void;
   updateSecret(name: string, value: string): void;

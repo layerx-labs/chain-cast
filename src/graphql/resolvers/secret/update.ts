@@ -12,6 +12,7 @@ export type ArgsType = {
   data: {
     name: string;
     value: string;
+    contractCastId: string;
   };
 };
 
@@ -35,7 +36,9 @@ const updateSecret: Resolver<Secret, ArgsType> = async (_1, args, ctx) => {
       salt: Buffer.from(initVector).toString('base64'),
     },
   });
-  ctx.secrets.updateSecret(args.data.name, args.data.value);
+  ctx.manager.getCast(args.data.contractCastId)
+             .getSecretsManager()
+             .addSecret(args.data.name, args.data.value);
   ctx.log.d(`Updated secret ${args.data.name}`);
   return res;
 };

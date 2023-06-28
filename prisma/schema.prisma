@@ -32,16 +32,20 @@ model ContractCast {
    transactionIndex                Int @default(0)
    program                String
    createdAt              DateTime  @default(now())
+   secrets                Secret[]
    @@unique([chainId, address])
 }
 
 model Secret {
    id                     String    @id @default(cuid()) @db.VarChar(30)  
-   name                   String    @unique
+   name                   String    
    value                  String 
    salt                   String    
+   contractCastId         String  
+   contractCast           ContractCast  @relation(fields: [contractCastId], references: [id])     
    createdAt              DateTime  @default(now())
    updatedAt              DateTime  @updatedAt
+   @@unique([name, contractCastId])
 }
 
 
