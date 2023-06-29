@@ -2,7 +2,6 @@ import log from '@/services/log';
 import {
   InstructionMap,
   InstructionCall,
-  Instruction,
   VirtualMachine,
   VariableDict,
   Trigger,
@@ -16,9 +15,9 @@ import { getVariableFromPath } from '@/util/vm';
  *  Class to excute a program, a set of instructions in sequence
  */
 export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMachine {
+  
   private _supportedInstructions: InstructionMap;
   private _program: Program | null = null;
-  private _instructions: Instruction[] = [];
   private _info: CI;
 
   //Virtual Machine Temporary Context
@@ -35,13 +34,6 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     this._stack = new Stack<InstructionCall>();
   }
 
-  getCast(): { id: string; chainId: number; address: string } {
-    return {
-      id: this._info.getId(),
-      chainId: this._info.getChainId(),
-      address: this._info.getAddress(),
-    };
-  }
   getGlobalVariables(): VariableDict {
     return this._globalVariables;
   }
@@ -101,9 +93,8 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
       return;
     }
     log.d(`Executing Program for ${this._info.getId()}  `);
-    this.setGlobalVariable(trigger.name, trigger.payload);
-    this.setGlobalVariable('cast', this.getCast());
     try {
+      this.setGlobalVariable(trigger.name, trigger.payload);
       await this.executeInstructions(this._program.getInstructionCalls());
     } catch (e: Error | any) {
       log.e(

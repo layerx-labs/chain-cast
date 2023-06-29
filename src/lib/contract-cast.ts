@@ -176,8 +176,13 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     log.d(
       `New Event ${event.event} goint to be executed by the program ` +
         `${event.blockNumber}:${event.transactionIndex}`
-    );
-    this.loadSecretsOnVM();
+    );    
+    this._vm.setGlobalVariable('cast',{
+      id: this.getId(),
+      chainId: this.getChainId(),
+      address: this.getAddress(),
+    });
+    this._setSecretsOnVM();
     await this._vm.execute({ name: 'event', payload: event });
     this._blockNumber = event.blockNumber;
     this._transactionIndex = event.transactionIndex;
@@ -238,7 +243,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
       await retriever.recover(fromBlock, fromTxIndex, currentBlock);
     }
   }
-  loadSecretsOnVM() {
+  private _setSecretsOnVM() {
     const secrets = this._secretManager.getSecrets();
     Object.keys(secrets).forEach((key) => {
       this._vm.setGlobalVariable(key, secrets[key]);
