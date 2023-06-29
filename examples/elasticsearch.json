@@ -4,7 +4,8 @@
         "variablesToDebug": [
             "event.event",
             "event.blockNumber",
-            "cast.id"
+            "cast.id",
+            "elasticUrl"
         ]
     }    
 }, {
@@ -12,8 +13,8 @@
     "args": {
         "bodyInput": "event",
         "indexName": "chaincast", 
-        "url": "https://taikai-****",
-        "username": "***",
-        "password": "****"
+        "url": "elasticUrl",
+        "username": "elasticUsername",
+        "password": "elasticPassword"
     }
 }]

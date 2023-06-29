@@ -30,7 +30,7 @@ export class ChainCastProgram implements Program {
     for (const call of calls) {
       const constructorZ = this._supportedInstructions[call.name];
       const instruction: Instruction = new constructorZ();
-      if (!instruction.validateArgs(call.args)) {        
+      if (!instruction.validateArgs(call.args)) {
         return false;
       }
     }

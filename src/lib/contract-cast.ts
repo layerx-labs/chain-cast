@@ -3,10 +3,9 @@ import { ContractEventListener, EventListenerHandler, Web3Event } from '@/types/
 import log from '@/services/log';
 import { ContractCastType } from '@prisma/client';
 import { chainsSupported } from '@/constants/chains';
-import { InstructionMap, Program } from '@/types/vm';
-import { ContractCast, ContractCastStatusEnum } from '../types';
+import { InstructionMap, Program, VirtualMachine } from '@/types/vm';
+import { CastInfo, ContractCast, ContractCastStatusEnum, SecretManager, SecretMap } from '../types';
 import db from '@/services/prisma';
-import { ChainCastVirtualMachine } from '@/lib/vm';
 import { ContractListenerFactory } from './contract-listener-factory';
 import EVMContractListener from './contract-listener';
 import { ModelFactory } from './model-factory';
@@ -15,7 +14,9 @@ import { EVMContractEventRetriever } from './contract-event-retriever';
 /**
  * An implementation that creates a stream of events for an Ethereum Smart Contract
  */
-export class EVMContractCast implements ContractCast, EventListenerHandler {
+export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
+  implements ContractCast, EventListenerHandler
+{
   private _id: string;
   private _type: ContractCastType;
   private _address: string;
@@ -23,11 +24,14 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   private _blockNumber: number;
   private _transactionIndex: number;
   private _listener: ContractEventListener | null = null;
-  private _vm: ChainCastVirtualMachine<typeof this>;
+  private _vm: VM;
   private _web3Con: Web3Connection;
   private _status: ContractCastStatusEnum = ContractCastStatusEnum.IDLE;
+  private _secretManager: T;
 
   constructor(
+    creator: new () => T,
+    vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap) => VM,
     id: string,
     type: ContractCastType,
     address: string,
@@ -42,13 +46,22 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
     this._chainId = chainId;
     this._blockNumber = blockNumber;
     this._transactionIndex = transactionIndex;
-    this._vm = new ChainCastVirtualMachine(this, supportedProcessors);
+    this._vm = new vmConstructor(this, supportedProcessors);
     const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this._chainId);
     const web3Con = new Web3Connection({
       debug: false,
       web3Host: chain.rpcUrl,
     });
     this._web3Con = web3Con;
+    this._secretManager = new creator();
+  }
+
+  async loadSecrets(secrets: SecretMap): Promise<void> {
+    this._secretManager.addSecrets(secrets);
+  }
+
+  getSecretsManager(): SecretManager {
+    return this._secretManager;
   }
 
   getStatus(): ContractCastStatusEnum {
@@ -91,12 +104,11 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
   async start() {
     log.d(`Starting the Contract Cast ${this._id}`);
     try {
-
       this._status = ContractCastStatusEnum.RECOVERING;
       log.d(`Starting Recovering ${this._id}`);
 
       await this._recoverEvents();
-      log.d(`Stopping Recovering ${this._id}`);      
+      log.d(`Stopping Recovering ${this._id}`);
       if (this._status !== ContractCastStatusEnum.TERMINATED) {
         await this._startContractListening();
         this._status = ContractCastStatusEnum.LISTENING;
@@ -129,7 +141,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
             await this._updateCastIndex(currentBlock, this._transactionIndex + 1);
           } else {
             await this._updateCastIndex(currentBlock + 1);
-          }   
+          }
         }
         this._status = ContractCastStatusEnum.TERMINATED;
       } catch (e: Error | any) {
@@ -165,6 +177,7 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
       `New Event ${event.event} goint to be executed by the program ` +
         `${event.blockNumber}:${event.transactionIndex}`
     );
+    this.loadSecretsOnVM();
     await this._vm.execute({ name: 'event', payload: event });
     this._blockNumber = event.blockNumber;
     this._transactionIndex = event.transactionIndex;
@@ -224,5 +237,11 @@ export class EVMContractCast implements ContractCast, EventListenerHandler {
       retriever.setHandler(this);
       await retriever.recover(fromBlock, fromTxIndex, currentBlock);
     }
+  }
+  loadSecretsOnVM() {
+    const secrets = this._secretManager.getSecrets();
+    Object.keys(secrets).forEach((key) => {
+      this._vm.setGlobalVariable(key, secrets[key]);
+    });
   }
 }

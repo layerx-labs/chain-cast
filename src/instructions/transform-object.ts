@@ -2,19 +2,17 @@ import { z } from 'zod';
 import log from '@/services/log';
 import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 
-const ObjectTransformSchema = z
-  .object({
-    variable: z.string().min(2),
-    transform: z.enum(['keys', 'values', 'delete', 'value']),
-    key: z.string().min(2).optional(),
-    output: z.string().min(2),
-  });
+const ObjectTransformSchema = z.object({
+  variable: z.string().min(2),
+  transform: z.enum(['keys', 'values', 'delete', 'value']),
+  key: z.string().min(2).optional(),
+  output: z.string().min(2),
+});
 
 const ArgsTypeSchema = ObjectTransformSchema;
 type ArgsType = z.infer<typeof ObjectTransformSchema>;
 
 export class TransformObject implements Instruction {
-  
   INSTRUCTION_NAME = 'transform-object';
 
   validateArgs(args: InstructionArgs | undefined): boolean {
@@ -37,7 +35,7 @@ export class TransformObject implements Instruction {
     const step = vm.getCurrentStackItem();
     const castID = vm.getGlobalVariable('cast')?.id ?? '';
     log.d(`[${this.INSTRUCTION_NAME}] Action Received on cast ${castID}`);
-  
+
     if (!step || !step.args) {
       return;
     }
@@ -49,9 +47,8 @@ export class TransformObject implements Instruction {
     };
 
     log.d(`[${this.INSTRUCTION_NAME}] Obj Transfrom ${args.variable} ${args.transform}`);
-    this.objTransform(vm, args);   
+    this.objTransform(vm, args);
   }
-
 
   private objTransform(vm: VirtualMachine, obj: z.infer<typeof ObjectTransformSchema>) {
     const input = vm.getGlobalVariableFromPath(obj?.variable ?? '') || {};
