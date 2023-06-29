@@ -1,4 +1,4 @@
-# BEPRO Chain Cast
+# Chain Cast
 Our software is a powerful tool designed to listen to and recover events from smart contracts deployed on various blockchain platforms. By seamlessly integrating with blockchain networks, our software provides developers and businesses with the ability to extract and process valuable event data in a reliable and efficient manner.
 
 ## Event Listening and Recovery:
