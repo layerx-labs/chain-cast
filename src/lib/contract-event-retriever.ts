@@ -2,7 +2,7 @@ import { Model } from '@taikai/dappkit';
 import log from '@/services/log';
 import { ContractEventRetriever, EventRecoverHandler } from '@/types/events';
 import { retry } from '@/util/promise';
-
+import {appConfig} from '@/config/index'
 export class EVMContractEventRetriever<M extends Model> implements ContractEventRetriever {
   private _contract: Model;
   private _isRecovering = false;
@@ -25,7 +25,7 @@ export class EVMContractEventRetriever<M extends Model> implements ContractEvent
     this._isRecovering = true;
     try {
       do {
-        const endBlock = Math.min(startBlock + 100, toBlock);
+        const endBlock = Math.min(startBlock + appConfig.recover.blocksPerCall, toBlock);
         const options = {
           fromBlock: startBlock,
           toBlock: endBlock,
@@ -35,7 +35,7 @@ export class EVMContractEventRetriever<M extends Model> implements ContractEvent
           return this._contract.contract.self.getPastEvents('allEvents', options);
         };
 
-        const events = await retry(func, [], 3, 3);
+        const events = await retry(func, [], appConfig.recover.retries, 10);
 
         for (const event of events) {
           if (!(event.blockNumber == fromBlock && event.transactionIndex < fromTxIndex)) {

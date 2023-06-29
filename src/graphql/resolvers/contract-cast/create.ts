@@ -2,7 +2,9 @@ import { ErrorsEnum } from '@/constants/index';
 import { Resolver } from '@/graphql/types';
 import { ChainCastProgram } from '@/lib/program';
 import { UserInputError } from '@/middleware/errors';
+import { encryptSecret } from '@/util/crypto';
 import { ContractCast, ContractCastType } from '@prisma/client';
+import crypto from 'crypto';
 
 export type CreateContractCastArgType = {
   data: {
@@ -11,6 +13,10 @@ export type CreateContractCastArgType = {
     chainId: number;
     startFrom?: number;
     program: string;
+    secrets?: [{
+      name: string,
+      value: string,
+    }]
   };
 };
 
@@ -36,6 +42,20 @@ const createContractCast: Resolver<ContractCast, CreateContractCastArgType> = as
   if (!program.compile(stringCode)) {
     throw new UserInputError('Invalid Code for Chain Cast', ErrorsEnum.invalidUserInput);
   }
+  const secrets: {
+    name: string,
+    value: string,
+    salt: string
+  }[] = args.data.secrets? args.data.secrets.map((s)=> {
+    const initVector = crypto.randomBytes(16);
+    const encSecret = encryptSecret(s.value, initVector, 'base64');
+    return {
+      name: s.name,
+      value: encSecret,
+      salt: Buffer.from(initVector).toString('base64')
+    }
+  }): [];
+  
   const contractCast = await ctx.db.contractCast.create({
     data: {
       address: args.data.address,
@@ -44,6 +64,11 @@ const createContractCast: Resolver<ContractCast, CreateContractCastArgType> = as
       blockNumber: args.data.startFrom ?? 0,
       transactionIndex: 0,
       program: args.data.program ?? {},
+      secrets: {
+        createMany: {
+          data: secrets
+        }
+      },      
     },
     select: {
       id: true,

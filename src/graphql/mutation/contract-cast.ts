@@ -6,6 +6,24 @@ import updateContractCast from '../resolvers/contract-cast/update';
 import { deleteContractCast } from '../resolvers/contract-cast/delete';
 import web3 from 'web3';
 
+
+export const EmbedSecretDataInput = builder.inputType('EmbedSecretDataInput', {
+  fields: (t) => ({
+    name: t.string({
+      required: true,      
+      validate: {
+        maxLength: 0,
+      },
+    }),
+    value: t.string({
+      required: true,      
+      validate: {
+        maxLength: 0,
+      },
+    }),   
+  }),
+});
+
 export const CreateContractCastDataInput = builder.inputType('CreateContractCastDataInput', {
   fields: (t) => ({
     type: t.field({
@@ -40,6 +58,10 @@ export const CreateContractCastDataInput = builder.inputType('CreateContractCast
         min: 0,
         int: true,
       },
+    }),
+    secrets: t.field({
+      required: false,
+      type: [EmbedSecretDataInput],
     }),
   }),
 });
