@@ -2,21 +2,17 @@ import { z } from 'zod';
 import log from '@/services/log';
 import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 
+const NumberTransformSchema = z.object({
+  variableLeft: z.string().min(2),
+  variableRight: z.string().min(2).optional(),
+  transform: z.enum(['add', 'subtract', 'multiply', 'divide', 'pow', 'bigint']),
+  output: z.string().min(2),
+});
 
-const NumberTransformSchema = z
-  .object({
-    variableLeft: z.string().min(2),
-    variableRight: z.string().min(2).optional(),
-    transform: z.enum(['add', 'subtract', 'multiply', 'divide', 'pow', 'bigint']),
-    output: z.string().min(2),
-  })
-
-  const ArgsTypeSchema = NumberTransformSchema;
- type ArgsType = z.infer<typeof NumberTransformSchema>;
-
+const ArgsTypeSchema = NumberTransformSchema;
+type ArgsType = z.infer<typeof NumberTransformSchema>;
 
 export class TransformNumber implements Instruction {
-
   INSTRUCTION_NAME = 'transform-number';
 
   validateArgs(args: InstructionArgs | undefined): boolean {
@@ -43,12 +39,12 @@ export class TransformNumber implements Instruction {
       return;
     }
     const args: ArgsType = {
-        variableLeft: (step?.args?.variable as string) ?? '',
-        variableRight: (step?.args?.variableRight as string) ?? '',
-        transform: (step?.args?.transform as any) ?? '',
-        output: (step?.args?.output as string) ?? '',
-      };
-      this.numberTransform(vm, args);  
+      variableLeft: (step?.args?.variable as string) ?? '',
+      variableRight: (step?.args?.variableRight as string) ?? '',
+      transform: (step?.args?.transform as any) ?? '',
+      output: (step?.args?.output as string) ?? '',
+    };
+    this.numberTransform(vm, args);
   }
 
   private numberTransform(vm: VirtualMachine, number: z.infer<typeof NumberTransformSchema>) {

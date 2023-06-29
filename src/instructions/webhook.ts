@@ -15,9 +15,9 @@ export class WebHook implements Instruction {
   INSTRUCTION_NAME = 'webhook';
 
   validateArgs(args: InstructionArgs | undefined): boolean {
-    const res = ArgsTypeSchema.safeParse(args)
+    const res = ArgsTypeSchema.safeParse(args);
     if (!res.success) {
-      log.d(`Failed to compile instruction webhook - ${res.error}`)
+      log.d(`Failed to compile instruction webhook - ${res.error}`);
       return false;
     }
     return true;
@@ -56,7 +56,7 @@ export class WebHook implements Instruction {
           chainId: castChainId,
         },
       });
-      if (response.status != 200) {      
+      if (response.status != 200) {
         log.w(
           `[${this.INSTRUCTION_NAME}] Weekhook failed to be called ` +
             `${response.status} ${response.statusText} on url `,

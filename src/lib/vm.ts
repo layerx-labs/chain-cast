@@ -12,7 +12,6 @@ import { CastInfo } from '../types';
 import { Stack } from '@/lib/stack';
 import { getVariableFromPath } from '@/util/vm';
 
-
 /**
  *  Class to excute a program, a set of instructions in sequence
  */
@@ -102,8 +101,6 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
       return;
     }
     log.d(`Executing Program for ${this._info.getId()}  `);
-    //1. Initialize Virtual Machine State
-    this._initVM();
     this.setGlobalVariable(trigger.name, trigger.payload);
     this.setGlobalVariable('cast', this.getCast());
     try {
@@ -113,6 +110,9 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
         `Failed to execute Program ${this._info.getId()} ` +
           `on Step ${this.getCurrentStackItem()?.name} ${e.message} ${e.stack}`
       );
+    } finally{
+      //1. Initialize Virtual Machine State
+      this._initVM();  
     }
   }
 

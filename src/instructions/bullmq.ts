@@ -16,9 +16,9 @@ export class BullMQProducer implements Instruction {
   INSTRUCTION_NAME = 'bull-producer';
 
   validateArgs(args: InstructionArgs): boolean {
-    const res =  ArgsTypeSchema.safeParse(args);
+    const res = ArgsTypeSchema.safeParse(args);
     if (!res.success) {
-      log.d(`Failed to compile bullmq instruction - ${res.error}`)
+      log.d(`Failed to compile bullmq instruction - ${res.error}`);
       return false;
     }
     return true;

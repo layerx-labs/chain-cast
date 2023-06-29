@@ -1,23 +1,37 @@
 import log from '@/services/log';
 import { ContractCastType, PrismaClient } from '@prisma/client';
 
-import { InstructionMap, Instruction, InstructionConstructor } from '@/types/vm';
-import { ContractCast, ContractCastConstructor } from '../types';
+import { InstructionMap, Instruction, InstructionConstructor, VirtualMachine } from '@/types/vm';
+import { CastInfo, ContractCast, ContractCastConstructor, SecretManager } from '../types';
 import { ChainCastProgram } from '@/lib/program';
+import { loadSecresFromDb } from '@/util/secrets';
 
 /**
  * The Service that manage all the contract casts lifecycles
  */
-export class ChainCastManager<C extends ContractCast> {
+export class ChainCastManager<
+  C extends ContractCast,
+  VM extends VirtualMachine,
+  S extends SecretManager
+> {
   private _casts: { [key: string]: C };
   private _db: PrismaClient;
   private _supportedProcessors: InstructionMap = {};
-  private _creator: ContractCastConstructor<C>;
+  private _creator: ContractCastConstructor<C, S, VM>;
+  private _seretManagerCreator: new () => S;
+  private _vmCreator: new (info: CastInfo, supportedInstructions: InstructionMap) => VM;
 
-  constructor(creator: ContractCastConstructor<C>, db: PrismaClient) {
+  constructor(
+    creator: ContractCastConstructor<C, S, VM>,
+    vmCreator: new (info: CastInfo, supportedInstructions: InstructionMap) => VM,
+    seretManagerCretor: new () => S,
+    db: PrismaClient
+  ) {
+    this._seretManagerCreator = seretManagerCretor;
     this._casts = {};
     this._db = db;
     this._creator = creator;
+    this._vmCreator = vmCreator;
   }
 
   getCasts(): ContractCast[] {
@@ -64,11 +78,16 @@ export class ChainCastManager<C extends ContractCast> {
     }
   }
 
+  getCast(id: string) {
+    return this._casts[id];
+  }
+
   async updateCast(id: string, stringCode: string) {
     if (this._casts[id]) {
       const program = new ChainCastProgram(this._supportedProcessors);
       program.load(stringCode);
       await this._casts[id].loadProgram(program);
+      await this._casts[id].loadSecrets(await loadSecresFromDb(this._db, id));
     }
   }
 
@@ -114,6 +133,8 @@ export class ChainCastManager<C extends ContractCast> {
     program: string;
   }) {
     const contractCast: C = new this._creator(
+      this._seretManagerCreator,
+      this._vmCreator,
       cast.id,
       cast.type,
       cast.address,
@@ -126,6 +147,7 @@ export class ChainCastManager<C extends ContractCast> {
     const program = new ChainCastProgram(this._supportedProcessors);
     program.load(cast.program);
     await contractCast.loadProgram(program);
+    await contractCast.loadSecrets(await loadSecresFromDb(this._db, cast.id));
     await contractCast.start();
   }
 }

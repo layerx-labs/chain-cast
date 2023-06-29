@@ -1,15 +1,15 @@
 import { ChainCastManager } from '@/services/chaincast-manager';
 import { ContractCastType, PrismaClient } from '@prisma/client';
 import LogService, { LogLevel } from '@taikai/scribal';
-import { InstructionMap, Program } from './vm';
+import { InstructionMap, Program, VirtualMachine } from './vm';
 import { EventListenerHandler, Web3Event } from './events';
-import { EVMContractCast } from '@/lib/contract-cast';
 import { Model, Web3Connection } from '@taikai/dappkit';
+import { ChainCastSecretManager } from '@/services/secret-manager';
 
 export type AppContext = {
   db: PrismaClient;
   log: LogService;
-  manager: ChainCastManager<EVMContractCast>;
+  manager: ChainCastManager<ContractCast, VirtualMachine, ChainCastSecretManager>;
 };
 
 export type Environment = 'development' | 'staging' | 'production';
@@ -19,6 +19,7 @@ export type __Config = {
   environment: Environment;
   version: string;
   port: number;
+  secret: string;
   cors: {
     enabled: boolean;
     origins: string[];
@@ -74,23 +75,27 @@ export type CastInfo = {
   getBlockNumber(): number;
 };
 
-export enum ContractCastStatusEnum  {
+export enum ContractCastStatusEnum {
   IDLE,
   RECOVERING,
   LISTENING,
-  TERMINATED 
+  TERMINATED,
 }
 
 export type ContractCast = {
   getStatus(): ContractCastStatusEnum;
   loadProgram(program: Program): Promise<void>;
+  loadSecrets(secrets: SecretMap): Promise<void>;
+  getSecretsManager(): SecretManager;
   start(): Promise<void>;
   stop(): Promise<void>;
   onEvent<N extends string, T>(event: Web3Event<N, T>): Promise<void>;
   onError(error: Error): void;
 };
 
-export type ContractCastConstructor<T> = new (
+export type ContractCastConstructor<T, S, VM> = new (
+  creator: new () => S,
+  vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap) => VM,
   id: string,
   type: ContractCastType,
   adress: string,
@@ -99,7 +104,6 @@ export type ContractCastConstructor<T> = new (
   transactionIndex: number,
   processors: InstructionMap
 ) => T;
-
 
 export type ModelConstructor<M> = new (web3Con: Web3Connection, address: string) => M;
 
@@ -114,3 +118,14 @@ export type ContractListenerConstructor<M extends Model> = new (
   web3Con: Web3Connection,
   address: string
 ) => M;
+
+export type SecretMap = { [key: string]: string };
+
+export type SecretManager = {
+  addSecrets(secrets: SecretMap): void;
+  addSecret(name: string, value: string): void;
+  deleteSecret(name: string): void;
+  updateSecret(name: string, value: string): void;
+  getSecret(name: string): string | Buffer;
+  getSecrets(): SecretMap;
+};
