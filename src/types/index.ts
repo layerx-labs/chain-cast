@@ -20,6 +20,10 @@ export type __Config = {
   version: string;
   port: number;
   secret: string;
+  recover: {
+    blocksPerCall: number;
+    retries: number;
+  },
   cors: {
     enabled: boolean;
     origins: string[];
@@ -43,13 +47,15 @@ export type __Config = {
   };
 };
 
-export type ChainNames = 'ethereum' | 'mumbai' | 'local' | 'polygon';
+export type ChainNames = 'ethereum' | 'mumbai' | 'local' | 'polygon' | 'goerli' | 'sepolia';
 
 export enum ChainIds {
   ETHEREUM = 1,
   MUMBAI = 80001,
   POLYGON = 137,
   LOCAL = 1337,
+  GOERLI = 5,
+  SEPOLIA = 11155111
 }
 
 export type ChainParams = {

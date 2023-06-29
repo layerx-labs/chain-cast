@@ -7,6 +7,10 @@ export const appConfig: __Config = {
   environment: (process.env.ENVIRONMENT_TYPE as Environment) || 'development',
   version: '1.0.0',
   port: Number(process.env.CHAIN_CAST_API_PORT) || 4400,
+  recover: {
+    blocksPerCall: Number(process.env.BLOCKS_PER_CALL) || 1000,
+    retries: Number(process.env.GET_PAST_RETRIES) || 3,
+  },
   cors: {
     enabled: process.env.CORS_ENABLED === 'true',
     origins: process.env?.CORS_ALLOWED_ORIGINS?.split(',') ?? [],

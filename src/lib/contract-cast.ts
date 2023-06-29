@@ -153,7 +153,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   async _updateCastIndex(blockNumber: number, transactionIndex?: number) {
     this._blockNumber = blockNumber;
     this._transactionIndex = transactionIndex ?? 0;
-    log.d(`Saving Chain Cast index on ${this.getId()} at ${blockNumber}:${transactionIndex ?? 0}`);
+    log.d(`Contract Cast Id=${this.getId()} at Block=[${blockNumber}:${transactionIndex ?? 0}]`);
     await db.contractCast.update({
       where: {
         id: this._id,
