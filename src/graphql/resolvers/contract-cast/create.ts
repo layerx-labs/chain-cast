@@ -13,10 +13,10 @@ export type CreateContractCastArgType = {
     chainId: number;
     startFrom?: number;
     program: string;
-    secrets?: [{
+    secrets?: {
       name: string,
       value: string,
-    }]
+    }[]
   };
 };
 

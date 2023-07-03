@@ -109,7 +109,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
 
       await this._recoverEvents();
       log.d(`Stopping Recovering ${this._id}`);
-      if (this._status !== ContractCastStatusEnum.TERMINATED) {
+      if (this._status as number !== ContractCastStatusEnum.TERMINATED) {
         await this._startContractListening();
         this._status = ContractCastStatusEnum.LISTENING;
       }
