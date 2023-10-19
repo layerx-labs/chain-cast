@@ -14,10 +14,7 @@ datasource db {
 }
 
 enum ContractCastType {
-  BEPRO_NETWORK_V2
-  BEPRO_FACTORY
-  BEPRO_REGISTRY
-  BEPRO_POP
+  CUSTOM
   ERC20
   ERC721
   ERC1155
@@ -26,10 +23,11 @@ enum ContractCastType {
 model ContractCast {
    id                     String  @id @default(cuid()) @db.VarChar(30)  
    type                   ContractCastType
+   abi                    String
    address                String
    chainId                Int
    blockNumber            Int @default(0)
-   transactionIndex                Int @default(0)
+   transactionIndex       Int @default(0)
    program                String
    createdAt              DateTime  @default(now())
    secrets                Secret[]
