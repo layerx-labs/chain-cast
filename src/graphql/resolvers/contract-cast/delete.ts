@@ -34,6 +34,7 @@ export const deleteContractCast: Resolver<ContractCast, DeleteContractCastArgTyp
       program: true,
       type: true,
       transactionIndex: true,
+      abi: true,      
     },
   });
   ctx.log.i(

@@ -106,6 +106,7 @@ export type ContractCastConstructor<T, S, VM> = new (
   type: ContractCastType,
   adress: string,
   chainId: number,
+  abi: string,
   blockNumber: number,
   transactionIndex: number,
   processors: InstructionMap
