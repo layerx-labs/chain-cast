@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import log from '@/services/log';
 import { appConfig } from './config';
 import os from 'os';
