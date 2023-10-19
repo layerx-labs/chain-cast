@@ -10,7 +10,7 @@ import { ContractListenerFactory } from './contract-listener-factory';
 import EVMContractListener from './contract-listener';
 import { ModelFactory } from './model-factory';
 import { EVMContractEventRetriever } from './contract-event-retriever';
-
+import { AbiItem } from 'web3-utils';
 /**
  * An implementation that creates a stream of events for an Ethereum Smart Contract
  */
@@ -21,6 +21,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   private _type: ContractCastType;
   private _address: string;
   private _chainId: number;
+  private _abi: AbiItem[] = [];
   private _blockNumber: number;
   private _transactionIndex: number;
   private _listener: ContractEventListener | null = null;
@@ -36,6 +37,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     type: ContractCastType,
     address: string,
     chainId: number,
+    abi: string,
     blockNumber: number,
     transactionIndex: number,
     supportedProcessors: InstructionMap
@@ -44,6 +46,11 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     this._type = type;
     this._address = address;
     this._chainId = chainId;
+
+    if (this._type === 'CUSTOM') {
+      const decodedABI = Buffer.from(abi, 'base64').toString('ascii');
+      this._abi  = JSON.parse(decodedABI) as AbiItem[];
+    }
     this._blockNumber = blockNumber;
     this._transactionIndex = transactionIndex;
     this._vm = new vmConstructor(this, supportedProcessors);
@@ -109,7 +116,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
 
       await this._recoverEvents();
       log.d(`Stopping Recovering ${this._id}`);
-      if (this._status as number !== ContractCastStatusEnum.TERMINATED) {
+      if ((this._status as number) !== ContractCastStatusEnum.TERMINATED) {
         await this._startContractListening();
         this._status = ContractCastStatusEnum.LISTENING;
       }
@@ -176,8 +183,8 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     log.d(
       `New Event ${event.event} goint to be executed by the program ` +
         `${event.blockNumber}:${event.transactionIndex}`
-    );    
-    this._vm.setGlobalVariable('cast',{
+    );
+    this._vm.setGlobalVariable('cast', {
       id: this.getId(),
       chainId: this.getChainId(),
       address: this.getAddress(),
@@ -202,7 +209,13 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   private async _setupListener(type: ContractCastType) {
     const factory = new ContractListenerFactory();
     try {
-      this._listener = factory.create(EVMContractListener, type, this._chainId, this._address);
+      this._listener = factory.create(
+        EVMContractListener, 
+        type, 
+        this._chainId, 
+        this._address, 
+        this._abi
+      );
       this._listener.setHandler(this);
       await this._listener.startListening(this._blockNumber);
     } catch (e: any) {
@@ -237,7 +250,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
         `Starting Recovering events stream ${this._id} ` +
           `from=[${fromBlock}] txIndex=[${fromTxIndex}] to=[${currentBlock}]`
       );
-      const model = new ModelFactory().create(this._type, this._chainId, this._address);
+      const model = new ModelFactory().create(this._type, this._chainId, this._address, this._abi);
       const retriever = new EVMContractEventRetriever(model);
       retriever.setHandler(this);
       await retriever.recover(fromBlock, fromTxIndex, currentBlock);

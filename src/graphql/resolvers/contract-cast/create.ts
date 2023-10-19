@@ -11,6 +11,7 @@ export type CreateContractCastArgType = {
     address: string;
     type: ContractCastType;
     chainId: number;
+    abi?: string;
     startFrom?: number;
     program: string;
     secrets?: {
@@ -55,10 +56,17 @@ const createContractCast: Resolver<ContractCast, CreateContractCastArgType> = as
       salt: Buffer.from(initVector).toString('base64')
     }
   }): [];
+
+  if ( args.data.type === 'CUSTOM' && ! args.data.abi) {
+    throw new UserInputError('ABI was not provided', ErrorsEnum.invalidUserInput);
+  }
   
   const contractCast = await ctx.db.contractCast.create({
     data: {
       address: args.data.address,
+      ...args.data.abi ? { 
+        abi: args.data.abi,
+      }: {},
       type: args.data.type,
       chainId: args.data.chainId,
       blockNumber: args.data.startFrom ?? 0,
@@ -73,6 +81,7 @@ const createContractCast: Resolver<ContractCast, CreateContractCastArgType> = as
     select: {
       id: true,
       address: true,
+      abi: true,
       program: true,
       blockNumber: true,
       transactionIndex: true,

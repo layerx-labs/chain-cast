@@ -38,6 +38,7 @@ const updateContractCast: Resolver<ContractCast, UpdateContractCastArgType> = as
       program: true,
       blockNumber: true,
       transactionIndex: true,
+      abi: true,      
       chainId: true,
       createdAt: true,
       type: true,

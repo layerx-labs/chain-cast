@@ -3,6 +3,7 @@ import log from '@/services/log';
 import { ContractEventRetriever, EventRecoverHandler } from '@/types/events';
 import { retry } from '@/util/promise';
 import {appConfig} from '@/config/index'
+
 export class EVMContractEventRetriever<M extends Model> implements ContractEventRetriever {
   private _contract: Model;
   private _isRecovering = false;

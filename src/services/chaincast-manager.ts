@@ -67,6 +67,7 @@ export class ChainCastManager<
     type: ContractCastType;
     address: string;
     chainId: number;
+    abi: string;
     blockNumber: number;
     transactionIndex: number;
     program: string;
@@ -118,6 +119,7 @@ export class ChainCastManager<
         chainId: true,
         blockNumber: true,
         transactionIndex: true,
+        abi: true,      
         program: true,
       },
     });
@@ -130,6 +132,7 @@ export class ChainCastManager<
     chainId: number;
     blockNumber: number;
     transactionIndex: number;
+    abi?: string;
     program: string;
   }) {
     const contractCast: C = new this._creator(
@@ -139,6 +142,7 @@ export class ChainCastManager<
       cast.type,
       cast.address,
       cast.chainId,
+      cast.abi ?? "",
       cast.blockNumber,
       cast.transactionIndex,
       this._supportedProcessors
