@@ -13,7 +13,7 @@ const ArgsTypeSchema = z.object({
 type ArgsType = z.infer<typeof ArgsTypeSchema>;
 
 export class BullMQProducer implements Instruction {
-  INSTRUCTION_NAME = 'bull-producer';
+  INSTRUCTION_NAME = 'bullmq-producer';
 
   validateArgs(args: InstructionArgs): boolean {
     const res = ArgsTypeSchema.safeParse(args);
@@ -54,7 +54,7 @@ export class BullMQProducer implements Instruction {
         });
 
         log.d(`[${this.INSTRUCTION_NAME}] Adding ${args.bodyInput} to queue ${args.queueName}`);
-        await queue.add(event.event as string, {
+        await queue.add(args.queueName, {
           ...event,
           ...cast,
         });
