@@ -251,6 +251,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
           `from=[${fromBlock}] txIndex=[${fromTxIndex}] to=[${currentBlock}]`
       );
       const model = new ModelFactory().create(this._type, this._chainId, this._address, this._abi);
+      await model.loadAbi();
       const retriever = new EVMContractEventRetriever(model);
       retriever.setHandler(this);
       await retriever.recover(fromBlock, fromTxIndex, currentBlock);
