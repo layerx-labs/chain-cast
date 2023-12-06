@@ -10,6 +10,7 @@ export const appConfig: __Config = {
   recover: {
     blocksPerCall: Number(process.env.BLOCKS_PER_CALL) || 1000,
     retries: Number(process.env.GET_PAST_RETRIES) || 3,
+    sleepMs: Number(process.env.RECOVER_SLEEP_MS) || 100,
   },
   cors: {
     enabled: process.env.CORS_ENABLED === 'true',

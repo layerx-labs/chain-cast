@@ -3,8 +3,8 @@ import { ChainIds, ChainSupported } from '../types';
 export const chainsSupported: ChainSupported = {
   ethereum: {
     id: ChainIds.ETHEREUM,
-    rpcUrl: `https://mainnet.infura.io/v3/${process.env.INFURA_PROJECT_KEY}`,
-    wsUrl: `wss://mainnet.infura.io/ws/v3/${process.env.INFURA_PROJECT_KEY}`,
+    rpcUrl: `https://ethereum-mainnet.core.chainstack.com/${process.env.CHAIN_STACK_API_KEY}`,
+    wsUrl: `wss://ethereum-mainnet.core.chainstack.com/ws/${process.env.CHAIN_STACK_API_KEY}`,
     blockExplorer: 'https://etherscan.io',
     currency: 'ETH',
     currencyDecimals: 18,
@@ -54,6 +54,42 @@ export const chainsSupported: ChainSupported = {
     currencyDecimals: 18,
     name: 'Mumbai Main Net',
     shortName: 'Polygon Test',
+    primaryColor: '#DDDDDD',
+  },
+  // Arbitrum One Main Net
+  arbitrum: {
+    id: ChainIds.ARBITRUM_MAIN_NET,
+    name: 'Arbitrum One Main Net',
+    shortName: 'arbitrum',
+    rpcUrl: `https://arbitrum-mainnet.core.chainstack.com/${process.env.CHAIN_STACK_API_KEY}`,
+    wsUrl: `wss://arbitrum-mainnet.core.chainstack.com/ws/${process.env.CHAIN_STACK_API_KEY}`,
+    currency: 'ETH',
+    currencyDecimals: 18,
+    blockExplorer: 'https://arbiscan.io',
+    primaryColor: '#DDDDDD',
+  },
+  // Optimism Main Net
+  optimism: {
+    id: ChainIds.OPTIMISM_MAIN_NET,
+    name: 'Optimism Main Net',
+    shortName: 'optimism',
+    rpcUrl: `https://optimism-mainnet.core.chainstack.com/${process.env.CHAIN_STACK_API_KEY}`,
+    wsUrl: `wss://optimism-mainnet.core.chainstack.com/ws/${process.env.CHAIN_STACK_API_KEY}`,
+    currency: 'ETH',
+    currencyDecimals: 18,
+    blockExplorer: 'https://optimistic.etherscan.io/',
+    primaryColor: '#DDDDDD',
+  },
+  // Base Main Net
+  base: {
+    id: ChainIds.BASE_MAIN_NET,
+    name: 'Base Main Net',
+    shortName: 'base',
+    rpcUrl: `https://base-mainnet.core.chainstack.com/${process.env.CHAIN_STACK_API_KEY}`,
+    wsUrl: `wss://base-mainnet.core.chainstack.com/ws/${process.env.CHAIN_STACK_API_KEY}`,
+    currency: 'ETH',
+    currencyDecimals: 18,
+    blockExplorer: 'https://basescan.io/',
     primaryColor: '#DDDDDD',
   },
   local: {

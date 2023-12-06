@@ -3,6 +3,7 @@ import log from '@/services/log';
 import { ContractEventRetriever, EventRecoverHandler } from '@/types/events';
 import { retry } from '@/util/promise';
 import {appConfig} from '@/config/index'
+import { sleep } from './time';
 
 export class EVMContractEventRetriever<M extends Model> implements ContractEventRetriever {
   private _contract: Model;
@@ -37,7 +38,7 @@ export class EVMContractEventRetriever<M extends Model> implements ContractEvent
         };
 
         const events = await retry(func, [], appConfig.recover.retries, 10);
-
+        await sleep(appConfig.recover.sleepMs);
         for (const event of events) {
           if (!(event.blockNumber == fromBlock && event.transactionIndex < fromTxIndex)) {
             this._handler && (await this._handler.onEvent(event));
@@ -56,3 +57,5 @@ export class EVMContractEventRetriever<M extends Model> implements ContractEvent
     }
   }
 }
+
+

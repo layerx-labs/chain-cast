@@ -22,6 +22,7 @@ export type __Config = {
   secret: string;
   recover: {
     blocksPerCall: number;
+    sleepMs: number;
     retries: number;
   },
   cors: {
@@ -47,7 +48,16 @@ export type __Config = {
   };
 };
 
-export type ChainNames = 'ethereum' | 'mumbai' | 'local' | 'polygon' | 'goerli' | 'sepolia';
+export type ChainNames =
+  | 'ethereum'
+  | 'mumbai'
+  | 'local'
+  | 'polygon'
+  | 'goerli'
+  | 'sepolia'
+  | 'arbitrum'
+  | 'base'
+  | 'optimism';
 
 export enum ChainIds {
   ETHEREUM = 1,
@@ -55,6 +65,9 @@ export enum ChainIds {
   POLYGON = 137,
   LOCAL = 1337,
   GOERLI = 5,
+  ARBITRUM_MAIN_NET =42161,
+  OPTIMISM_MAIN_NET=10,
+  BASE_MAIN_NET=8453,
   SEPOLIA = 11155111
 }
 
