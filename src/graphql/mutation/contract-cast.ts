@@ -52,7 +52,7 @@ export const CreateContractCastDataInput = builder.inputType('CreateContractCast
       },
     }),
     abi: t.string({
-      required: false,      
+      required: true,      
       validate: {
         minLength: 0,
       },

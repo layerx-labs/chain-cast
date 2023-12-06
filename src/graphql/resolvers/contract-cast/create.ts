@@ -11,7 +11,7 @@ export type CreateContractCastArgType = {
     address: string;
     type: ContractCastType;
     chainId: number;
-    abi?: string;
+    abi: string;
     startFrom?: number;
     program: string;
     secrets?: {
@@ -64,9 +64,7 @@ const createContractCast: Resolver<ContractCast, CreateContractCastArgType> = as
   const contractCast = await ctx.db.contractCast.create({
     data: {
       address: args.data.address,
-      ...args.data.abi ? { 
-        abi: args.data.abi,
-      }: {},
+      abi: args.data.abi,
       type: args.data.type,
       chainId: args.data.chainId,
       blockNumber: args.data.startFrom ?? 0,
