@@ -1,7 +1,7 @@
 {
   "name": "chain-cast",
   "version": "1.0.0",
-  "description": "",
+  "description": "An application designed to listen, processs and stream events from smart contracts deployed on various EVM blockchain networks",
   "main": "dist/src/index.js",
   "scripts": {
     "dev": "ts-node-dev --transpile-only -r tsconfig-paths/register --exit-child --respawn src/main.ts",
@@ -13,7 +13,7 @@
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
     "lint:fix": "eslint --ignore-path .eslintignore --ext .js,.ts . --fix ./",
     "test": "npx jest",
-    "prisma:seed": "ts-node prisma/seed.ts",
+    "db:reset": "npx prisma migrate reset --force",
     "prettier": "prettier  --write {**/**/*.js,**/**/*.ts,**/**/*.json}",
     "deploy:local": "ts-node-dev -r tsconfig-paths/register scripts/deploy.ts",
     "lock": "ts-node-dev -r tsconfig-paths/register scripts/deploy.ts",
@@ -21,17 +21,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/layerx-labs/bepro-chain-cast.git"
+    "url": "git+https://github.com/layerx-labs/chain-cast.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "LayerX Labs",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/layerx-labs/bepro-chain-cast/issues"
+    "url": "https://github.com/layerx-labs/chain-cast/issues"
   },
-  "homepage": "https://github.com/layerx-labs/bepro-chain-cast#readme",
+  "homepage": "https://github.com/layerx-labs/chain-cast#readme",
   "engines": {
     "npm": ">=8.0.0",
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.21.8",

@@ -66,7 +66,7 @@ npm install
 3. Initialize the Database
 
 ```
-npx prisma migrate dev
+npm run db:reset
 ```
 
 4. Run the Development Environment

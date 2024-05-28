@@ -94,8 +94,8 @@ export const chainsSupported: ChainSupported = {
   },
   local: {
     id: ChainIds.LOCAL,
-    rpcUrl: 'http://localhost:8545',
-    wsUrl: 'ws://localhost:8545',
+    rpcUrl: 'http://127.0.0.1:8545',
+    wsUrl: 'ws://127.0.0.1:8545',
     currency: 'ETH',
     currencyDecimals: 18,
     name: 'Ganache Local Network',
