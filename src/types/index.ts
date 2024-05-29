@@ -25,6 +25,12 @@ export type __Config = {
     sleepMs: number;
     retries: number;
   },
+  ssl: {
+    enabled: boolean;
+    sslPrivateKeyPath: string;
+    sslCertPath: string;
+    sslPrivateKeyPassphrase: string;
+  }
   cors: {
     enabled: boolean;
     origins: string[];
@@ -50,10 +56,9 @@ export type __Config = {
 
 export type ChainNames =
   | 'ethereum'
-  | 'mumbai'
+  | 'amoy'
   | 'local'
   | 'polygon'
-  | 'goerli'
   | 'sepolia'
   | 'arbitrum'
   | 'base'
@@ -61,10 +66,9 @@ export type ChainNames =
 
 export enum ChainIds {
   ETHEREUM = 1,
-  MUMBAI = 80001,
+  AMOY = 80002,
   POLYGON = 137,
   LOCAL = 1337,
-  GOERLI = 5,
   ARBITRUM_MAIN_NET =42161,
   OPTIMISM_MAIN_NET=10,
   BASE_MAIN_NET=8453,

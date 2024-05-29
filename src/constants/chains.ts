@@ -3,8 +3,10 @@ import { ChainIds, ChainSupported } from '../types';
 export const chainsSupported: ChainSupported = {
   ethereum: {
     id: ChainIds.ETHEREUM,
-    rpcUrl: `https://ethereum-mainnet.core.chainstack.com/${process.env.CHAIN_STACK_API_KEY}`,
-    wsUrl: `wss://ethereum-mainnet.core.chainstack.com/ws/${process.env.CHAIN_STACK_API_KEY}`,
+    rpcUrl: process.env.WEB3_RPC_ETH_MAIN_NET_URL || 
+      `https://rpc.ankr.com/eth/${process.env.ANKR_API_KEY}`,
+    wsUrl: process.env.WEB3_WS_ETH_MAIN_NET_URL  || 
+      `wss://rpc.ankr.com/eth/ws/${process.env.ANKR_API_KEY}`,
     blockExplorer: 'https://etherscan.io',
     currency: 'ETH',
     currencyDecimals: 18,
@@ -14,8 +16,10 @@ export const chainsSupported: ChainSupported = {
   },
   sepolia: {
     id: ChainIds.SEPOLIA,
-    rpcUrl: `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_KEY}`,
-    wsUrl: `wss://sepolia.infura.io/ws/v3/${process.env.INFURA_PROJECT_KEY}`,
+    rpcUrl:process.env.WEB3_RPC_ETH_SEPOLIA_URL || 
+     `https://rpc.ankr.com/eth_sepolia/${process.env.ANKR_API_KEY}` ,
+    wsUrl: process.env.WEB3_WS_ETH_SEPOLIA_URL || 
+      `wss://rpc.ankr.com/eth_sepolia/ws/${process.env.ANKR_API_KEY}`,
     blockExplorer: 'https://sepolia.etherscan.io/',
     currency: 'ETH',
     currencyDecimals: 18,
@@ -23,37 +27,30 @@ export const chainsSupported: ChainSupported = {
     shortName: 'Sepolia',
     primaryColor: '#DDDDDD',
   },
-  goerli: {
-    id: ChainIds.GOERLI,
-    rpcUrl: `https://goerli.infura.io/v3/${process.env.INFURA_PROJECT_KEY}`,
-    wsUrl: `wss://goerli.infura.io/ws/v3/${process.env.INFURA_PROJECT_KEY}`,
-    blockExplorer: 'https://goerli.etherscan.io/',
-    currency: 'ETH',
-    currencyDecimals: 18,
-    name: 'Goerli Test Net',
-    shortName: 'Goerli',
-    primaryColor: '#DDDDDD',
-  },
-  mumbai: {
-    id: ChainIds.MUMBAI,
-    rpcUrl: `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_PROJECT_KEY}`,
-    wsUrl: `wss://polygon-mumbai.infura.io/ws/v3/${process.env.INFURA_PROJECT_KEY}`,
+  amoy: {
+    id: ChainIds.AMOY,
+    rpcUrl: process.env.WEB3_RPC_POLYGON_AMOY_URL || 
+      `https://rpc.ankr.com/polygon_amoy/${process.env.ANKR_API_KEY}`,
+    wsUrl: process.env.WEB3_WS_POLYGON_AMOY_URL || 
+      `wss://rpc.ankr.com/polygon_amoy/ws/${process.env.ANKR_API_KEY}` ,
     blockExplorer: 'https://etherscan.io',
     currency: 'MATIC',
     currencyDecimals: 18,
-    name: 'Polygon Test Net',
-    shortName: 'Polygon Test',
+    name: 'Polygon Amoy Test Net',
+    shortName: 'Polygon Amoy Test',
     primaryColor: '#DDDDDD',
   },
   polygon: {
     id: ChainIds.POLYGON,
-    rpcUrl: `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_PROJECT_KEY}`,
-    wsUrl: `wss://polygon-mainnet.infura.io/ws/v3/${process.env.INFURA_PROJECT_KEY}`,
+    rpcUrl: process.env.WEB3_RPC_POLYGON_URL || 
+      `https://rpc.ankr.com/polygon/${process.env.ANKR_API_KEY}`,
+    wsUrl: process.env.WEB3_WS_POLYGON_URL || 
+      `wss://rpc.ankr.com/polygon/ws/${process.env.ANKR_API_KEY}`,
     blockExplorer: 'https://polygonscan.io',
     currency: 'MATIC',
     currencyDecimals: 18,
     name: 'Mumbai Main Net',
-    shortName: 'Polygon Test',
+    shortName: 'Polygon Main Net',
     primaryColor: '#DDDDDD',
   },
   // Arbitrum One Main Net
@@ -61,8 +58,10 @@ export const chainsSupported: ChainSupported = {
     id: ChainIds.ARBITRUM_MAIN_NET,
     name: 'Arbitrum One Main Net',
     shortName: 'arbitrum',
-    rpcUrl: `https://arbitrum-mainnet.core.chainstack.com/${process.env.CHAIN_STACK_API_KEY}`,
-    wsUrl: `wss://arbitrum-mainnet.core.chainstack.com/ws/${process.env.CHAIN_STACK_API_KEY}`,
+    rpcUrl:  process.env.WEB3_RPC_ARBITRUM_URL ||  
+      `https://rpc.ankr.com/arbitrum/${process.env.ANKR_API_KEY}`,
+    wsUrl: process.env.WEB3_WS_ARBITRUM_URL || 
+      `wss://rpc.ankr.com/arbitrum/ws/${process.env.ANKR_API_KEY}`, 
     currency: 'ETH',
     currencyDecimals: 18,
     blockExplorer: 'https://arbiscan.io',
@@ -73,8 +72,10 @@ export const chainsSupported: ChainSupported = {
     id: ChainIds.OPTIMISM_MAIN_NET,
     name: 'Optimism Main Net',
     shortName: 'optimism',
-    rpcUrl: `https://optimism-mainnet.core.chainstack.com/${process.env.CHAIN_STACK_API_KEY}`,
-    wsUrl: `wss://optimism-mainnet.core.chainstack.com/ws/${process.env.CHAIN_STACK_API_KEY}`,
+    rpcUrl: process.env.WEB3_RPC_OPTIMISM_URL || 
+      `https://rpc.ankr.com/optimism/${process.env.ANKR_API_KEY}`,
+    wsUrl: process.env.WEB3_WS_OPTIMISM_URL ||  
+      `wss://rpc.ankr.com/optimism/ws/${process.env.ANKR_API_KEY}`,
     currency: 'ETH',
     currencyDecimals: 18,
     blockExplorer: 'https://optimistic.etherscan.io/',
@@ -85,8 +86,10 @@ export const chainsSupported: ChainSupported = {
     id: ChainIds.BASE_MAIN_NET,
     name: 'Base Main Net',
     shortName: 'base',
-    rpcUrl: `https://base-mainnet.core.chainstack.com/${process.env.CHAIN_STACK_API_KEY}`,
-    wsUrl: `wss://base-mainnet.core.chainstack.com/ws/${process.env.CHAIN_STACK_API_KEY}`,
+    rpcUrl: process.env.WEB3_RPC_BASE_URL || 
+      `https://rpc.ankr.com/base/${process.env.ANKR_API_KEY}`,
+    wsUrl: process.env.WEB3_WS_BASE_URL || 
+      `wss://rpc.ankr.com/base/ws/${process.env.ANKR_API_KEY}`,
     currency: 'ETH',
     currencyDecimals: 18,
     blockExplorer: 'https://basescan.io/',
@@ -94,11 +97,11 @@ export const chainsSupported: ChainSupported = {
   },
   local: {
     id: ChainIds.LOCAL,
-    rpcUrl: 'http://127.0.0.1:8545',
-    wsUrl: 'ws://127.0.0.1:8545',
+    rpcUrl: process.env.WEB3_RPC_LOCAL_URL || 'http://127.0.0.1:8545',
+    wsUrl: process.env.WEB3_WS_LOCAL_URL || 'ws://127.0.0.1:8545',
     currency: 'ETH',
     currencyDecimals: 18,
-    name: 'Ganache Local Network',
+    name: 'Ganache Network',
     shortName: 'Local',
     primaryColor: '#DDDDDD',
   },
