@@ -25,6 +25,12 @@ export type __Config = {
     sleepMs: number;
     retries: number;
   },
+  ssl: {
+    enabled: boolean;
+    sslPrivateKeyPath: string;
+    sslCertPath: string;
+    sslPrivateKeyPassphrase: string;
+  }
   cors: {
     enabled: boolean;
     origins: string[];

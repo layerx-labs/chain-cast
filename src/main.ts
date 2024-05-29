@@ -21,7 +21,9 @@ import { TransformString } from './instructions/transform-string';
 import { TransformNumber } from './instructions/transform-number';
 import { TransformArray } from './instructions/transform-array';
 import { TransformTemplate } from './instructions/transform-template';
-
+import fs from 'fs';
+import http from 'http';
+import https from 'https';
 
 const chainCastBanner=`
 ██████╗██╗  ██╗ █████╗ ██╗███╗   ██╗     ██████╗ █████╗ ███████╗████████╗
@@ -86,8 +88,24 @@ async function run() {
   
   await ctx.manager.start();
 
+  let server = null;
+  if (appConfig.ssl.enabled) {
+    log.i('Enabling ChainCast HTTPS GraphQL Server');
+    server =  https.createServer(
+      {
+        key: fs.readFileSync(appConfig.ssl.sslPrivateKeyPath),
+        cert: fs.readFileSync(appConfig.ssl.sslCertPath),
+        passphrase: appConfig.ssl.sslPrivateKeyPassphrase,
+      },
+      app
+    );
+  } else {
+    log.i('Enabling ChainCast HTTP GraphQL Server');
+    server = http.createServer(app);
+  }
+
   /** Start the GraphQL Server */
-  app.listen(appConfig.port, () => {
+  server.listen(appConfig.port, () => {
     log.i(`Running Chain Cast API server at http://localhost:${appConfig.port}/graphql`);
   });
   
