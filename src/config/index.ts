@@ -22,6 +22,10 @@ export const appConfig: __Config = {
     sslCertPath: process.env.SSL_CERT_PATH || './config/cert.pem',
     sslPrivateKeyPassphrase: process.env.SSL_PRIVATE_KEY_PASS || '123qwe',
   },
+  redis: {
+    hostname: process.env?.REDIS_HOSTNAME ?? 'localhost',
+    port:  Number(process.env.REDIS_PORT) || 6379,
+  },
   logs: {
     console: {
       silent: process.env.SILENT === 'true',

@@ -2,12 +2,11 @@ import { z } from 'zod';
 import log from '@/services/log';
 import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 import { Queue } from 'bullmq';
+import { appConfig } from '../config/index';
 
 const ArgsTypeSchema = z.object({
   bodyInput: z.string().min(2),
-  queueName: z.string().min(2),
-  redisHost: z.string().min(2),
-  redisPort: z.number().gt(0).lt(65500),
+  queueName: z.string().min(2)
 });
 
 type ArgsType = z.infer<typeof ArgsTypeSchema>;
@@ -40,16 +39,14 @@ export class BullMQProducer implements Instruction {
       const args: ArgsType = {
         bodyInput: (step?.args?.bodyInput as string) ?? '',
         queueName: (step?.args?.queueName as string) ?? '',
-        redisHost: (step?.args?.redisHost as string) ?? '',
-        redisPort: (step?.args?.redisPort as number) ?? '',
       };
       const body = vm.getGlobalVariableFromPath(args.bodyInput);
 
-      if (args.queueName && args.redisHost && args.redisPort && body) {
+      if (args.queueName && body) {
         const queue = new Queue(args.queueName, {
           connection: {
-            host: args.redisHost,
-            port: args.redisPort,
+            host: appConfig.redis.hostname,
+            port: appConfig.redis.port,
           },
         });
 

@@ -35,6 +35,10 @@ export type __Config = {
     enabled: boolean;
     origins: string[];
   };
+  redis: {
+    hostname: string;
+    port: number;
+  },
   logs: {
     console: {
       silent: boolean;
