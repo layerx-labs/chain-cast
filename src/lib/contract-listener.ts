@@ -68,9 +68,6 @@ export class EVMContractListener<M extends Model> implements ContractEventListen
     blockNumber: number
   ) {
     const options = {
-      filter: {
-        value: [],
-      },
       fromBlock: blockNumber,
     };
     log.d(`Listening for events on ${this._contract.contractAddress} from ${blockNumber} `);
