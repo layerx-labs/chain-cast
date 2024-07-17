@@ -1,6 +1,6 @@
 {
   "name": "chain-cast",
-  "version": "1.0.0",
+  "version": "v1.0.0-final",
   "description": "An application designed to listen, processs and stream events from smart contracts deployed on various EVM blockchain networks",
   "main": "dist/src/index.js",
   "scripts": {
