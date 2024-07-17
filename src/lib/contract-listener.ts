@@ -79,9 +79,12 @@ export class EVMContractListener<M extends Model> implements ContractEventListen
     provider.on('connect', () => {
       log.d(`Listener connection for ${this._contract.contractAddress}`);
     })
-    
-    provider.on('end', () => {
+
+    provider.on('disconnect', () => {
       log.d(`Listener disconnected for ${this._contract.contractAddress} `);
+    });
+    provider.on('end', () => {
+      log.d(`Listener end for ${this._contract.contractAddress} `);
     });
 
     provider.on('reconnect', () => {
