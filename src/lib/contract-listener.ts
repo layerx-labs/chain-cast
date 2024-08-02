@@ -2,7 +2,7 @@ import { ContractEventListener, EventListenerHandler } from '@/types/events';
 import { Model } from '@taikai/dappkit';
 import log from '@/services/log';
 import { EventEmitter } from 'node:events';
-
+import { WebsocketProviderBase } from 'web3-core-helpers';
 /**
  * This Class listen for events on a contract of type M and
  * forward the event to the EventListenerhandler
@@ -68,12 +68,26 @@ export class EVMContractListener<M extends Model> implements ContractEventListen
     blockNumber: number
   ) {
     const options = {
-      filter: {
-        value: [],
-      },
       fromBlock: blockNumber,
     };
+
+    const provider: WebsocketProviderBase = this._contract.connection.Web3
+      .currentProvider as WebsocketProviderBase;
+    
     log.d(`Listening for events on ${this._contract.contractAddress} from ${blockNumber} `);
+    
+    provider.on('connect', () => {
+      log.d(`Listener connection for ${this._contract.contractAddress}`);
+    })
+    
+    provider.on('end', () => {
+      log.d(`Listener disconnected for ${this._contract.contractAddress} `);
+    });
+
+    provider.on('reconnect', () => {
+      log.d(`Listener reconnected for ${this._contract.contractAddress}`);
+    });
+   
     this._listener = this._contract.contract.events
       .allEvents(options)
       .on('changed', (changed: any) => handler.onEventChanged(changed))

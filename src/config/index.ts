@@ -16,6 +16,16 @@ export const appConfig: __Config = {
     enabled: process.env.CORS_ENABLED === 'true',
     origins: process.env?.CORS_ALLOWED_ORIGINS?.split(',') ?? [],
   },
+  ssl: {
+    enabled: process.env.SSL_ENABLED === 'true' || false,
+    sslPrivateKeyPath: process.env.SSL_PRIVATE_KEY_PATH || './config/key.pem',
+    sslCertPath: process.env.SSL_CERT_PATH || './config/cert.pem',
+    sslPrivateKeyPassphrase: process.env.SSL_PRIVATE_KEY_PASS || '123qwe',
+  },
+  redis: {
+    hostname: process.env?.REDIS_HOSTNAME ?? 'localhost',
+    port:  Number(process.env.REDIS_PORT) || 6379,
+  },
   logs: {
     console: {
       silent: process.env.SILENT === 'true',
