@@ -29,7 +29,7 @@
       "@/resolvers/*": ["src/graphql/resolvers/*"],
       "@/config/*": ["src/config/*"],
       "@/middleware/*": ["src/middleware/*"],
-      "@/processors/*": ["src/instructions/*"],
+      "@/processors/*": ["src/instructions/*"]
     },
     /* Type Checking */
     "strict": true /* Enable all strict type-checking options. */,

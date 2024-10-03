@@ -119,7 +119,7 @@ export class ChainCastManager<
         chainId: true,
         blockNumber: true,
         transactionIndex: true,
-        abi: true,      
+        abi: true,
         program: true,
       },
     });
@@ -142,7 +142,7 @@ export class ChainCastManager<
       cast.type,
       cast.address,
       cast.chainId,
-      cast.abi ?? "",
+      cast.abi ?? '',
       cast.blockNumber,
       cast.transactionIndex,
       this._supportedProcessors

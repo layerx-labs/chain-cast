@@ -49,7 +49,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
 
     if (this._type === 'CUSTOM') {
       const decodedABI = Buffer.from(abi, 'base64').toString('ascii');
-      this._abi  = JSON.parse(decodedABI) as AbiItem[];
+      this._abi = JSON.parse(decodedABI) as AbiItem[];
     }
     this._blockNumber = blockNumber;
     this._transactionIndex = transactionIndex;
@@ -210,10 +210,10 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     const factory = new ContractListenerFactory();
     try {
       this._listener = factory.create(
-        EVMContractListener, 
-        type, 
-        this._chainId, 
-        this._address, 
+        EVMContractListener,
+        type,
+        this._chainId,
+        this._address,
         this._abi
       );
       this._listener.setHandler(this);

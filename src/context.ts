@@ -10,7 +10,7 @@ const manager = new ChainCastManager(
   EVMContractCast,
   ChainCastVirtualMachine,
   ChainCastSecretManager,
-  prisma,
+  prisma
 );
 
 export function createContext(): AppContext {

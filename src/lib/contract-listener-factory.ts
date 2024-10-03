@@ -2,7 +2,7 @@ import { ContractEventListener } from '@/types/events';
 import { ContractCastType } from '@prisma/client';
 import { Model } from '@taikai/dappkit';
 import { ModelFactory } from './model-factory';
-import { AbiItem } from 'web3-utils'
+import { AbiItem } from 'web3-utils';
 
 export class ContractListenerFactory {
   /**

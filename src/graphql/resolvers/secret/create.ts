@@ -11,11 +11,7 @@ export type ArgsType = {
   };
 };
 
-const createSecret: Resolver<Secret, ArgsType> = async (
-  _1,
-  args,
-  ctx
-) => {
+const createSecret: Resolver<Secret, ArgsType> = async (_1, args, ctx) => {
   const initVector = crypto.randomBytes(16);
   const encSecret = encryptSecret(args.data.value, initVector, 'base64');
   const secret = await ctx.db.secret.upsert({
@@ -23,7 +19,7 @@ const createSecret: Resolver<Secret, ArgsType> = async (
       name_contractCastId: {
         contractCastId: args.data.contractCastId,
         name: args.data.name,
-      }
+      },
     },
     create: {
       name: args.data.name,
@@ -32,17 +28,18 @@ const createSecret: Resolver<Secret, ArgsType> = async (
       contractCast: {
         connect: {
           id: args.data.contractCastId,
-        }
-      }
+        },
+      },
     },
     update: {
       value: encSecret,
       salt: Buffer.from(initVector).toString('base64'),
-    }
+    },
   });
-  ctx.manager.getCast(args.data.contractCastId)
-             .getSecretsManager()
-             .addSecret(args.data.name, args.data.value);
+  ctx.manager
+    .getCast(args.data.contractCastId)
+    .getSecretsManager()
+    .addSecret(args.data.name, args.data.value);
   ctx.log.d(`Created a new secret ${args.data.name}`);
   return secret;
 };

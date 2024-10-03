@@ -4,27 +4,27 @@ import updateSecret from '@/resolvers/secret/update';
 import deleteSecret from '@/resolvers/secret/delete';
 
 export const CreateSecretDataInput = builder.inputType('CreateSecretDataInput', {
-    fields: (t) => ({
-      name: t.string({
-        required: true,      
-        validate: {
-          minLength: 4,
-        },
-      }),
-      value: t.string({
-        required: true,
-        validate: {
-            minLength: 4,
-          },
-      }), 
-      contractCastId: t.string({
-        required: true,
-        validate: {
-            minLength: 4,
-        },
-      })          
+  fields: (t) => ({
+    name: t.string({
+      required: true,
+      validate: {
+        minLength: 4,
+      },
     }),
-  });
+    value: t.string({
+      required: true,
+      validate: {
+        minLength: 4,
+      },
+    }),
+    contractCastId: t.string({
+      required: true,
+      validate: {
+        minLength: 4,
+      },
+    }),
+  }),
+});
 
 builder.mutationField('createSecret', (t) =>
   t.prismaField({
@@ -32,7 +32,7 @@ builder.mutationField('createSecret', (t) =>
     args: {
       data: t.arg({
         type: CreateSecretDataInput,
-        required: true,        
+        required: true,
       }),
     },
     resolve: async (_q, root, args, ctx, info) => createSecret(root, args, ctx, info),
@@ -40,40 +40,38 @@ builder.mutationField('createSecret', (t) =>
 );
 
 export const UpdateSecretDataInput = builder.inputType('UpdateSecretDataInput', {
-    fields: (t) => ({
-      name: t.string({
-        required: true,      
-        validate: {
-          minLength: 4,
-        },
-      }),
-      value: t.string({
-        required: true,
-        validate: {
-            minLength: 4,
-          },
-      }),      
-      contractCastId: t.string({
-        required: true,
-        validate: {
-            minLength: 4,
-        },
-      })     
+  fields: (t) => ({
+    name: t.string({
+      required: true,
+      validate: {
+        minLength: 4,
+      },
     }),
-  });
-
-  export const UpdateWhereSecretDataInput = builder.inputType('UpdateWhereSecretDataInput', {
-    fields: (t) => ({
-      id: t.string({
-        required: true,      
-        validate: {
-          minLength: 4,
-        },
-      }),       
+    value: t.string({
+      required: true,
+      validate: {
+        minLength: 4,
+      },
     }),
-  });
+    contractCastId: t.string({
+      required: true,
+      validate: {
+        minLength: 4,
+      },
+    }),
+  }),
+});
 
-
+export const UpdateWhereSecretDataInput = builder.inputType('UpdateWhereSecretDataInput', {
+  fields: (t) => ({
+    id: t.string({
+      required: true,
+      validate: {
+        minLength: 4,
+      },
+    }),
+  }),
+});
 
 builder.mutationField('updateSecret', (t) =>
   t.prismaField({
@@ -81,7 +79,7 @@ builder.mutationField('updateSecret', (t) =>
     args: {
       data: t.arg({
         type: UpdateSecretDataInput,
-        required: true,        
+        required: true,
       }),
       where: t.arg({
         type: UpdateWhereSecretDataInput,
@@ -92,15 +90,14 @@ builder.mutationField('updateSecret', (t) =>
   })
 );
 
-
 builder.mutationField('deleteSecret', (t) =>
   t.prismaField({
     type: 'Secret',
     args: {
-        where: t.arg({
-            type: UpdateWhereSecretDataInput,
-            required: true,
-          }),
+      where: t.arg({
+        type: UpdateWhereSecretDataInput,
+        required: true,
+      }),
     },
     resolve: async (_q, root, args, ctx, info) => deleteSecret(root, args, ctx, info),
   })

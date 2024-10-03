@@ -21,7 +21,8 @@ enum ContractCastType {
 }
 
 model ContractCast {
-   id                     String  @id @default(cuid()) @db.VarChar(30)  
+   id                     String  @id @default(cuid()) @db.VarChar(30)
+   name                   String? @unique
    type                   ContractCastType
    abi                    String
    address                String
@@ -35,12 +36,12 @@ model ContractCast {
 }
 
 model Secret {
-   id                     String    @id @default(cuid()) @db.VarChar(30)  
-   name                   String    
-   value                  String 
-   salt                   String    
-   contractCastId         String  
-   contractCast           ContractCast  @relation(fields: [contractCastId], references: [id])     
+   id                     String    @id @default(cuid()) @db.VarChar(30)
+   name                   String
+   value                  String
+   salt                   String
+   contractCastId         String
+   contractCast           ContractCast  @relation(fields: [contractCastId], references: [id])
    createdAt              DateTime  @default(now())
    updatedAt              DateTime  @updatedAt
    @@unique([name, contractCastId])

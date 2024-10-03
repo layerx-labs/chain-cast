@@ -1,20 +1,18 @@
-[{
+[
+  {
     "name": "debug",
     "args": {
-        "variablesToDebug": [
-            "event.event",
-            "event.blockNumber",
-            "cast.id",
-            "elasticUrl"
-        ]
-    }    
-}, {
+      "variablesToDebug": ["event.event", "event.blockNumber", "cast.id", "elasticUrl"]
+    }
+  },
+  {
     "name": "elasticsearch",
     "args": {
-        "bodyInput": "event",
-        "indexName": "chaincast", 
-        "url": "elasticUrl",
-        "username": "elasticUsername",
-        "password": "elasticPassword"
+      "bodyInput": "event",
+      "indexName": "chaincast",
+      "url": "elasticUrl",
+      "username": "elasticUsername",
+      "password": "elasticPassword"
     }
-}]
+  }
+]

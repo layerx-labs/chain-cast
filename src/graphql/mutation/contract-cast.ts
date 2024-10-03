@@ -6,21 +6,20 @@ import updateContractCast from '../resolvers/contract-cast/update';
 import { deleteContractCast } from '../resolvers/contract-cast/delete';
 import web3 from 'web3';
 
-
 export const EmbedSecretDataInput = builder.inputType('EmbedSecretDataInput', {
   fields: (t) => ({
     name: t.string({
-      required: true,      
+      required: true,
       validate: {
         maxLength: 0,
       },
     }),
     value: t.string({
-      required: true,      
+      required: true,
       validate: {
         maxLength: 0,
       },
-    }),   
+    }),
   }),
 });
 
@@ -46,13 +45,19 @@ export const CreateContractCastDataInput = builder.inputType('CreateContractCast
       },
     }),
     program: t.string({
-      required: true,      
+      required: true,
       validate: {
         maxLength: 0,
       },
     }),
+    name: t.string({
+      required: true,
+      validate: {
+        minLength: 2,
+      },
+    }),
     abi: t.string({
-      required: true,      
+      required: true,
       validate: {
         minLength: 0,
       },
@@ -72,31 +77,30 @@ export const CreateContractCastDataInput = builder.inputType('CreateContractCast
   }),
 });
 
-
-
 export const UpdateContractCastDataInput = builder.inputType('UpdateContractCastDataInput', {
   fields: (t) => ({
     program: t.string({
-      required: true,      
+      required: true,
       validate: {
         maxLength: 0,
       },
-    }),   
+    }),
   }),
 });
-
 
 export const UpdateWhereContractCastDataInput = builder.inputType(
   'UpdateWhereContractCastDataInput',
   {
     fields: (t) => ({
       id: t.string({
-        required: true,
+        required: false,
+      }),
+      name: t.string({
+        required: false,
       }),
     }),
   }
 );
-
 
 builder.mutationField('createContractCast', (t) =>
   t.prismaField({
@@ -133,7 +137,10 @@ builder.mutationField('deleteContractCast', (t) =>
     type: 'ContractCast',
     args: {
       id: t.arg.string({
-        required: true,
+        required: false,
+      }),
+      name: t.arg.string({
+        required: false,
       }),
     },
     resolve: async (_q, root, args, ctx, info) => deleteContractCast(root, args, ctx, info),
