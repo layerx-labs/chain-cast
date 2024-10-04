@@ -65,7 +65,7 @@ export class ChainCastManager<
   async addCast(cast: {
     id: string;
     type: ContractCastType;
-    name: string;
+    name: string | null;
     address: string;
     chainId: number;
     abi: string;
