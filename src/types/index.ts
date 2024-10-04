@@ -125,6 +125,7 @@ export type ContractCastConstructor<T, S, VM> = new (
   vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap) => VM,
   id: string,
   type: ContractCastType,
+  name: string | null,
   adress: string,
   chainId: number,
   abi: string,

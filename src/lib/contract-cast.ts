@@ -11,6 +11,7 @@ import EVMContractListener from './contract-listener';
 import { ModelFactory } from './model-factory';
 import { EVMContractEventRetriever } from './contract-event-retriever';
 import { AbiItem } from 'web3-utils';
+import { AggregationsStringTermsAggregate } from '@elastic/elasticsearch/lib/api/types';
 /**
  * An implementation that creates a stream of events for an Ethereum Smart Contract
  */
@@ -19,6 +20,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
 {
   private _id: string;
   private _type: ContractCastType;
+  private _name: string | null;
   private _address: string;
   private _chainId: number;
   private _abi: AbiItem[] = [];
@@ -35,6 +37,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap) => VM,
     id: string,
     type: ContractCastType,
+    name: string | null,
     address: string,
     chainId: number,
     abi: string,
@@ -44,6 +47,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   ) {
     this._id = id;
     this._type = type;
+    this._name = name;
     this._address = address;
     this._chainId = chainId;
 
@@ -77,6 +81,10 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
 
   getId() {
     return this._id;
+  }
+
+  getName() {
+    return this._name;
   }
 
   getAddress() {
@@ -160,7 +168,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   async _updateCastIndex(blockNumber: number, transactionIndex?: number) {
     this._blockNumber = blockNumber;
     this._transactionIndex = transactionIndex ?? 0;
-    log.d(`Contract Cast Id=${this.getId()} at Block=[${blockNumber}:${transactionIndex ?? 0}]`);
+    log.d(`Cast Name=${this.getName()} at Block=[${blockNumber}:${transactionIndex ?? 0}]`);
     await db.contractCast.update({
       where: {
         id: this._id,

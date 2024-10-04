@@ -65,6 +65,7 @@ export class ChainCastManager<
   async addCast(cast: {
     id: string;
     type: ContractCastType;
+    name: string;
     address: string;
     chainId: number;
     abi: string;
@@ -132,6 +133,7 @@ export class ChainCastManager<
       select: {
         id: true,
         type: true,
+        name: true,
         address: true,
         chainId: true,
         blockNumber: true,
@@ -145,6 +147,7 @@ export class ChainCastManager<
   private async _setupCast(cast: {
     id: string;
     type: ContractCastType;
+    name: string | null,
     address: string;
     chainId: number;
     blockNumber: number;
@@ -157,6 +160,7 @@ export class ChainCastManager<
       this._vmCreator,
       cast.id,
       cast.type,
+      cast.name,
       cast.address,
       cast.chainId,
       cast.abi ?? '',
