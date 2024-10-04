@@ -10,7 +10,8 @@ export type UpdateContractCastArgType = {
     name?: string;
   };
   data: {
-    program: string;
+    program?: string;
+    abi?: string;
   };
 };
 
@@ -19,12 +20,12 @@ const updateContractCast: Resolver<ContractCast, UpdateContractCastArgType> = as
   args,
   ctx
 ) => {
-  const stringCode = args.data.program;
   const program = new ChainCastProgram(ctx.manager.getSupportedInstructions());
 
-  if (!program.compile(stringCode)) {
+  if (args.data?.program && !program.compile(args.data.program)) {
     throw new UserInputError('Invalid Code for Chain Cast', ErrorsEnum.invalidUserInput);
   }
+
   if (!args.where.id && !args.where.name) {
     throw new UserInputError('No id or name provided', ErrorsEnum.invalidUserInput);
   }
@@ -34,7 +35,8 @@ const updateContractCast: Resolver<ContractCast, UpdateContractCastArgType> = as
       ...(args.where.name ? { name: args.where.name } : {}),
     },
     data: {
-      program: stringCode,
+      ...(args.data.program ? { program: args.data.program } : {}),
+      ...(args.data.abi ? { abi: args.data.abi } : {}),
     },
     select: {
       id: true,
@@ -53,7 +55,7 @@ const updateContractCast: Resolver<ContractCast, UpdateContractCastArgType> = as
     throw new UserInputError('Chain Cast not found', ErrorsEnum.objectNotFound);
   }
   ctx.log.i(`Updatred Chain Cast id ${contractCast.id} program`);
-  ctx.manager.updateCast(contractCast.id, stringCode);
+  ctx.manager.restartCast(contractCast.id);
   return contractCast;
 };
 

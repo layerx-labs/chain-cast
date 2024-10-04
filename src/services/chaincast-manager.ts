@@ -83,12 +83,29 @@ export class ChainCastManager<
     return this._casts[id];
   }
 
-  async updateCast(id: string, stringCode: string) {
+  async restartCast(id: string) {
     if (this._casts[id]) {
-      const program = new ChainCastProgram(this._supportedProcessors);
-      program.load(stringCode);
-      await this._casts[id].loadProgram(program);
-      await this._casts[id].loadSecrets(await loadSecresFromDb(this._db, id));
+      await this._casts[id].stop();
+      delete this._casts[id];
+      const cast = await this._db.contractCast.findUnique({
+        where: {
+          id,
+        },
+        select: {
+          id: true,
+          name: true,
+          type: true,
+          address: true,
+          chainId: true,
+          blockNumber: true,
+          transactionIndex: true,
+          abi: true,
+          program: true,
+        },
+      });
+      if (cast) {
+        this._setupCast(cast);
+      }
     }
   }
 
