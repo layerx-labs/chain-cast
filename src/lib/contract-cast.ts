@@ -11,7 +11,6 @@ import EVMContractListener from './contract-listener';
 import { ModelFactory } from './model-factory';
 import { EVMContractEventRetriever } from './contract-event-retriever';
 import { AbiItem } from 'web3-utils';
-import { AggregationsStringTermsAggregate } from '@elastic/elasticsearch/lib/api/types';
 /**
  * An implementation that creates a stream of events for an Ethereum Smart Contract
  */
