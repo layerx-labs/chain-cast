@@ -203,14 +203,14 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   }
 
   onEventChanged(changed: any): void {
-    log.d(`Event Changed on cast ${this._id} ${changed}`);
+    log.d(`Event Changed on Cast=${this.getName} ${changed}`);
   }
   onConnected(message: string): void {
-    log.d(`Event Emmiter Connected cast ${this._id} ${message}`);
+    log.d(`Event Emmiter Connected Cast=${this.getName} ${message}`);
   }
 
   onError(error: Error) {
-    log.e(`Error listening on cast ${this._id} ${error.message} ${this._type} `, error.stack);
+    log.e(`Error listening on Cast=${this.getName} ${error.message} ${this._type} `, error.stack);
   }
 
   private async _setupListener(type: ContractCastType) {
@@ -238,7 +238,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
    */
   private async _startContractListening() {
     log.i(
-      `Starting Consuming Events for stream ${this._id} ${this._chainId} ${this._type} ` +
+      `Starting Consuming Events for Cast=${this.getName} ${this._chainId} ${this._type} ` +
         `on ${this._address}`
     );
     await this._setupListener(this._type);
@@ -254,7 +254,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
       const fromBlock = this._blockNumber;
       const fromTxIndex = this._transactionIndex;
       log.i(
-        `Starting Recovering events stream ${this._id} ` +
+        `Starting Recovering events Cast=${this.getName} ` +
           `from=[${fromBlock}] txIndex=[${fromTxIndex}] to=[${currentBlock}]`
       );
       const model = new ModelFactory().create(this._type, this._chainId, this._address, this._abi);
