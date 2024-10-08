@@ -2,7 +2,7 @@ import { Model } from '@taikai/dappkit';
 import log from '@/services/log';
 import { ContractEventRetriever, EventRecoverHandler } from '@/types/events';
 import { retry } from '@/util/promise';
-import {appConfig} from '@/config/index'
+import { appConfig } from '@/config/index';
 import { sleep } from './time';
 
 export class EVMContractEventRetriever<M extends Model> implements ContractEventRetriever {
@@ -57,5 +57,3 @@ export class EVMContractEventRetriever<M extends Model> implements ContractEvent
     }
   }
 }
-
-

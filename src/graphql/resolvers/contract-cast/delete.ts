@@ -4,7 +4,8 @@ import { UserInputError } from '@/middleware/errors';
 import { ContractCast } from '@prisma/client';
 
 type DeleteContractCastArgType = {
-  id: string;
+  id?: string;
+  name?: string;
 };
 
 export const deleteContractCast: Resolver<ContractCast, DeleteContractCastArgType> = async (
@@ -14,27 +15,29 @@ export const deleteContractCast: Resolver<ContractCast, DeleteContractCastArgTyp
 ) => {
   const contractCastToDelete = await ctx.db.contractCast.findUnique({
     where: {
-      id: args.id,
+      ...(args.id ? { id: args.id } : {}),
+      ...(args.name ? { name: args.name } : {}),
     },
   });
   if (!contractCastToDelete) {
     throw new UserInputError('Chain Cast not found', ErrorsEnum.objectNotFound);
   }
-  await ctx.manager.deleteCast(args.id);
+  await ctx.manager.deleteCast(contractCastToDelete.id);
   const contractCast = await ctx.db.contractCast.delete({
     where: {
-      id: args.id,
+      id: contractCastToDelete.id,
     },
     select: {
       id: true,
       address: true,
+      name: true,
       blockNumber: true,
       chainId: true,
       createdAt: true,
       program: true,
       type: true,
       transactionIndex: true,
-      abi: true,      
+      abi: true,
     },
   });
   ctx.log.i(

@@ -65,6 +65,7 @@ export class ChainCastManager<
   async addCast(cast: {
     id: string;
     type: ContractCastType;
+    name: string | null;
     address: string;
     chainId: number;
     abi: string;
@@ -83,12 +84,29 @@ export class ChainCastManager<
     return this._casts[id];
   }
 
-  async updateCast(id: string, stringCode: string) {
+  async restartCast(id: string) {
     if (this._casts[id]) {
-      const program = new ChainCastProgram(this._supportedProcessors);
-      program.load(stringCode);
-      await this._casts[id].loadProgram(program);
-      await this._casts[id].loadSecrets(await loadSecresFromDb(this._db, id));
+      await this._casts[id].stop();
+      delete this._casts[id];
+      const cast = await this._db.contractCast.findUnique({
+        where: {
+          id,
+        },
+        select: {
+          id: true,
+          name: true,
+          type: true,
+          address: true,
+          chainId: true,
+          blockNumber: true,
+          transactionIndex: true,
+          abi: true,
+          program: true,
+        },
+      });
+      if (cast) {
+        this._setupCast(cast);
+      }
     }
   }
 
@@ -115,11 +133,12 @@ export class ChainCastManager<
       select: {
         id: true,
         type: true,
+        name: true,
         address: true,
         chainId: true,
         blockNumber: true,
         transactionIndex: true,
-        abi: true,      
+        abi: true,
         program: true,
       },
     });
@@ -128,6 +147,7 @@ export class ChainCastManager<
   private async _setupCast(cast: {
     id: string;
     type: ContractCastType;
+    name: string | null,
     address: string;
     chainId: number;
     blockNumber: number;
@@ -140,9 +160,10 @@ export class ChainCastManager<
       this._vmCreator,
       cast.id,
       cast.type,
+      cast.name,
       cast.address,
       cast.chainId,
-      cast.abi ?? "",
+      cast.abi ?? '',
       cast.blockNumber,
       cast.transactionIndex,
       this._supportedProcessors

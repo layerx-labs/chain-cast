@@ -19,6 +19,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
 {
   private _id: string;
   private _type: ContractCastType;
+  private _name: string | null;
   private _address: string;
   private _chainId: number;
   private _abi: AbiItem[] = [];
@@ -35,6 +36,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap) => VM,
     id: string,
     type: ContractCastType,
+    name: string | null,
     address: string,
     chainId: number,
     abi: string,
@@ -44,12 +46,13 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   ) {
     this._id = id;
     this._type = type;
+    this._name = name;
     this._address = address;
     this._chainId = chainId;
 
     if (this._type === 'CUSTOM') {
       const decodedABI = Buffer.from(abi, 'base64').toString('ascii');
-      this._abi  = JSON.parse(decodedABI) as AbiItem[];
+      this._abi = JSON.parse(decodedABI) as AbiItem[];
     }
     this._blockNumber = blockNumber;
     this._transactionIndex = transactionIndex;
@@ -77,6 +80,10 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
 
   getId() {
     return this._id;
+  }
+
+  getName() {
+    return this._name;
   }
 
   getAddress() {
@@ -109,19 +116,19 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
    * Starts listening to the contract and establishes a ubscription to contract events.
    * */
   async start() {
-    log.d(`Starting the Contract Cast ${this._id}`);
+    log.d(`Starting the Contract Cast=[${this.getName()}]`);
     try {
       this._status = ContractCastStatusEnum.RECOVERING;
-      log.d(`Starting Recovering ${this._id}`);
+      log.d(`Starting Recovering Cast=[${this.getName()}]`);
 
       await this._recoverEvents();
-      log.d(`Stopping Recovering ${this._id}`);
+      log.d(`Stopping Recovering Cast=[${this.getName()}]`);
       if ((this._status as number) !== ContractCastStatusEnum.TERMINATED) {
         await this._startContractListening();
         this._status = ContractCastStatusEnum.LISTENING;
       }
     } catch (e: Error | any) {
-      log.e(`Failed to start Contract Cast ${this._id} ${e.message}  ${e.stack}`);
+      log.e(`Failed to start Contract Cast=[${this.getName()}] ${e.message}  ${e.stack}`);
     }
   }
   /**
@@ -132,7 +139,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     if (this._listener?.isListening()) {
       try {
         await this._listener.stopListening();
-        log.d(`Stopping the Contract Cast ${this._id}`);
+        log.d(`Stopping the Contract Cast=[${this.getName()}]`);
         /**
          * If the Cast is in recovery state the recover process will save the
          * latest block position and transaction Index;
@@ -141,7 +148,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
           const currentBlock = await this._web3Con.eth.getBlockNumber();
           const txCount = await this._web3Con.eth.getBlockTransactionCount(currentBlock);
           if (
-            currentBlock == this._blockNumber &&
+            currentBlock == this.getBlockNumber() &&
             this._transactionIndex &&
             txCount >= this._transactionIndex + 1
           ) {
@@ -152,7 +159,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
         }
         this._status = ContractCastStatusEnum.TERMINATED;
       } catch (e: Error | any) {
-        log.e(`Failed to stop Contract Cast ${this._id} ${e.message}  ${e.stack}`);
+        log.e(`Failed to stop Contract Cast=[${this.getName()}]${e.message}  ${e.stack}`);
       }
     }
   }
@@ -160,7 +167,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   async _updateCastIndex(blockNumber: number, transactionIndex?: number) {
     this._blockNumber = blockNumber;
     this._transactionIndex = transactionIndex ?? 0;
-    log.d(`Contract Cast Id=${this.getId()} at Block=[${blockNumber}:${transactionIndex ?? 0}]`);
+    log.d(`Cast Name=[${this.getName()}] at Block=[${this.getBlockNumber()}:${transactionIndex ?? 0}]`);
     await db.contractCast.update({
       where: {
         id: this._id,
@@ -196,31 +203,32 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   }
 
   onEventChanged(changed: any): void {
-    log.d(`Event Changed on cast ${this._id} ${changed}`);
+    log.d(`Event Changed on Cast=[${this.getName()}] ${changed}`);
   }
   onConnected(message: string): void {
-    log.d(`Event Emmiter Connected cast ${this._id} ${message}`);
+    log.d(`Event Emitter Connected Cast=[${this.getName()}] ${message}`);
   }
 
   onError(error: Error) {
-    log.e(`Error listening on cast ${this._id} ${error.message} ${this._type} `, error.stack);
+    log.e(`Error listening on Cast=[${this.getName()}] ${error.message} ${this._type} `, error.stack);
   }
 
   private async _setupListener(type: ContractCastType) {
     const factory = new ContractListenerFactory();
     try {
       this._listener = factory.create(
-        EVMContractListener, 
-        type, 
-        this._chainId, 
-        this._address, 
-        this._abi
+        EVMContractListener,
+        type,
+        this._chainId,
+        this._address,
+        this._abi,
+        this._name
       );
       this._listener.setHandler(this);
-      await this._listener.startListening(this._blockNumber);
+      await this._listener.startListening(this.getBlockNumber());
     } catch (e: any) {
       log.e(
-        `Failed to setup ${this._id} ${this._chainId} ${this._type} ` +
+        `Failed to setup Cast=[${this.getName()}] ${this._type} ` +
           `on ${this._address} - ${e.message}`
       );
     }
@@ -231,7 +239,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
    */
   private async _startContractListening() {
     log.i(
-      `Starting Consuming Events for stream ${this._id} ${this._chainId} ${this._type} ` +
+      `Starting Consuming Events for Cast=[${this.getName()}] ${this._type} ` +
         `on ${this._address}`
     );
     await this._setupListener(this._type);
@@ -243,11 +251,11 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
 
   private async _recoverEvents() {
     const currentBlock = await this._web3Con.eth.getBlockNumber();
-    if (this._blockNumber <= currentBlock) {
-      const fromBlock = this._blockNumber;
+    if (this.getBlockNumber() <= currentBlock) {
+      const fromBlock = this.getBlockNumber();
       const fromTxIndex = this._transactionIndex;
       log.i(
-        `Starting Recovering events stream ${this._id} ` +
+        `Starting Recovering events Cast=[${this.getName()}] ` +
           `from=[${fromBlock}] txIndex=[${fromTxIndex}] to=[${currentBlock}]`
       );
       const model = new ModelFactory().create(this._type, this._chainId, this._address, this._abi);

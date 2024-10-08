@@ -24,13 +24,13 @@ export type __Config = {
     blocksPerCall: number;
     sleepMs: number;
     retries: number;
-  },
+  };
   ssl: {
     enabled: boolean;
     sslPrivateKeyPath: string;
     sslCertPath: string;
     sslPrivateKeyPassphrase: string;
-  }
+  };
   cors: {
     enabled: boolean;
     origins: string[];
@@ -38,7 +38,7 @@ export type __Config = {
   redis: {
     hostname: string;
     port: number;
-  },
+  };
   logs: {
     console: {
       silent: boolean;
@@ -73,10 +73,10 @@ export enum ChainIds {
   AMOY = 80002,
   POLYGON = 137,
   LOCAL = 1337,
-  ARBITRUM_MAIN_NET =42161,
-  OPTIMISM_MAIN_NET=10,
-  BASE_MAIN_NET=8453,
-  SEPOLIA = 11155111
+  ARBITRUM_MAIN_NET = 42161,
+  OPTIMISM_MAIN_NET = 10,
+  BASE_MAIN_NET = 8453,
+  SEPOLIA = 11155111,
 }
 
 export type ChainParams = {
@@ -125,6 +125,7 @@ export type ContractCastConstructor<T, S, VM> = new (
   vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap) => VM,
   id: string,
   type: ContractCastType,
+  name: string | null,
   adress: string,
   chainId: number,
   abi: string,

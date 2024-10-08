@@ -1,14 +1,8 @@
 import { ContractListenerConstructor } from '../types';
 import { ContractCastType } from '@prisma/client';
-import {
-  ERC1155Standard,
-  ERC20,
-  Erc721Standard,
-  Model,
-  Web3Connection,
-} from '@taikai/dappkit';
+import { ERC1155Standard, ERC20, Erc721Standard, Model, Web3Connection } from '@taikai/dappkit';
 import { chainsSupported } from '@/constants/chains';
-import { AbiItem } from 'web3-utils'
+import { AbiItem } from 'web3-utils';
 import Web3 from 'web3';
 
 export class ModelFactory {
@@ -27,10 +21,10 @@ export class ModelFactory {
   public create(type: ContractCastType, chainId: number, address: string, abi: AbiItem[]): Model {
     const constructorZ = this._supportedClasses[type as string];
     if (!constructorZ && type !== ContractCastType.CUSTOM) {
-      throw Error('trying to create an unsupported Listneter');
-    }    
-    const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == chainId);    
-    
+      throw Error('trying to create an unsupported Listener');
+    }
+    const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == chainId);
+
     const providerWebOptions = {
       timeout: 30000, // ms
       // Useful for credentialed urls, e.g: ws://username:password@localhost:8546
@@ -50,18 +44,17 @@ export class ModelFactory {
         onTimeout: false,
       },
     };
-    const provider = new Web3.providers.WebsocketProvider(
-      chain.wsUrl, providerWebOptions
-    );
-        
+    const provider = new Web3.providers.WebsocketProvider(chain.wsUrl, providerWebOptions);
+
     const web3Con: Web3Connection = new Web3Connection({
       debug: false,
       web3CustomProvider: provider,
     });
 
-    const model = type !== ContractCastType.CUSTOM ? 
-      new constructorZ(web3Con, address):
-      new Model(web3Con,  abi as  AbiItem[], address);
+    const model =
+      type !== ContractCastType.CUSTOM
+        ? new constructorZ(web3Con, address)
+        : new Model(web3Con, abi as AbiItem[], address);
     return model;
   }
 }

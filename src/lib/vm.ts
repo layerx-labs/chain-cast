@@ -15,7 +15,6 @@ import { getVariableFromPath } from '@/util/vm';
  *  Class to excute a program, a set of instructions in sequence
  */
 export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMachine {
-  
   private _supportedInstructions: InstructionMap;
   private _program: Program | null = null;
   private _info: CI;
@@ -101,9 +100,9 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
         `Failed to execute Program ${this._info.getId()} ` +
           `on Step ${this.getCurrentStackItem()?.name} ${e.message} ${e.stack}`
       );
-    } finally{
+    } finally {
       //1. Initialize Virtual Machine State
-      this._initVM();  
+      this._initVM();
     }
   }
 

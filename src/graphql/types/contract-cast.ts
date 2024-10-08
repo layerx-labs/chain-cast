@@ -8,6 +8,9 @@ export const ContractCastTypeEnum = builder.enumType('ContractCastType', {
 builder.prismaObject('ContractCast', {
   fields: (t) => ({
     id: t.exposeID('id'),
+    name: t.exposeString('name', {
+      nullable: true,
+    }),
     address: t.exposeString('address'),
     chainId: t.exposeInt('chainId'),
     blockNumber: t.exposeInt('chainId'),

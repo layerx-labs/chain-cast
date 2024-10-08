@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import 'dotenv/config';
 import log from '@/services/log';
 import { appConfig } from './config';
 import os from 'os';
@@ -25,18 +25,18 @@ import fs from 'fs';
 import http from 'http';
 import https from 'https';
 
-const chainCastBanner=`
+const chainCastBanner = `
 ██████╗██╗  ██╗ █████╗ ██╗███╗   ██╗     ██████╗ █████╗ ███████╗████████╗
 ██╔════╝██║  ██║██╔══██╗██║████╗  ██║    ██╔════╝██╔══██╗██╔════╝╚══██╔══╝
 ██║     ███████║███████║██║██╔██╗ ██║    ██║     ███████║███████╗   ██║   
 ██║     ██╔══██║██╔══██║██║██║╚██╗██║    ██║     ██╔══██║╚════██║   ██║   
 ╚██████╗██║  ██║██║  ██║██║██║ ╚████║    ╚██████╗██║  ██║███████║   ██║   
  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝     ╚═════╝╚═╝  ╚═╝╚══════╝   ╚═╝   
-`                                                                     
+`;
 const byeMessage = 'Bye, Bye See you Soon on your favorite cast 📻';
 
 async function run() {
-  console.log(chainCastBanner)
+  console.log(chainCastBanner);
   const ctx = createContext();
   // Initialize Express Server
   const app = express();
@@ -57,23 +57,22 @@ async function run() {
       credentials: true,
       origin: appConfig.cors.enabled ? (appConfig.cors.origins as string[]) : undefined,
     },
-    plugins: [   
+    plugins: [
       ...(process.env.NODE_ENV === 'production'
-      ? [
-          useMaskedErrors({
-            errorMessage: 'Something went wrong!',
-            maskError: errorHandlingFunction,
-          }),
-        ]
-      : []),  
+        ? [
+            useMaskedErrors({
+              errorMessage: 'Something went wrong!',
+              maskError: errorHandlingFunction,
+            }),
+          ]
+        : []),
     ],
-    
   });
   app.use(yoga.graphqlEndpoint, yoga);
   log.i('Starting Chain Cast Manager Service...');
 
   ctx.manager.registerInstruction('debug', Debug);
-  ctx.manager.registerInstruction('elasticsearch',ElasticSearch)
+  ctx.manager.registerInstruction('elasticsearch', ElasticSearch);
   ctx.manager.registerInstruction('webhook', WebHook);
   ctx.manager.registerInstruction('condition', Condition);
   ctx.manager.registerInstruction('bullmq-producer', BullMQProducer);
@@ -85,13 +84,13 @@ async function run() {
   ctx.manager.registerInstruction('filter-events', FilterEvents);
   ctx.manager.registerInstruction('set', Set);
   ctx.manager.registerInstruction('spreadsheet', SpreadSheet);
-  
+
   await ctx.manager.start();
 
   let server = null;
   if (appConfig.ssl.enabled) {
     log.i('Enabling ChainCast HTTPS GraphQL Server');
-    server =  https.createServer(
+    server = https.createServer(
       {
         key: fs.readFileSync(appConfig.ssl.sslPrivateKeyPath),
         cert: fs.readFileSync(appConfig.ssl.sslCertPath),
@@ -108,36 +107,33 @@ async function run() {
   server.listen(appConfig.port, () => {
     log.i(`Running Chain Cast API server at http://localhost:${appConfig.port}/graphql`);
   });
-  
+
   log.i('Started Chain Cast GraphQL Server');
   process.on('SIGTERM', () => {
     log.d('SIGTERM Received Shutting Down Chain Cast Manager...');
 
-    ctx.manager.stop().then(()=> {
+    ctx.manager.stop().then(() => {
       log.d(byeMessage);
-       process.exit(0);
-    });    
+      process.exit(0);
+    });
   });
   process.on('SIGINT', () => {
     log.d('SIGINT Received Shutting Down Chain Cast Manager...');
-    ctx.manager.stop().then(()=> {
+    ctx.manager.stop().then(() => {
       log.d(byeMessage);
       process.exit(0);
-    });    
+    });
   });
-  process.on('uncaughtException', err => {
-    log.e(`Uncaught Exception: ${err.message} ${err.stack}`)
-    ctx.manager.stop().then(()=> {
+  process.on('uncaughtException', (err) => {
+    log.e(`Uncaught Exception: ${err.message} ${err.stack}`);
+    ctx.manager.stop().then(() => {
       log.d(byeMessage);
       process.exit(1);
-    }); 
+    });
   });
 }
 
-
-
-run()  
-  .catch((e) => {
-    log.e(e);
-    process.exit(1);
-  });
+run().catch((e) => {
+  log.e(e);
+  process.exit(1);
+});

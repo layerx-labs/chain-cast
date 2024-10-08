@@ -6,7 +6,7 @@ import { appConfig } from '../config/index';
 
 const ArgsTypeSchema = z.object({
   bodyInput: z.string().min(2),
-  queueName: z.string().min(2)
+  queueName: z.string().min(2),
 });
 
 type ArgsType = z.infer<typeof ArgsTypeSchema>;

@@ -7,8 +7,8 @@ import { encryptSecret } from '@/util/crypto';
 
 export type ArgsType = {
   where: {
-    id: string;  
-  },
+    id: string;
+  };
   data: {
     name: string;
     value: string;
@@ -36,9 +36,10 @@ const updateSecret: Resolver<Secret, ArgsType> = async (_1, args, ctx) => {
       salt: Buffer.from(initVector).toString('base64'),
     },
   });
-  ctx.manager.getCast(args.data.contractCastId)
-             .getSecretsManager()
-             .addSecret(args.data.name, args.data.value);
+  ctx.manager
+    .getCast(args.data.contractCastId)
+    .getSecretsManager()
+    .addSecret(args.data.name, args.data.value);
   ctx.log.d(`Updated secret ${args.data.name}`);
   return res;
 };

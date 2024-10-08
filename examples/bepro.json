@@ -1,28 +1,27 @@
-[{
+[
+  {
     "name": "debug",
     "args": {
-        "variablesToDebug": [
-            "event.event",
-            "event.blockNumber",
-            "cast.id"
-        ]
-    }    
-}, {
+      "variablesToDebug": ["event.event", "event.blockNumber", "cast.id"]
+    }
+  },
+  {
     "name": "elasticsearch",
     "args": {
-        "bodyInput": "event",
-        "indexName": "chaincast", 
-        "url": "https://taikai-****",
-        "username": "***",
-        "password": "****"
+      "bodyInput": "event",
+      "indexName": "chaincast",
+      "url": "https://taikai-****",
+      "username": "***",
+      "password": "****"
     }
-}, {
+  },
+  {
     "name": "bull-producer",
     "args": {
-        "bodyInput": "event",
-        "indexName": "txin", 
-        "redisHost": "localhost",
-        "redisPort": 6379
+      "bodyInput": "event",
+      "indexName": "txin",
+      "redisHost": "localhost",
+      "redisPort": 6379
     }
-
-}]
+  }
+]

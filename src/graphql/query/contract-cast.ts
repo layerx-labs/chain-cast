@@ -6,6 +6,10 @@ import { contractCast } from '../resolvers/contract-cast/contract-cast';
 
 const ContractCastsWhereInput = builder.inputType('ContractCastsWhereInput', {
   fields: (t) => ({
+    name: t.field({
+      type: StringFilter,
+      required: false,
+    }),
     address: t.field({
       type: StringFilter,
       required: false,

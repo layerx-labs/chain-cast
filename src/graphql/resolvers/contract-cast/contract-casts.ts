@@ -3,6 +3,7 @@ import { ContractCast, ContractCastType, Prisma } from '@prisma/client';
 
 export type ContractCastsArgType = {
   where?: {
+    name?: string | Prisma.StringFilter;
     address?: string | Prisma.StringFilter;
     type?: ContractCastType;
     chainId?: number | Prisma.IntFilter;
@@ -29,10 +30,11 @@ export type ContractCastsArgPageInfoType = {
  * @param ctx
  * @returns
  */
-export const contractCasts: Resolver<
-  ContractCast[],
-  ContractCastsArgType
-> = async (_1, args, ctx) => {
+export const contractCasts: Resolver<ContractCast[], ContractCastsArgType> = async (
+  _1,
+  args,
+  ctx
+) => {
   const { where, sortBy, order } = args as ContractCastsArgType;
   const perPage = 20;
   const page = args.page || 0;
@@ -49,10 +51,11 @@ export const contractCasts: Resolver<
       : {},
     select: {
       id: true,
+      name: true,
       address: true,
       blockNumber: true,
       transactionIndex: true,
-      abi: true,      
+      abi: true,
       chainId: true,
       createdAt: true,
       type: true,
@@ -62,10 +65,11 @@ export const contractCasts: Resolver<
   return casts;
 };
 
-export const contractCastsPageInfo: Resolver<
-  PageInfo,
-  ContractCastsArgPageInfoType
-> = async (_1, args, ctx) => {
+export const contractCastsPageInfo: Resolver<PageInfo, ContractCastsArgPageInfoType> = async (
+  _1,
+  args,
+  ctx
+) => {
   const { where } = args as ContractCastsArgPageInfoType;
   const perPage = 20;
   const count = await ctx.db.contractCast.count({

@@ -14,17 +14,14 @@ export type ContractCastArgType = {
  * @param ctx
  * @returns
  */
-export const contractCast: Resolver<ContractCast, ContractCastArgType> = async (
-  _1,
-  args,
-  ctx
-) => {
+export const contractCast: Resolver<ContractCast, ContractCastArgType> = async (_1, args, ctx) => {
   const cast = await ctx.db.contractCast.findUnique({
     where: {
       id: args?.id ?? '',
     },
     select: {
       id: true,
+      name: true,
       address: true,
       blockNumber: true,
       transactionIndex: true,

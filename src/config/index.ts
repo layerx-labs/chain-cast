@@ -24,7 +24,7 @@ export const appConfig: __Config = {
   },
   redis: {
     hostname: process.env?.REDIS_HOSTNAME ?? 'localhost',
-    port:  Number(process.env.REDIS_PORT) || 6379,
+    port: Number(process.env.REDIS_PORT) || 6379,
   },
   logs: {
     console: {
