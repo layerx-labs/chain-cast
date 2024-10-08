@@ -12,7 +12,7 @@ export class EVMContractListener<M extends Model> implements ContractEventListen
   private _isListening = false;
   private _handler: EventListenerHandler | null = null;
   private _listener: EventEmitter | null = null;
-
+  private _name: string | null;
   /**
    *
    * @param TCreator
@@ -21,8 +21,9 @@ export class EVMContractListener<M extends Model> implements ContractEventListen
    * @param events
    * @param handler
    */
-  constructor(model: M) {
+  constructor(model: M, name: string | null) {
     this._contract = model;
+    this._name = name;
   }
 
   /**
@@ -45,6 +46,10 @@ export class EVMContractListener<M extends Model> implements ContractEventListen
 
   setHandler(handler: EventListenerHandler): void {
     this._handler = handler;
+  }
+
+  getName() {
+    return this._name;
   }
 
   /**
@@ -74,18 +79,18 @@ export class EVMContractListener<M extends Model> implements ContractEventListen
     const provider: WebsocketProviderBase = this._contract.connection.Web3
       .currentProvider as WebsocketProviderBase;
 
-    log.d(`Listening for events on ${this._contract.contractAddress} from ${blockNumber} `);
+    log.d(`Listening for events on Cast=[${this.getName()}] from Block=[${blockNumber}]`);
 
     provider.on('connect', () => {
-      log.d(`Listener connection for ${this._contract.contractAddress}`);
+      log.d(`Listener connection for Cast=[${this.getName()}]`);
     });
 
     provider.on('end', () => {
-      log.d(`Listener disconnected for ${this._contract.contractAddress} `);
+      log.d(`Listener disconnected for Cast=[${this.getName()}] `);
     });
 
     provider.on('reconnect', () => {
-      log.d(`Listener reconnected for ${this._contract.contractAddress}`);
+      log.d(`Listener reconnected for Cast=[${this.getName()}]`);
     });
 
     this._listener = this._contract.contract.events
@@ -103,7 +108,7 @@ export class EVMContractListener<M extends Model> implements ContractEventListen
    */
   async stopListening(): Promise<void> {
     if (this.isListening() && this._listener) {
-      log.d(`Contract Cast Listener stopping for ${this._contract.contractAddress}`);
+      log.d(`Contract Cast Listener stopping for Cast=[${this.getName()}]`);
       this._listener.removeAllListeners();
       this._isListening = false;
     }

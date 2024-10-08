@@ -21,7 +21,7 @@ export class ModelFactory {
   public create(type: ContractCastType, chainId: number, address: string, abi: AbiItem[]): Model {
     const constructorZ = this._supportedClasses[type as string];
     if (!constructorZ && type !== ContractCastType.CUSTOM) {
-      throw Error('trying to create an unsupported Listneter');
+      throw Error('trying to create an unsupported Listener');
     }
     const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == chainId);
 

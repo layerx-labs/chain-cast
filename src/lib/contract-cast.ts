@@ -221,7 +221,8 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
         type,
         this._chainId,
         this._address,
-        this._abi
+        this._abi,
+        this._name
       );
       this._listener.setHandler(this);
       await this._listener.startListening(this.getBlockNumber());

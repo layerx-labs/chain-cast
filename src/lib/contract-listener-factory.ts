@@ -13,13 +13,14 @@ export class ContractListenerFactory {
    * @returns
    */
   public create<T extends ContractEventListener>(
-    constructorz: new (model: Model) => T,
+    constructorz: new (model: Model, name: string | null) => T,
     type: ContractCastType,
     chainId: number,
     address: string,
-    abi: AbiItem[]
+    abi: AbiItem[],
+    name: string | null
   ): ContractEventListener {
     const model = new ModelFactory().create(type, chainId, address, abi);
-    return new constructorz(model);
+    return new constructorz(model, name);
   }
 }
