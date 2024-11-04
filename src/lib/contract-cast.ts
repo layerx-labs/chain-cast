@@ -57,7 +57,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     this._blockNumber = blockNumber;
     this._transactionIndex = transactionIndex;
     this._vm = new vmConstructor(this, supportedProcessors);
-    const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this._chainId);
+    const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this.getChainId());
     const web3Con = new Web3Connection({
       debug: false,
       web3Host: chain.rpcUrl,
@@ -123,7 +123,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
 
       await this._recoverEvents();
       log.d(`Stopping Recovering Cast=[${this.getName()}]`);
-      if ((this._status as number) !== ContractCastStatusEnum.TERMINATED) {
+      if ((this.getStatus() as number) !== ContractCastStatusEnum.TERMINATED) {
         await this._startContractListening();
         this._status = ContractCastStatusEnum.LISTENING;
       }
@@ -144,15 +144,15 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
          * If the Cast is in recovery state the recover process will save the
          * latest block position and transaction Index;
          * */
-        if (this._status !== ContractCastStatusEnum.RECOVERING) {
+        if (this.getStatus() !== ContractCastStatusEnum.RECOVERING) {
           const currentBlock = await this._web3Con.eth.getBlockNumber();
           const txCount = await this._web3Con.eth.getBlockTransactionCount(currentBlock);
           if (
             currentBlock == this.getBlockNumber() &&
-            this._transactionIndex &&
-            txCount >= this._transactionIndex + 1
+            this.getTxIndex() &&
+            txCount >= this.getTxIndex() + 1
           ) {
-            await this._updateCastIndex(currentBlock, this._transactionIndex + 1);
+            await this._updateCastIndex(currentBlock, this.getTxIndex() + 1);
           } else {
             await this._updateCastIndex(currentBlock + 1);
           }
@@ -180,7 +180,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   }
 
   shouldStop(): boolean {
-    return this._status === ContractCastStatusEnum.TERMINATED;
+    return this.getStatus() === ContractCastStatusEnum.TERMINATED;
   }
   /**
    *
@@ -229,7 +229,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     } catch (e: any) {
       log.e(
         `Failed to setup Cast=[${this.getName()}] ${this._type} ` +
-          `on ${this._address} - ${e.message}`
+          `on ${this.getAddress()} - ${e.message}`
       );
     }
   }
@@ -258,7 +258,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
         `Starting Recovering events Cast=[${this.getName()}] ` +
           `from=[${fromBlock}] txIndex=[${fromTxIndex}] to=[${currentBlock}]`
       );
-      const model = new ModelFactory().create(this._type, this._chainId, this._address, this._abi);
+      const model = new ModelFactory().create(this._type, this.getChainId(), this.getAddress(), this._abi);
       await model.loadAbi();
       const retriever = new EVMContractEventRetriever(model);
       retriever.setHandler(this);
