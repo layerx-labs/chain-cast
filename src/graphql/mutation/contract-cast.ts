@@ -6,7 +6,6 @@ import updateContractCast from '../resolvers/contract-cast/update';
 import { deleteContractCast } from '../resolvers/contract-cast/delete';
 import web3 from 'web3';
 
-
 export const EmbedSecretDataInput = builder.inputType('EmbedSecretDataInput', {
   fields: (t) => ({
     name: t.string({

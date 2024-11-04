@@ -167,7 +167,9 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   async _updateCastIndex(blockNumber: number, transactionIndex?: number) {
     this._blockNumber = blockNumber;
     this._transactionIndex = transactionIndex ?? 0;
-    log.d(`Cast Name=[${this.getName()}] at Block=[${this.getBlockNumber()}:${transactionIndex ?? 0}]`);
+    log.d(
+      `Cast Name=[${this.getName()}] at Block=[${this.getBlockNumber()}:${transactionIndex ?? 0}]`
+    );
     await db.contractCast.update({
       where: {
         id: this._id,
@@ -210,7 +212,10 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   }
 
   onError(error: Error) {
-    log.e(`Error listening on Cast=[${this.getName()}] ${error.message} ${this._type} `, error.stack);
+    log.e(
+      `Error listening on Cast=[${this.getName()}] ${error.message} ${this._type} `,
+      error.stack
+    );
   }
 
   private async _setupListener(type: ContractCastType) {
@@ -258,7 +263,12 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
         `Starting Recovering events Cast=[${this.getName()}] ` +
           `from=[${fromBlock}] txIndex=[${fromTxIndex}] to=[${currentBlock}]`
       );
-      const model = new ModelFactory().create(this._type, this.getChainId(), this.getAddress(), this._abi);
+      const model = new ModelFactory().create(
+        this._type,
+        this.getChainId(),
+        this.getAddress(),
+        this._abi
+      );
       await model.loadAbi();
       const retriever = new EVMContractEventRetriever(model);
       retriever.setHandler(this);
