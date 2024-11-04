@@ -147,7 +147,7 @@ export class ChainCastManager<
   private async _setupCast(cast: {
     id: string;
     type: ContractCastType;
-    name: string | null,
+    name: string | null;
     address: string;
     chainId: number;
     blockNumber: number;
