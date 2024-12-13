@@ -230,7 +230,8 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
         this._name
       );
       this._listener.setHandler(this);
-      await this._listener.startListening(this.getBlockNumber());
+      const fromBlock = Math.min(this.getBlockNumber(), await this._web3Con.eth.getBlockNumber());
+      await this._listener.startListening(fromBlock);
     } catch (e: any) {
       log.e(
         `Failed to setup Cast=[${this.getName()}] ${this._type} ` +
