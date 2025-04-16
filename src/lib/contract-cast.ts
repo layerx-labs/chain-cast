@@ -7,10 +7,10 @@
 import { Web3Connection } from '@taikai/dappkit';
 import { ContractEventListener, EventListenerHandler, Web3Event } from '@/types/events';
 import log from '@/services/log';
-import { ContractCastType } from '@prisma/client';
+import { ContractCastType, ContractCastStatus } from '@prisma/client';
 import { chainsSupported } from '@/constants/chains';
 import { InstructionMap, Program, VirtualMachine } from '@/types/vm';
-import { CastInfo, ContractCast, ContractCastStatusEnum, SecretManager, SecretMap } from '../types';
+import { CastInfo, ContractCast, SecretManager, SecretMap } from '../types';
 import db from '@/services/prisma';
 import { ContractListenerFactory } from './contract-listener-factory';
 import EVMContractListener from './contract-listener';
@@ -57,7 +57,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   /** Web3 connection to interact with the blockchain */
   private _web3Con: Web3Connection;
   /** Current status of the contract cast */
-  private _status: ContractCastStatusEnum = ContractCastStatusEnum.IDLE;
+  private _status: ContractCastStatus = ContractCastStatus.IDLE;
   /** Manager for handling secrets needed by the contract cast */
   private _secretManager: T;
 
@@ -142,7 +142,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
    *
    * @returns The current status enum value
    */
-  getStatus(): ContractCastStatusEnum {
+  getStatus(): ContractCastStatus {
     return this._status;
   }
 
@@ -209,6 +209,20 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     this._vm.loadProgram(program);
   }
 
+  async setStatus(status: ContractCastStatus) {
+    this._status = status;
+    await db.contractCast.update({
+      where: {
+        id: this._id,
+      },
+      data: {
+        status: status,
+      },
+    });
+  }
+
+
+
   /**
    * Starts the Contract Cast by recovering past events and setting up event listening.
    *
@@ -221,14 +235,14 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   async start() {
     log.d(`Starting the Contract Cast=[${this.getName()}]`);
     try {
-      this._status = ContractCastStatusEnum.RECOVERING;
+      await this.setStatus(ContractCastStatus.RECOVERING);
       log.d(`Starting Recovering Cast=[${this.getName()}]`);
 
       await this._recoverEvents();
       log.d(`Stopping Recovering Cast=[${this.getName()}]`);
-      if ((this.getStatus() as number) !== ContractCastStatusEnum.TERMINATED) {
+      if ((this.getStatus()) !== ContractCastStatus.TERMINATED) {
         await this._startContractListening();
-        this._status = ContractCastStatusEnum.LISTENING;
+        await this.setStatus(ContractCastStatus.LISTENING);
       }
     } catch (e: Error | any) {
       log.e(`Failed to start Contract Cast=[${this.getName()}] ${e.message}  ${e.stack}`);
@@ -253,7 +267,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
          * If the Cast is in recovery state the recover process will save the
          * latest block position and transaction Index;
          * */
-        if (this.getStatus() !== ContractCastStatusEnum.RECOVERING) {
+        if (this.getStatus() !== ContractCastStatus.RECOVERING) {
           const currentBlock = await this._web3Con.eth.getBlockNumber();
           const txCount = await this._web3Con.eth.getBlockTransactionCount(currentBlock);
           if (
@@ -271,7 +285,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
         log.e(`Failed to stop Contract Cast=[${this.getName()}]${e.message}  ${e.stack}`);
       }
     } else {
-      this._status = ContractCastStatusEnum.TERMINATED;
+      await this.setStatus(ContractCastStatus.TERMINATED);
     }
   }
 
@@ -316,7 +330,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
    * @returns True if the status is TERMINATED, false otherwise
    */
   shouldStop(): boolean {
-    return this.getStatus() === ContractCastStatusEnum.TERMINATED;
+    return this.getStatus() === ContractCastStatus.TERMINATED;
   }
 
   /**

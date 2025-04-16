@@ -54,6 +54,7 @@ export const contractCasts: Resolver<ContractCast[], ContractCastsArgType> = asy
       name: true,
       address: true,
       blockNumber: true,
+      status: true,
       transactionIndex: true,
       abi: true,
       chainId: true,

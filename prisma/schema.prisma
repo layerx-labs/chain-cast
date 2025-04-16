@@ -20,10 +20,18 @@ enum ContractCastType {
   ERC1155
 }
 
+enum ContractCastStatus {
+  IDLE
+  RECOVERING
+  LISTENING
+  TERMINATED
+}
+
 model ContractCast {
    id                     String  @id @default(cuid()) @db.VarChar(30)
    name                   String? @unique
    type                   ContractCastType
+   status                 ContractCastStatus @default(IDLE)
    abi                    String
    address                String
    chainId                Int
