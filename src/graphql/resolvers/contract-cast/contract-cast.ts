@@ -4,7 +4,11 @@ import { ErrorsEnum } from '@/constants/index';
 import { Resolver } from '@/graphql/types';
 
 export type ContractCastArgType = {
-  id: string;
+  id?: string;
+  chainId_address?: {
+    chainId: number;
+    address: string;
+  };
 };
 
 /**
@@ -17,7 +21,13 @@ export type ContractCastArgType = {
 export const contractCast: Resolver<ContractCast, ContractCastArgType> = async (_1, args, ctx) => {
   const cast = await ctx.db.contractCast.findUnique({
     where: {
-      id: args?.id ?? '',
+      ...(args?.id && { id: args.id }),
+      ...(args?.chainId_address && {
+        chainId_address: {
+          chainId: args.chainId_address.chainId,
+          address: args.chainId_address.address,
+        },
+      }),
     },
     select: {
       id: true,

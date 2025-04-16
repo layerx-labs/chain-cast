@@ -32,12 +32,28 @@ export const ContractCastsOrderByEnum = builder.enumType('ContractCastsOrderByEn
   values: ['id', 'type', 'address', 'chainId', 'blockNumber', 'createdAt'] as const,
 });
 
+const ContractCastChainIdAddressUniqueInput =
+  builder.inputType('ContractCastChainIdAddressUniqueInput', {
+  fields: (t) => ({
+    chainId: t.int({
+      required: true,
+    }),
+    address: t.string({
+      required: true,
+    }),
+  }),
+});
+
 builder.queryFields((t) => ({
   contractCast: t.prismaField({
     type: 'ContractCast',
     args: {
       id: t.arg.string({
-        required: true,
+        required: false,
+      }),
+      chainId_address: t.arg({
+        type: ContractCastChainIdAddressUniqueInput,
+        required: false,
       }),
     },
     resolve: async (_q, root, args, ctx, info) => contractCast(root, args, ctx, info),
