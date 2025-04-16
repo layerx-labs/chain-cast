@@ -17,7 +17,7 @@ builder.prismaObject('ContractCast', {
     }),
     address: t.exposeString('address'),
     chainId: t.exposeInt('chainId'),
-    blockNumber: t.exposeInt('chainId'),
+    blockNumber: t.exposeInt('blockNumber'),
     transactionIndex: t.exposeInt('transactionIndex'),
     type: t.expose('type', {
       type: ContractCastTypeEnum,
