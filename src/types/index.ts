@@ -1,5 +1,5 @@
 import { ChainCastManager } from '@/services/chaincast-manager';
-import { ContractCastType, PrismaClient } from '@prisma/client';
+import { ContractCastType, ContractCastStatus, PrismaClient } from '@prisma/client';
 import LogService, { LogLevel } from '@taikai/scribal';
 import { InstructionMap, Program, VirtualMachine } from './vm';
 import { EventListenerHandler, Web3Event } from './events';
@@ -103,14 +103,14 @@ export type CastInfo = {
 };
 
 export enum ContractCastStatusEnum {
-  IDLE,
-  RECOVERING,
-  LISTENING,
-  TERMINATED,
+  IDLE = 'IDLE',
+  RECOVERING = 'RECOVERING',
+  LISTENING = 'LISTENING',
+  TERMINATED = 'TERMINATED',
 }
 
 export type ContractCast = {
-  getStatus(): ContractCastStatusEnum;
+  getStatus(): ContractCastStatus;
   loadProgram(program: Program): Promise<void>;
   loadSecrets(secrets: SecretMap): Promise<void>;
   getSecretsManager(): SecretManager;

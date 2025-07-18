@@ -86,6 +86,7 @@ const createContractCast: Resolver<ContractCast, CreateContractCastArgType> = as
       name: true,
       abi: true,
       program: true,
+      status: true,
       blockNumber: true,
       transactionIndex: true,
       chainId: true,

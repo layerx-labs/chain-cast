@@ -33,6 +33,7 @@ export const deleteContractCast: Resolver<ContractCast, DeleteContractCastArgTyp
       name: true,
       blockNumber: true,
       chainId: true,
+      status: true,
       createdAt: true,
       program: true,
       type: true,
