@@ -107,7 +107,7 @@ export const chainsSupported: ChainSupported = {
     primaryColor: '#DDDDDD',
   },
   local: {
-    id: ChainIds.LOCAL,
+    id: process.env.LOCAL_CHAIN_ID ? Number(process.env.LOCAL_CHAIN_ID) : ChainIds.LOCAL,
     rpcUrl: process.env.WEB3_RPC_LOCAL_URL || 'http://127.0.0.1:8545',
     wsUrl: process.env.WEB3_WS_LOCAL_URL || 'ws://127.0.0.1:8545',
     currency: 'ETH',

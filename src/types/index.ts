@@ -72,7 +72,7 @@ export enum ChainIds {
   ETHEREUM = 1,
   AMOY = 80002,
   POLYGON = 137,
-  LOCAL = 1337,
+  LOCAL = process.env.LOCAL_CHAIN_ID ? Number(process.env.LOCAL_CHAIN_ID) : 1337,
   ARBITRUM_MAIN_NET = 42161,
   OPTIMISM_MAIN_NET = 10,
   BASE_MAIN_NET = 8453,
