@@ -8,7 +8,7 @@ tags: []
 
 Thank you for your interest in contributing to Chain Cast! This document provides guidelines and information for contributors.
 
-**🏛️ DAO-Governed Project**: Chain Cast is controlled and managed by $CHAIN token holders through the CHAINCAST DAO. All commercial licenses and major governance decisions are made by the DAO community.
+**🏛️ DAO-Governed Project**: Chain Cast is controlled and managed by $CAST token holders through the CHAINCAST DAO. All commercial licenses and major governance decisions are made by the DAO community.
 
 ## Table of Contents
 
@@ -39,7 +39,7 @@ This project and everyone participating in it is governed by our [Code of Conduc
 
 ### Governance Process
 - **Proposals**: Submit governance proposals through DAO platform
-- **Voting**: $CHAIN token holders vote on key decisions
+- **Voting**: $CAST token holders vote on key decisions
 - **Transparency**: All governance decisions are publicly visible
 - **Participation**: All token holders can participate in governance
 
@@ -365,7 +365,7 @@ Contributors will be recognized in:
 For commercial contributions or enterprise features:
 
 1. **Submit DAO Proposal**: Create governance proposal for commercial features
-2. **Community Voting**: $CHAIN token holders vote on commercial proposals
+2. **Community Voting**: $CAST token holders vote on commercial proposals
 3. **Revenue Sharing**: Commercial contributions may include revenue sharing
 4. **Licensing**: Commercial use requires DAO-approved licensing
 

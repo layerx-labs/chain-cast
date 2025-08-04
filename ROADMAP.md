@@ -2,7 +2,7 @@
 
 This document outlines the development roadmap for Chain Cast, including planned features, improvements, and milestones.
 
-**🏛️ DAO-Governed Roadmap**: Major roadmap decisions and feature priorities are determined by $CHAIN token holders through the CHAINCAST DAO governance process.
+**🏛️ DAO-Governed Roadmap**: Major roadmap decisions and feature priorities are determined by $CAST token holders through the CHAINCAST DAO governance process.
 
 ## 🎯 Vision
 
@@ -161,7 +161,7 @@ We welcome community input on the roadmap! Here's how you can contribute:
 ### DAO Governance Process
 - **Proposal Submission**: Submit governance proposals through DAO platform
 - **Community Discussion**: Engage in community discussions and feedback
-- **DAO Voting**: $CHAIN token holders vote on major roadmap decisions
+- **DAO Voting**: $CAST token holders vote on major roadmap decisions
 - **Implementation**: Approved features are prioritized for development
 
 ### Prioritizing Features
@@ -197,7 +197,7 @@ We value your feedback on the roadmap! Please:
 - **Priority Setting**: Feature priorities determined by community vote
 
 ### Getting Involved in Governance
-- **Acquire $CHAIN Tokens**: Purchase tokens to gain voting rights
+- **Acquire $CAST Tokens**: Purchase tokens to gain voting rights
 - **Submit Proposals**: Create governance proposals for roadmap features
 - **Participate in Voting**: Vote on roadmap and feature proposals
 - **Join Discussions**: Participate in community discussions

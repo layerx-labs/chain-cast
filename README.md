@@ -5,9 +5,9 @@
 [![npm version](https://badge.fury.io/js/chain-cast.svg)](https://badge.fury.io/js/chain-cast)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-> A powerful open-source tool designed to listen to and recover events from smart contracts deployed on various blockchain platforms. By seamlessly integrating with blockchain networks, Chain Cast provides developers and businesses with the ability to extract and process valuable event data in a reliable and efficient manner.
+> A powerful open-source tool designed to listen to and recover events from Ethereum smart contracts deployed on various chains. By seamlessly integrating with EVM chains, Chain Cast provides developers and businesses with the ability to extract and process valuable event data in a reliable and efficient manner.
 
-**🏛️ DAO-Governed Project**: Chain Cast is controlled and managed by $CHAIN token holders through the CHAINCAST DAO. All commercial licenses and governance decisions are made by the DAO community.
+**🏛️ DAO-Governed Project**: Chain Cast is controlled and managed by $CAST token holders through the CHAINCAST DAO. All commercial licenses and governance decisions are made by the DAO community.
 
 ## 🌟 Features
 
@@ -233,7 +233,7 @@ See the [LICENSE](./LICENSE) file for details.
 
 ## 🏛️ DAO Governance
 
-Chain Cast is governed by the CHAINCAST DAO, where $CHAIN token holders make key decisions about:
+Chain Cast is governed by the CHAINCAST DAO, where $CAST token holders make key decisions about:
 
 - **Commercial Licensing**: All commercial license approvals
 - **Feature Development**: Major feature roadmap decisions
@@ -243,7 +243,7 @@ Chain Cast is governed by the CHAINCAST DAO, where $CHAIN token holders make key
 
 ### Getting Involved
 
-- **Join the DAO**: Acquire $CHAIN tokens to participate in governance
+- **Join the DAO**: Acquire $CAST tokens to participate in governance
 - **Propose Changes**: Submit governance proposals for community voting
 - **Vote on Proposals**: Participate in DAO voting on key decisions
 - **Contribute**: Help build and improve the project

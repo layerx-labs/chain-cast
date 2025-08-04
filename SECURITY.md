@@ -99,9 +99,9 @@ For security-related questions or concerns, please contact:
 
 The CHAINCAST DAO may offer security bounties for critical vulnerabilities:
 
-- **Critical Vulnerabilities**: Up to $10,000 in $CHAIN tokens
-- **High Severity**: Up to $5,000 in $CHAIN tokens
-- **Medium Severity**: Up to $1,000 in $CHAIN tokens
+- **Critical Vulnerabilities**: Up to $10,000 in $CAST tokens
+- **High Severity**: Up to $5,000 in $CAST tokens
+- **Medium Severity**: Up to $1,000 in $CAST tokens
 - **Low Severity**: Recognition and acknowledgment
 
 Bounty amounts and eligibility are determined by DAO governance.
