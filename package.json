@@ -14,7 +14,7 @@
     "lint:fix": "eslint --ignore-path .eslintignore --ext .js,.ts . --fix ./",
     "test": "npx jest",
     "db:reset": "npx prisma migrate reset --force",
-    "prettier": "prettier  --config .prettierrc.json --write '**/*.{js,ts,json}'",
+    "pretty": "prettier  --config .prettierrc.json --write '**/*.{js,ts,json}'",
     "deploy:local": "ts-node-dev -r tsconfig-paths/register scripts/deploy.ts",
     "setup:ganache": "ts-node-dev -r tsconfig-paths/register scripts/setup-ganache.ts",
     "lock": "ts-node-dev -r tsconfig-paths/register scripts/deploy.ts",
