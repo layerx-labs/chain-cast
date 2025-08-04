@@ -4,76 +4,352 @@ tags: []
 
 ---
 
-# Contributor's Guide
+# Contributing to Chain Cast
 
-Welcome; we appreciate you and would like to thank you for contributing to our project. This document aims to facilitate the process and share with you some structure that hopefully will remove any roadblock.
+Thank you for your interest in contributing to Chain Cast! This document provides guidelines and information for contributors.
 
-## Issues
+## Table of Contents
 
----
-### Guidelines:
+- [Code of Conduct](#code-of-conduct)
+- [Getting Started](#getting-started)
+- [Development Setup](#development-setup)
+- [Making Changes](#making-changes)
+- [Testing](#testing)
+- [Submitting Changes](#submitting-changes)
+- [Issue Guidelines](#issue-guidelines)
+- [Pull Request Guidelines](#pull-request-guidelines)
+- [Code Style](#code-style)
+- [Documentation](#documentation)
+- [Community](#community)
 
-1. Each reported issue shall have a name and description.
-2. It should also have a detailed description of the requested feature.
-3. It should include the expected solution.
-4. The issue shall be reviewed and approved by one of the collaborators in the projects before any contributor starts working on it.
----
-### Discussion
+## Code of Conduct
 
-1. The issue discussion shall include the basics principles of communication.
-2. It should be clear, and if a solution is proposed, it should include pros and cons.
-3. If a question is asked, it should tag at least one of the project collaborators who will provide some guidance around the issue and/or the solution
----
-### Solution
+This project and everyone participating in it is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
-1. The PR shall include a clear description of the proposed solution
-2. If there is any additional information or link, it shall be included in the description.
-3. The PR has to pass all tests and build stages;
-   1. if new features are added, these HAVE to be tested
-4. (Optional) The contributor has the option to include the Twitter handle.
----
+## Getting Started
 
-## Contributing
+### Prerequisites
 
-### Locally clone your fork:
-```
-$ git clone git@github.com:layerx-labs/chain-cast.git
-```
+- **Node.js**: 20.0.0 or above
+- **PostgreSQL**: 12 or above
+- **Git**: Latest version
+- **npm**: 8.0.0 or above
 
-### Add remote from original repository in your forked repository:
-```
-$ cd layerx-labs
-$ git remote add upstream git://github.com/layerx-labs/chain-cast.git
-$ git fetch upstream
-```
+### Fork and Clone
 
-### Updating your fork from original repo to keep up with their changes:
-```
-$ git checkout master
-$ git pull --rebase upstream master
-$ git checkout your-branch
-$ git pull --rebase master
-```
+1. **Fork the repository**
+   - Go to [https://github.com/layerx-labs/chain-cast](https://github.com/layerx-labs/chain-cast)
+   - Click the "Fork" button in the top right
 
-### Build and test the solution:
-```
-$ npm install
-$ npm run build
-$ npm run test
-```
+2. **Clone your fork**
+   ```bash
+   git clone git@github.com:YOUR_USERNAME/chain-cast.git
+   cd chain-cast
+   ```
 
-### Add commits and push
-```
-$ git add .
-$ git commit -m "MESSAGE"
-$ git push origin develop
+3. **Add upstream remote**
+   ```bash
+   git remote add upstream git@github.com:layerx-labs/chain-cast.git
+   git fetch upstream
+   ```
+
+## Development Setup
+
+### 1. Install Dependencies
+
+```bash
+npm install
 ```
 
-### Creating a Pull Request
+### 2. Environment Configuration
 
-1. All pull requests should be opened to the `develop` branch
-2. The `develop` branch is the working progress branch where all development happens
-3. Ensure your PR includes a clear description of the proposed solution
-4. Make sure all tests pass before submitting the PR
+```bash
+cp env.example .env.local
+```
 
-If you have any comment or ideas in terms of making this process better, please let us know or submit a PR.
+Edit `.env.local` with your configuration:
+
+```env
+DATABASE_URL=postgresql://username:password@localhost:5432/chaincast?schema=public
+LOG_LEVEL=debug
+SILENT=false
+LOG_TO_FILE=false
+CHAIN_CAST_API_PORT=4400
+```
+
+### 3. Database Setup
+
+```bash
+npm run db:reset
+```
+
+### 4. Start Development Server
+
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:4400/graphql`
+
+## Making Changes
+
+### Branch Strategy
+
+- **main/master**: Production-ready code
+- **develop**: Integration branch for features
+- **feature/***: Feature branches
+- **bugfix/***: Bug fix branches
+- **hotfix/***: Critical production fixes
+
+### Creating a Feature Branch
+
+```bash
+git checkout develop
+git pull upstream develop
+git checkout -b feature/your-feature-name
+```
+
+### Commit Guidelines
+
+We follow [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+<type>[optional scope]: <description>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+Types:
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, etc.)
+- `refactor`: Code refactoring
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks
+
+Examples:
+```
+feat(api): add new contract cast endpoint
+fix(db): resolve database connection timeout
+docs(readme): update installation instructions
+```
+
+## Testing
+
+### Running Tests
+
+```bash
+# Run all tests
+npm run test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Run tests in debug mode
+npm run test:debug
+
+# Run linting
+npm run lint
+
+# Fix linting issues
+npm run lint:fix
+
+# Check code formatting
+npm run pretty
+```
+
+### Writing Tests
+
+- Write tests for all new functionality
+- Aim for at least 80% code coverage
+- Use descriptive test names
+- Test both success and failure cases
+
+Example test structure:
+
+```typescript
+describe('ContractCast', () => {
+  describe('create', () => {
+    it('should create a new contract cast', async () => {
+      // Test implementation
+    });
+
+    it('should throw error for invalid contract address', async () => {
+      // Test implementation
+    });
+  });
+});
+```
+
+## Submitting Changes
+
+### 1. Update Your Branch
+
+```bash
+git fetch upstream
+git rebase upstream/develop
+```
+
+### 2. Run Tests
+
+```bash
+npm run test
+npm run lint
+npm run build
+```
+
+### 3. Commit Your Changes
+
+```bash
+git add .
+git commit -m "feat: add new feature description"
+```
+
+### 4. Push to Your Fork
+
+```bash
+git push origin feature/your-feature-name
+```
+
+### 5. Create Pull Request
+
+1. Go to your fork on GitHub
+2. Click "New Pull Request"
+3. Select `develop` as the base branch
+4. Fill out the PR template
+5. Submit the PR
+
+## Issue Guidelines
+
+### Before Creating an Issue
+
+1. **Search existing issues** to avoid duplicates
+2. **Check the documentation** for answers
+3. **Try to reproduce** the issue in a clean environment
+
+### Issue Templates
+
+We provide templates for:
+- [Bug Reports](.github/ISSUE_TEMPLATE/bug_report.md)
+- [Feature Requests](.github/ISSUE_TEMPLATE/feature_request.md)
+- [Questions](.github/ISSUE_TEMPLATE/question.md)
+
+### Good Issue Reports Include
+
+- Clear description of the problem
+- Steps to reproduce
+- Expected vs actual behavior
+- Environment details
+- Error logs (if applicable)
+- Screenshots (if applicable)
+
+## Pull Request Guidelines
+
+### Before Submitting
+
+- [ ] Code follows the style guidelines
+- [ ] All tests pass
+- [ ] Documentation is updated
+- [ ] No new warnings are generated
+- [ ] Code is self-reviewed
+
+### PR Review Process
+
+1. **Automated Checks**: CI/CD pipeline runs tests and linting
+2. **Code Review**: At least one maintainer must approve
+3. **Documentation**: Ensure docs are updated if needed
+4. **Testing**: Verify changes work as expected
+
+### PR Template
+
+We provide a [PR template](.github/pull_request_template.md) to help structure your submissions.
+
+## Code Style
+
+### TypeScript Guidelines
+
+- Use TypeScript for all new code
+- Provide proper type annotations
+- Use interfaces for object shapes
+- Prefer `const` over `let`
+- Use async/await over Promises
+
+### Naming Conventions
+
+- **Files**: kebab-case (`contract-cast.ts`)
+- **Classes**: PascalCase (`ContractCast`)
+- **Functions/Variables**: camelCase (`getContractEvents`)
+- **Constants**: UPPER_SNAKE_CASE (`MAX_RETRY_ATTEMPTS`)
+
+### Code Organization
+
+```
+src/
+├── config/          # Configuration files
+├── constants/       # Constants and enums
+├── graphql/         # GraphQL schema and resolvers
+├── instructions/    # Processing instructions
+├── lib/            # Core library code
+├── middleware/     # Express middleware
+├── services/       # Business logic services
+├── types/          # TypeScript type definitions
+└── util/           # Utility functions
+```
+
+## Documentation
+
+### Documentation Standards
+
+- Write clear, concise documentation
+- Include code examples
+- Keep documentation up to date with code changes
+- Use proper markdown formatting
+
+### Documentation Files
+
+- `README.md`: Project overview and quick start
+- `doc/README.md`: API documentation
+- `CONTRIBUTING.md`: This file
+- `CODE_OF_CONDUCT.md`: Community guidelines
+- `SECURITY.md`: Security policy
+- `CHANGELOG.md`: Version history
+
+## Community
+
+### Getting Help
+
+- **GitHub Issues**: For bugs and feature requests
+- **GitHub Discussions**: For questions and general discussion
+- **Email**: chaincast@layerx.xyz for private matters
+
+### Recognition
+
+Contributors will be recognized in:
+- [Contributors list](https://github.com/layerx-labs/chain-cast/graphs/contributors)
+- Release notes
+- Project documentation
+
+### Communication Channels
+
+- **GitHub Issues**: Bug reports and feature requests
+- **GitHub Discussions**: General questions and community discussion
+- **Email**: Private security issues or sensitive matters
+
+## Additional Resources
+
+- [GraphQL Documentation](https://graphql.org/)
+- [Prisma Documentation](https://www.prisma.io/docs/)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [Jest Testing Framework](https://jestjs.io/docs/getting-started)
+
+## Questions?
+
+If you have questions about contributing, feel free to:
+1. Open a [GitHub issue](https://github.com/layerx-labs/chain-cast/issues)
+2. Start a [GitHub discussion](https://github.com/layerx-labs/chain-cast/discussions)
+3. Email us at chaincast@layerx.xyz
+
+Thank you for contributing to Chain Cast! 🚀

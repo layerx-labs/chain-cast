@@ -1,90 +1,158 @@
 # Chain Cast
-Our software is a powerful tool designed to listen to and recover events from smart contracts deployed on various blockchain platforms. By seamlessly integrating with blockchain networks, our software provides developers and businesses with the ability to extract and process valuable event data in a reliable and efficient manner.
 
-## Event Listening and Recovery:
-Our software establishes a connection with smart contracts and monitors their event logs in real-time. It actively listens to events emitted by the smart contracts, ensuring no event goes unnoticed. In the event of a network interruption or downtime, the software automatically recovers missed events, ensuring a robust and uninterrupted data flow.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js CI](https://github.com/layerx-labs/chain-cast/workflows/ChainCast%20API%20CI/badge.svg)](https://github.com/layerx-labs/chain-cast/actions)
+[![npm version](https://badge.fury.io/js/chain-cast.svg)](https://badge.fury.io/js/chain-cast)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-## Programmable Event Processing Pipeline:
-Our software empowers users to define a customized event processing pipeline tailored to your specific needs. Through a programable configurations, developers can define a sequence of processors and actions to be executed on each event. These processors can include data transformation, filtering, enrichment, aggregation, or any other desired operations. The software provides a flexible and extensible framework to accommodate a wide range of processing requirements.
+> A powerful open-source tool designed to listen to and recover events from smart contracts deployed on various blockchain platforms. By seamlessly integrating with EVM Based blockchain networks, Chain Cast provides developers and businesses with the ability to extract and process valuable event data in a reliable and efficient manner.
 
-## Seamless Integration with External Systems:
-Our software allows for seamless integration with external systems and services. Processed events can be easily forwarded to databases, message queues, analytics platforms, or any other desired destinations. This integration capability enables users to leverage the event data to trigger downstream actions, generate reports, drive decision-making processes, or create real-time notifications.
+## 🌟 Features
 
-## Project Setup
-The following technologies and components are used in the project setup:
+### Event Listening and Recovery
+- **Real-time Event Monitoring**: Establishes connections with smart contracts and monitors their event logs in real-time
+- **Automatic Recovery**: Automatically recovers missed events during network interruptions or downtime
+- **Robust Data Flow**: Ensures uninterrupted data flow with comprehensive error handling
 
-* **Prisma 4**: An ORM (Object-Relational Mapping) for interacting with the database. 👍
-* **Postgres**: A powerful open-source relational database management system. 👍
-* **GraphQL Yoga**: A fully-featured GraphQL server library. 👍
-* **ESLint**: A widely used linter tool for identifying and reporting code style issues. 👍
-* **Prettier**: A code formatter that helps maintain consistent code style. 👍
-* **Logs**: Logging functionality for tracking and debugging application behavior. 👍
-* **Jest** + Coverage: A testing framework for JavaScript applications, with code coverage reporting. 👍
+### Programmable Event Processing Pipeline
+- **Customizable Processing**: Define customized event processing pipelines tailored to your specific needs
+- **Flexible Configuration**: Programmable configurations for defining sequences of processors and actions
+- **Extensible Framework**: Support for data transformation, filtering, enrichment, aggregation, and custom operations
 
-## :jigsaw: Third Party Components
+### Seamless Integration
+- **External System Integration**: Forward processed events to databases, message queues, analytics platforms, or any desired destinations
+- **Real-time Notifications**: Create real-time notifications and triggers for downstream actions
+- **Analytics Support**: Generate reports and drive decision-making processes
 
-* **Node 16 or above**: Node.js runtime environment.
-* **Postgres SQL**: Local database recommended for development.
-* **Prisma**: Database ORM (Object-Relational Mapping) for GraphQL.
-* **Dappkit**: LayerX Framework for 
+## 🚀 Quick Start
 
-## Suported Contracts on this version
+### Prerequisites
 
-* NetworkV2
-* Network Registry
-* Bounty Token 
-* ERC1155
-* ERC20
-* ERC721
+- **Node.js**: 20.0.0 or above
+- **PostgreSQL**: Local database recommended for development
+- **Redis**: For queue management (optional for development)
 
-## Main Features
+### Installation
 
-## :jigsaw: Quick Start Development 
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/layerx-labs/chain-cast.git
+   cd chain-cast
+   ```
 
-1. Create an environment file (.env) and configure the required variables
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-```js
-DATABASE_URL=postgresql://heldervasc@localhost:5432/heldervasc?schema=bepro-api-devel
-LOG_LEVEL=debug
-SILENT=false
-LOG_TO_FILE=false
-CHAIN_CAST_API_PORT=4400
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Configure your `.env.local` file:
+   ```env
+   DATABASE_URL=postgresql://username:password@localhost:5432/chaincast?schema=public
+   LOG_LEVEL=debug
+   SILENT=false
+   LOG_TO_FILE=false
+   CHAIN_CAST_API_PORT=4400
+   ```
+
+4. **Initialize the database**
+   ```bash
+   npm run db:reset
+   ```
+
+5. **Start the development environment**
+   ```bash
+   npm run dev
+   ```
+
+   This will start:
+   - API server
+   - Redis (if configured)
+   - Queue worker
+
+## 🛠️ Supported Contract Types
+
+- **NetworkV2**: Advanced network contracts
+- **Network Registry**: Registry management contracts
+- **Bounty Token**: Token-based bounty systems
+- **ERC1155**: Multi-token standard
+- **ERC20**: Fungible token standard
+- **ERC721**: Non-fungible token standard
+
+## 📚 Documentation
+
+- [API Documentation](./doc/README.md)
+- [Contributing Guidelines](./CONTRIBUTING.md)
+- [Code of Conduct](./CODE_OF_CONDUCT.md)
+
+## 🧪 Testing
+
+```bash
+# Run all tests
+npm run test
+
+# Run tests with coverage
+npm run test:coverage
+
+# Debug tests
+npm run test:debug
 ```
 
-Alternatively, you can copy the example environment file:
+## 🏗️ Development
 
-```
-cp env.example env.local
-```
+### Available Scripts
 
-2. Install Dependendencies
+- `npm run dev`: Start application in development mode
+- `npm run dev:debug`: Start application with debug mode
+- `npm run build`: Build the application for production
+- `npm run start`: Start the production server
+- `npm run pretty`: Check code against prettier standards
+- `npm run prettier`: Format code with prettier
+- `npm run lint`: Run ESLint on the code
+- `npm run lint:fix`: Fix ESLint issues automatically
 
-```
-npm install
-```
+### Technology Stack
 
-3. Initialize the Database
+- **Prisma 4**: ORM for database interactions
+- **PostgreSQL**: Primary database
+- **GraphQL Yoga**: GraphQL server
+- **ESLint + Prettier**: Code quality and formatting
+- **Jest**: Testing framework with coverage
+- **TypeScript**: Type-safe JavaScript
 
-```
-npm run db:reset
-```
+## 🤝 Contributing
 
-4. Run the Development Environment
+We welcome contributions! Please see our [Contributing Guidelines](./CONTRIBUTING.md) for details on how to submit pull requests, report issues, and contribute to the project.
 
-```
-npm run dev
-```
+### Development Setup
 
-Note: API, Redis and Waka(Queue Worker) applications will be started
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes and add tests
+4. Ensure all tests pass: `npm run test`
+5. Commit your changes: `git commit -m 'Add amazing feature'`
+6. Push to the branch: `git push origin feature/amazing-feature`
+7. Open a Pull Request
 
-## :computer: NPM Commands
+## 📄 License
 
-- `npm run dev`: Start application in development mode.
-- `npm run dev:debug`: Start application in development mode with debug.
-- `npm run build`: Build the Application for production
-- `npm run pretty`: Check all the code against prettier's standards.
-- `npm run test`: Run tests.
-- `npm run test:debug`: Debug the jest tests
-- `npm run test:coverage`: Run all the tests and the coverage report
-- `npm run prettier`: Prettify the javascript source code files
-- `npm run lint`: Run the ES Lint on the code
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
+## 🆘 Support
+
+- **Issues**: [GitHub Issues](https://github.com/layerx-labs/chain-cast/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/layerx-labs/chain-cast/discussions)
+- **Email**: chaincast@layerx.xyz
+
+## 🙏 Acknowledgments
+
+- Built with ❤️ by the LayerX Labs team
+- Thanks to all our [contributors](https://github.com/layerx-labs/chain-cast/graphs/contributors)
+
+---
+
+**Made with ❤️ by [LayerX Labs](https://github.com/layerx-labs)**
