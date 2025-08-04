@@ -122,7 +122,7 @@ export class CustomInstruction implements Instruction {
 
 4. **Initialize the database**
    ```bash
-   npm run db:reset
+   npx prisma migrate reset
    ```
 
 5. **Start the development environment**
@@ -131,10 +131,36 @@ export class CustomInstruction implements Instruction {
    ```
 
    This will start:
-   - API server
-   - Redis (if configured)
-   - Queue worker
+   - API server at `http://localhost:4400/api/graphql`
 
+## 🎯 Getting Started with Ganache
+
+For a complete setup with local blockchain testing, follow our comprehensive guide:
+
+**[📖 Getting Started Guide](./GETTING-STARTED.md)**
+
+This guide includes:
+- Setting up Ganache local blockchain
+- Deploying ERC20 tokens
+- Creating ChainCast programs to monitor transfers
+- Automated setup scripts
+- Troubleshooting tips
+
+### Quick Ganache Setup
+
+```bash
+# Start Ganache
+npm run ganache:dev
+
+# Deploy ERC20 and create ChainCast (automated)
+npm run setup:ganache
+
+# Start ChainCast service
+npm run dev
+
+# Test with token transfers
+npm run transfer:erc20
+```
 
 ## 📚 Documentation
 
@@ -172,6 +198,7 @@ npm run test:debug
 ### Technology Stack
 
 - **Prisma 4**: ORM for database interactions
+- **Ethers 6**: Ethers 6 Based Application
 - **PostgreSQL**: Primary database
 - **GraphQL Yoga**: GraphQL server
 - **ESLint + Prettier**: Code quality and formatting

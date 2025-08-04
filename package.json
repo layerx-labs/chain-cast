@@ -16,6 +16,7 @@
     "db:reset": "npx prisma migrate reset --force",
     "prettier": "prettier  --config .prettierrc.json --write '**/*.{js,ts,json}'",
     "deploy:local": "ts-node-dev -r tsconfig-paths/register scripts/deploy.ts",
+    "setup:ganache": "ts-node-dev -r tsconfig-paths/register scripts/setup-ganache.ts",
     "lock": "ts-node-dev -r tsconfig-paths/register scripts/deploy.ts",
     "ganache:dev": "ganache -h 0.0.0.0 -p 8545 -a 50  -s 0x6d2119524d65ea0b15b214ef260d3acdf8ca0ec6ec68045b5785d970f5ad97bd3d0025d212e625a8a21920852cc165c10faa6d8387a0c2530d1ffc0d265d92935749"
   },
@@ -99,6 +100,7 @@
     "express": "^4.18.2",
     "googleapis": "^118.0.0",
     "graphql": "^16.6.0",
+    "graphql-request": "^7.2.0",
     "graphql-scalars": "^1.22.0",
     "handlebars": "^4.7.7",
     "inflection": "^2.0.1",
