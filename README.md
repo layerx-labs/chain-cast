@@ -21,6 +21,65 @@
 - **Flexible Configuration**: Programmable configurations for defining sequences of processors and actions
 - **Extensible Framework**: Support for data transformation, filtering, enrichment, aggregation, and custom operations
 
+### Extensible Instructions Architecture
+Chain Cast's virtual machine is built around a modular instructions architecture that allows for easy extension and customization:
+
+#### Core Instruction Types
+- **Data Transformations**: String manipulation, number formatting, object restructuring, array operations
+- **Conditional Logic**: Complex filtering and branching based on event data
+- **External Integrations**: Webhooks, message queues, databases, analytics platforms
+- **Data Processing**: Aggregation, enrichment, validation, and custom business logic
+
+#### Built-in Instructions
+- **`transform-string`**: Text manipulation (capitalize, lowercase, camelize, etc.)
+- **`transform-number`**: Numeric operations and formatting
+- **`transform-object`**: Object restructuring and field mapping
+- **`transform-array`**: Array operations and filtering
+- **`transform-template`**: Template-based data transformation
+- **`condition`**: Conditional logic and branching
+- **`filter-events`**: Event filtering based on criteria
+- **`webhook`**: HTTP webhook integration
+- **`bullmq`**: Message queue integration
+- **`elastic-search`**: Elasticsearch data indexing
+- **`spreadsheet`**: Google Sheets integration
+- **`debug`**: Development and debugging utilities
+
+#### Custom Instruction Development
+The instruction system is designed for extensibility:
+
+```typescript
+export class CustomInstruction implements Instruction {
+  INSTRUCTION_NAME = 'custom-instruction';
+
+  validateArgs(args: InstructionArgs): boolean {
+    // Validate input arguments using Zod schemas
+    return true;
+  }
+
+  name(): string {
+    return this.INSTRUCTION_NAME;
+  }
+
+  getArgsSchema(): typeof ArgsTypeSchema {
+    return ArgsTypeSchema;
+  }
+
+  async onAction(vm: VirtualMachine): Promise<void> {
+    // Implement custom processing logic
+    // Access event data via vm.getGlobalVariable('event')
+    // Access cast configuration via vm.getGlobalVariable('cast')
+  }
+}
+```
+
+#### Integration Capabilities
+- **External APIs**: Connect to any REST API or GraphQL endpoint
+- **Message Queues**: Integrate with Redis, RabbitMQ, Apache Kafka
+- **Databases**: Direct database operations and data persistence
+- **Analytics**: Send data to analytics platforms and monitoring systems
+- **Notifications**: Real-time alerts and notifications
+- **Custom Logic**: Implement any business logic or data processing
+
 ### Seamless Integration
 - **External System Integration**: Forward processed events to databases, message queues, analytics platforms, or any desired destinations
 - **Real-time Notifications**: Create real-time notifications and triggers for downstream actions
