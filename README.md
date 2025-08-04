@@ -135,14 +135,6 @@ export class CustomInstruction implements Instruction {
    - Redis (if configured)
    - Queue worker
 
-## 🛠️ Supported Contract Types
-
-- **NetworkV2**: Advanced network contracts
-- **Network Registry**: Registry management contracts
-- **Bounty Token**: Token-based bounty systems
-- **ERC1155**: Multi-token standard
-- **ERC20**: Fungible token standard
-- **ERC721**: Non-fungible token standard
 
 ## 📚 Documentation
 
