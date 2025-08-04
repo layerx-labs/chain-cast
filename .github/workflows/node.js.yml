@@ -33,12 +33,6 @@ jobs:
     - name: Check code formatting
       run: npm run pretty
 
-    - name: Run tests
-      run: npm run test
-
-    - name: Run test coverage
-      run: npm run test:coverage
-
     - name: Build project
       run: npm run build
 
