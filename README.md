@@ -5,7 +5,7 @@
 [![npm version](https://badge.fury.io/js/chain-cast.svg)](https://badge.fury.io/js/chain-cast)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-> A powerful open-source tool designed to listen to and recover events from Ethereum smart contracts deployed on various chains. By seamlessly integrating with EVM chains, Chain Cast provides developers and businesses with the ability to extract and process valuable event data in a reliable and efficient manner.
+> A powerful open-source tool designed to listen to and recover events from Ethereum smart contracts deployed on any EVM chain. By seamlessly integrating with EVM chains, Chain Cast provides developers and businesses with the ability to extract and process valuable event data in a reliable and efficient manner.
 
 **🏛️ DAO-Governed Project**: Chain Cast is controlled and managed by $CAST token holders through the CHAINCAST DAO. All commercial licenses and governance decisions are made by the DAO community.
 
