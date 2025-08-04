@@ -1,7 +1,7 @@
 {
   "name": "chain-cast",
   "version": "1.0.0",
-  "description": "An application designed to listen, processs and stream events from smart contracts deployed on various EVM blockchain networks",
+  "description": "A DAO-governed blockchain event processing platform designed to listen, process and stream events from smart contracts deployed on various EVM blockchain networks",
   "main": "dist/src/index.js",
   "scripts": {
     "dev": "ts-node-dev --transpile-only -r tsconfig-paths/register --exit-child --respawn src/main.ts",
@@ -23,12 +23,26 @@
     "type": "git",
     "url": "git+https://github.com/layerx-labs/chain-cast.git"
   },
-  "author": "LayerX Labs",
+  "author": "LayerX Labs <chaincast@layerx.xyz>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/layerx-labs/chain-cast/issues"
   },
   "homepage": "https://github.com/layerx-labs/chain-cast#readme",
+  "keywords": [
+    "blockchain",
+    "events",
+    "smart-contracts",
+    "graphql",
+    "ethereum",
+    "dao",
+    "governance",
+    "defi",
+    "web3",
+    "event-processing",
+    "chaincast",
+    "chain-token"
+  ],
   "engines": {
     "npm": ">=8.0.0",
     "node": ">=20.0.0"

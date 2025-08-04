@@ -5,7 +5,9 @@
 [![npm version](https://badge.fury.io/js/chain-cast.svg)](https://badge.fury.io/js/chain-cast)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
 
-> A powerful open-source tool designed to listen to and recover events from smart contracts deployed on various blockchain platforms. By seamlessly integrating with EVM Based blockchain networks, Chain Cast provides developers and businesses with the ability to extract and process valuable event data in a reliable and efficient manner.
+> A powerful open-source tool designed to listen to and recover events from smart contracts deployed on various blockchain platforms. By seamlessly integrating with blockchain networks, Chain Cast provides developers and businesses with the ability to extract and process valuable event data in a reliable and efficient manner.
+
+**🏛️ DAO-Governed Project**: Chain Cast is controlled and managed by $CHAIN token holders through the CHAINCAST DAO. All commercial licenses and governance decisions are made by the DAO community.
 
 ## 🌟 Features
 
@@ -47,7 +49,7 @@
 
 3. **Set up environment variables**
    ```bash
-   cp .env.example .env.local
+   cp env.example .env.local
    ```
 
    Configure your `.env.local` file:
@@ -88,6 +90,7 @@
 - [API Documentation](./doc/README.md)
 - [Contributing Guidelines](./CONTRIBUTING.md)
 - [Code of Conduct](./CODE_OF_CONDUCT.md)
+- [DAO Governance](./GOVERNANCE.md)
 
 ## 🧪 Testing
 
@@ -140,19 +143,45 @@ We welcome contributions! Please see our [Contributing Guidelines](./CONTRIBUTIN
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the MIT License for open source use. **Commercial licenses are governed by the CHAINCAST DAO**. For commercial use, please contact the DAO governance at chaincast@layerx.xyz.
+
+### License Types
+
+- **MIT License**: For open source and non-commercial use
+- **Commercial License**: Governed by CHAINCAST DAO - requires DAO approval
+- **Enterprise License**: Available through DAO governance
+
+See the [LICENSE](./LICENSE) file for details.
+
+## 🏛️ DAO Governance
+
+Chain Cast is governed by the CHAINCAST DAO, where $CHAIN token holders make key decisions about:
+
+- **Commercial Licensing**: All commercial license approvals
+- **Feature Development**: Major feature roadmap decisions
+- **Partnerships**: Strategic partnerships and integrations
+- **Treasury Management**: Project funding and resource allocation
+- **Governance Updates**: Changes to governance structure
+
+### Getting Involved
+
+- **Join the DAO**: Acquire $CHAIN tokens to participate in governance
+- **Propose Changes**: Submit governance proposals for community voting
+- **Vote on Proposals**: Participate in DAO voting on key decisions
+- **Contribute**: Help build and improve the project
 
 ## 🆘 Support
 
 - **Issues**: [GitHub Issues](https://github.com/layerx-labs/chain-cast/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/layerx-labs/chain-cast/discussions)
-- **Email**: chaincast@layerx.xyz
+- **DAO Contact**: chaincast@layerx.xyz
 
 ## 🙏 Acknowledgments
 
 - Built with ❤️ by the LayerX Labs team
+- Governed by the CHAINCAST DAO community
 - Thanks to all our [contributors](https://github.com/layerx-labs/chain-cast/graphs/contributors)
 
 ---
 
-**Made with ❤️ by [LayerX Labs](https://github.com/layerx-labs)**
+**Made with ❤️ by [LayerX Labs](https://github.com/layerx-labs) | Governed by [CHAINCAST DAO](https://dao.chaincast.xyz)**

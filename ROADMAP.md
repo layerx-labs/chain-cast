@@ -2,6 +2,8 @@
 
 This document outlines the development roadmap for Chain Cast, including planned features, improvements, and milestones.
 
+**🏛️ DAO-Governed Roadmap**: Major roadmap decisions and feature priorities are determined by $CHAIN token holders through the CHAINCAST DAO governance process.
+
 ## 🎯 Vision
 
 Chain Cast aims to become the go-to open-source solution for blockchain event processing, providing developers with a powerful, flexible, and reliable platform for listening to and processing smart contract events across multiple blockchain networks.
@@ -25,7 +27,9 @@ Chain Cast aims to become the go-to open-source solution for blockchain event pr
 
 ## 📅 Upcoming Releases
 
-### v1.1.0 - Enhanced Monitoring & Analytics (Q3 2025)
+### v1.X.0
+
+*Note: Release timeline and feature priorities are subject to DAO governance approval*
 
 #### 🔍 Monitoring & Observability
 - [ ] **Real-time Dashboard**: Web-based monitoring dashboard
@@ -47,11 +51,8 @@ Chain Cast aims to become the go-to open-source solution for blockchain event pr
 - [ ] **Plugin System**: Extensible plugin architecture
 - [ ] **Configuration UI**: Web-based configuration interface
 
-### v1.2.0 - Advanced Processing & Integration (Q1 2026)
-
 #### 🔄 Advanced Processing
-- [ ] **Machine Learning**: ML-powered event classification and filtering
-- [ ] **Pattern Recognition**: Automatic pattern detection in events
+- [ ] **Event Procesing Virtual Machine**: Domain Language to program Chain Cast pipelines
 - [ ] **Data Enrichment**: External data source integration
 - [ ] **Aggregation**: Real-time data aggregation and rollups
 - [ ] **Custom Functions**: User-defined processing functions
@@ -68,10 +69,7 @@ Chain Cast aims to become the go-to open-source solution for blockchain event pr
 - [ ] **Audit Logging**: Comprehensive audit trail
 - [ ] **GDPR Compliance**: Data privacy and compliance features
 
-### v1.3.0 - Enterprise Features (Q4 2024)
-
 #### 🏢 Enterprise Capabilities
-- [ ] **Multi-tenancy**: Support for multiple organizations
 - [ ] **High Availability**: Clustering and load balancing
 - [ ] **Backup & Recovery**: Automated backup and disaster recovery
 - [ ] **SLA Monitoring**: Service level agreement monitoring
@@ -89,27 +87,6 @@ Chain Cast aims to become the go-to open-source solution for blockchain event pr
 - [ ] **Performance Optimization**: Advanced caching and optimization
 - [ ] **Resource Management**: Intelligent resource allocation
 - [ ] **Load Balancing**: Advanced load balancing strategies
-
-### v2.0.0 - Next Generation Platform (2025)
-
-#### 🌐 Cross-Chain Interoperability
-- [ ] **Multi-Chain Events**: Cross-chain event correlation
-- [ ] **Chain Bridges**: Support for cross-chain bridges
-- [ ] **Layer 2 Networks**: Optimistic and ZK rollup support
-- [ ] **Non-EVM Chains**: Solana, Polkadot, and other chains
-
-#### 🤖 AI & Automation
-- [ ] **AI-Powered Processing**: Machine learning for event processing
-- [ ] **Automated Configuration**: AI-driven configuration optimization
-- [ ] **Predictive Analytics**: Predictive event analysis
-- [ ] **Smart Filtering**: Intelligent event filtering and routing
-
-#### 🎯 Advanced Use Cases
-- [ ] **DeFi Monitoring**: Specialized DeFi event processing
-- [ ] **NFT Analytics**: NFT-specific analytics and tracking
-- [ ] **DAO Governance**: DAO governance event processing
-- [ ] **Gaming**: Blockchain gaming event integration
-
 ## 🔧 Technical Improvements
 
 ### Infrastructure
@@ -176,21 +153,30 @@ We welcome community input on the roadmap! Here's how you can contribute:
 
 ### Suggesting Features
 1. **Create an issue** with the `enhancement` label
-2. **Provide detailed description** of the feature
-3. **Include use cases** and benefits
-4. **Consider implementation** complexity
+2. **Submit DAO proposal** for major features requiring governance
+3. **Provide detailed description** of the feature
+4. **Include use cases** and benefits
+5. **Consider implementation** complexity
+
+### DAO Governance Process
+- **Proposal Submission**: Submit governance proposals through DAO platform
+- **Community Discussion**: Engage in community discussions and feedback
+- **DAO Voting**: $CHAIN token holders vote on major roadmap decisions
+- **Implementation**: Approved features are prioritized for development
 
 ### Prioritizing Features
 - **Community demand**: Features with high community interest
 - **Technical impact**: Features that improve core functionality
 - **Business value**: Features that enable new use cases
 - **Implementation effort**: Balance between impact and effort
+- **DAO governance**: Major features require DAO approval
 
 ### Implementation
 - **Fork the repository** and implement features
 - **Follow contributing guidelines** for code quality
 - **Write tests** for new functionality
 - **Update documentation** for new features
+- **Submit DAO proposals** for major features
 
 ## 📞 Feedback & Questions
 
@@ -198,11 +184,26 @@ We value your feedback on the roadmap! Please:
 
 - **Open issues** for feature requests
 - **Start discussions** for roadmap questions
+- **Submit DAO proposals** for major features
 - **Email us** at chaincast@layerx.xyz for private feedback
 - **Join our community** channels for ongoing discussions
 
+## 🏛️ DAO Governance
+
+### Roadmap Governance
+- **Major Features**: Require DAO proposal and community voting
+- **Release Timeline**: Subject to DAO governance approval
+- **Resource Allocation**: Development resources allocated through DAO
+- **Priority Setting**: Feature priorities determined by community vote
+
+### Getting Involved in Governance
+- **Acquire $CHAIN Tokens**: Purchase tokens to gain voting rights
+- **Submit Proposals**: Create governance proposals for roadmap features
+- **Participate in Voting**: Vote on roadmap and feature proposals
+- **Join Discussions**: Participate in community discussions
+
 ---
 
-**Note**: This roadmap is a living document and will be updated based on community feedback, technical requirements, and business priorities. The timeline and features are subject to change based on development progress and community needs.
+**Note**: This roadmap is a living document and will be updated based on community feedback, technical requirements, and DAO governance decisions. The timeline and features are subject to change based on development progress, community needs, and DAO voting outcomes.
 
 *Last updated: August 2025*

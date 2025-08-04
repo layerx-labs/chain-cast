@@ -13,6 +13,8 @@ Use this section to tell people about which versions of your project are current
 
 We take the security of Chain Cast seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
+**🏛️ DAO Governance**: Security decisions and vulnerability responses are governed by the CHAINCAST DAO. Critical security issues may require DAO voting for resolution.
+
 ### Reporting Process
 
 1. **DO NOT** create a public GitHub issue for the vulnerability.
@@ -30,6 +32,7 @@ We take the security of Chain Cast seriously. If you believe you have found a se
 
 - You will receive an acknowledgment within 48 hours
 - We will investigate and provide updates on the progress
+- For critical vulnerabilities, DAO governance may be involved
 - Once the issue is confirmed, we will:
   - Work on a fix
   - Release a security update
@@ -43,7 +46,15 @@ We ask that you:
 - Avoid actions that could negatively impact other users' experience
 - Not attempt to gain access to our servers or infrastructure
 
-### Security Best Practices
+### DAO Security Governance
+
+For critical security issues:
+- **DAO Voting**: Critical security decisions may require DAO vote
+- **Emergency Response**: DAO can authorize emergency security measures
+- **Funding**: Security fixes may be funded through DAO treasury
+- **Transparency**: Security decisions are publicly documented
+
+## Security Best Practices
 
 When using Chain Cast in production:
 
@@ -55,7 +66,7 @@ When using Chain Cast in production:
 6. **Regular backups**: Maintain regular backups of your data
 7. **Access control**: Implement proper access controls and principle of least privilege
 
-### Security Features
+## Security Features
 
 Chain Cast includes several security features:
 
@@ -65,14 +76,34 @@ Chain Cast includes several security features:
 - **Rate limiting**: Built-in rate limiting capabilities
 - **Logging**: Comprehensive logging for security monitoring
 
-### Security Updates
+## Security Updates
 
 Security updates will be released as patch versions (e.g., 1.0.1, 1.0.2) and will be clearly marked in the changelog. We recommend keeping your Chain Cast installation up to date.
 
-### Contact
+### Security Update Process
+
+1. **Vulnerability Assessment**: Security team assesses the vulnerability
+2. **DAO Notification**: Critical issues are reported to DAO governance
+3. **Fix Development**: Security fixes are developed and tested
+4. **DAO Approval**: For critical fixes, DAO may vote on deployment
+5. **Release**: Security update is released to the community
+
+## Contact
 
 For security-related questions or concerns, please contact:
 - **Email**: chaincast@layerx.xyz
+- **DAO Governance**: https://dao.chaincast.xyz
 - **PGP Key**: [Available upon request]
+
+## Security Bounty Program
+
+The CHAINCAST DAO may offer security bounties for critical vulnerabilities:
+
+- **Critical Vulnerabilities**: Up to $10,000 in $CHAIN tokens
+- **High Severity**: Up to $5,000 in $CHAIN tokens
+- **Medium Severity**: Up to $1,000 in $CHAIN tokens
+- **Low Severity**: Recognition and acknowledgment
+
+Bounty amounts and eligibility are determined by DAO governance.
 
 Thank you for helping keep Chain Cast secure!
