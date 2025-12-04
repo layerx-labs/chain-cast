@@ -9,7 +9,8 @@ import { loadSecresFromDb } from '@/util/secrets';
 /**
  * Central service that manages the lifecycle of all contract casts in the ChainCast system.
  * Handles loading, starting, stopping, and managing contract monitoring instances.
- * Acts as a factory and registry for contract casts with their associated virtual machines and secret managers.
+ * Acts as a factory and registry for contract casts with their associated virtual machines
+ * and secret managers.
  *
  * @template C - Contract cast implementation type
  * @template VM - Virtual machine implementation type

@@ -2,18 +2,21 @@ import { ChainCastManager } from '@/services/chaincast-manager';
 import { ContractCastType, ContractCastStatus, PrismaClient } from '@prisma/client';
 import LogService, { LogLevel } from '@taikai/scribal';
 import { InstructionMap, Program, VirtualMachine } from './vm';
-import { EventListenerHandler, Web3Event } from './events';
-import { Model, Web3Connection } from '@taikai/dappkit';
+import { Web3Event } from './events';
 import { ChainCastSecretManager } from '@/services/secret-manager';
+import type { PublicClient, Transport, Chain, Abi } from 'viem';
 
 /**
  * Application context provided to all GraphQL resolvers.
  * Contains the core services and dependencies needed throughout the application.
  */
 export type AppContext = {
-  db: PrismaClient; // Database client for data persistence
-  log: LogService; // Logging service for application events
-  manager: ChainCastManager<ContractCast, VirtualMachine, ChainCastSecretManager>; // Contract cast lifecycle manager
+  /** Database client for data persistence */
+  db: PrismaClient;
+  /** Logging service for application events */
+  log: LogService;
+  /** Contract cast lifecycle manager */
+  manager: ChainCastManager<ContractCast, VirtualMachine, ChainCastSecretManager>;
 };
 
 /**
@@ -99,14 +102,22 @@ export type ChainNames =
  * Maps human-readable network names to their numeric chain identifiers.
  */
 export enum ChainIds {
-  ETHEREUM = 1, // Ethereum Mainnet
-  AMOY = 80002, // Polygon Amoy Testnet
-  POLYGON = 137, // Polygon Mainnet
-  LOCAL = process.env.LOCAL_CHAIN_ID ? Number(process.env.LOCAL_CHAIN_ID) : 1337, // Local development
-  ARBITRUM_MAIN_NET = 42161, // Arbitrum One Mainnet
-  OPTIMISM_MAIN_NET = 10, // Optimism Mainnet
-  BASE_MAIN_NET = 8453, // Base Mainnet
-  SEPOLIA = 11155111, // Ethereum Sepolia Testnet
+  /** Ethereum Mainnet */
+  ETHEREUM = 1,
+  /** Polygon Amoy Testnet */
+  AMOY = 80002,
+  /** Polygon Mainnet */
+  POLYGON = 137,
+  /** Local development network */
+  LOCAL = process.env.LOCAL_CHAIN_ID ? Number(process.env.LOCAL_CHAIN_ID) : 1337,
+  /** Arbitrum One Mainnet */
+  ARBITRUM_MAIN_NET = 42161,
+  /** Optimism Mainnet */
+  OPTIMISM_MAIN_NET = 10,
+  /** Base Mainnet */
+  BASE_MAIN_NET = 8453,
+  /** Ethereum Sepolia Testnet */
+  SEPOLIA = 11155111,
 }
 
 /**
@@ -161,14 +172,22 @@ export enum ContractCastStatusEnum {
  * and execute programs in response to events.
  */
 export type ContractCast = {
-  getStatus(): ContractCastStatus; // Get current operational status
-  loadProgram(program: Program): Promise<void>; // Load and initialize instruction program
-  loadSecrets(secrets: SecretMap): Promise<void>; // Load encrypted secrets for the cast
-  getSecretsManager(): SecretManager; // Get the secret manager instance
-  start(): Promise<void>; // Start monitoring and event processing
-  stop(): Promise<void>; // Stop monitoring and cleanup resources
-  onEvent<N extends string, T>(event: Web3Event<N, T>): Promise<void>; // Handle blockchain event
-  onError(error: Error): void; // Handle errors during operation
+  /** Get current operational status */
+  getStatus(): ContractCastStatus;
+  /** Load and initialize instruction program */
+  loadProgram(program: Program): Promise<void>;
+  /** Load encrypted secrets for the cast */
+  loadSecrets(secrets: SecretMap): Promise<void>;
+  /** Get the secret manager instance */
+  getSecretsManager(): SecretManager;
+  /** Start monitoring and event processing */
+  start(): Promise<void>;
+  /** Stop monitoring and cleanup resources */
+  stop(): Promise<void>;
+  /** Handle blockchain event */
+  onEvent<N extends string, T>(event: Web3Event<N, T>): Promise<void>;
+  /** Handle errors during operation */
+  onError(error: Error): void;
 };
 
 /**
@@ -176,47 +195,39 @@ export type ContractCast = {
  * Defines the parameters required to instantiate a new contract cast instance.
  */
 export type ContractCastConstructor<T, S, VM> = new (
-  creator: new () => S, // Constructor for secret manager
-  vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap) => VM, // Constructor for virtual machine
-  id: string, // Unique cast identifier
-  type: ContractCastType, // Contract type (ERC20, ERC721, etc.)
-  name: string | null, // Optional human-readable name
-  adress: string, // Contract address (note: should be "address")
-  chainId: number, // Blockchain network ID
-  abi: string, // Contract ABI as JSON string
-  blockNumber: number, // Starting block number
-  transactionIndex: number, // Starting transaction index
-  processors: InstructionMap // Available instruction processors
+  /** Constructor for secret manager */
+  creator: new () => S,
+  /** Constructor for virtual machine */
+  vmConstructor: new (info: CastInfo, supportedInstructions: InstructionMap) => VM,
+  /** Unique cast identifier */
+  id: string,
+  /** Contract type (ERC20, ERC721, etc.) */
+  type: ContractCastType,
+  /** Optional human-readable name */
+  name: string | null,
+  /** Contract address */
+  adress: string,
+  /** Blockchain network ID */
+  chainId: number,
+  /** Contract ABI as JSON string */
+  abi: string,
+  /** Starting block number */
+  blockNumber: number,
+  /** Starting transaction index */
+  transactionIndex: number,
+  /** Available instruction processors */
+  processors: InstructionMap
 ) => T;
 
 /**
- * Constructor signature for blockchain contract models.
- * Used by the ModelFactory to create contract instances.
+ * Configuration for creating contract event listeners with viem.
  */
-export type ModelConstructor<M> = new (
-  web3Con: Web3Connection, // Web3 connection instance
-  address: string // Contract address
-) => M;
-
-/**
- * Constructor signature for contract event listeners.
- * Creates listeners that can monitor blockchain events and forward them to handlers.
- */
-export type ContractEventListenerConstructor<M, H extends EventListenerHandler> = new (
-  modelConstructor: ModelConstructor<M>, // Contract model constructor
-  wsUrl: string, // WebSocket RPC URL
-  address: string, // Contract address
-  handler: H // Event handler instance
-) => M;
-
-/**
- * Constructor signature for basic contract listeners.
- * Simplified constructor for contract models without event handling.
- */
-export type ContractListenerConstructor<M extends Model> = new (
-  web3Con: Web3Connection, // Web3 connection instance
-  address: string // Contract address
-) => M;
+export type ContractListenerConfig = {
+  chainId: number; // Blockchain network ID
+  address: string; // Contract address to listen to
+  abi: Abi; // Contract ABI
+  name: string | null; // Optional listener name
+};
 
 /**
  * Type for a collection of secrets stored as key-value pairs.
@@ -236,3 +247,8 @@ export type SecretManager = {
   getSecret(name: string): string | Buffer; // Retrieve a secret value
   getSecrets(): SecretMap; // Get all secrets as map
 };
+
+/**
+ * Type alias for viem public client with any transport.
+ */
+export type ViemClient = PublicClient<Transport, Chain>;

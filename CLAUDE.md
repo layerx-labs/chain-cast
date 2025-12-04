@@ -17,7 +17,7 @@ This document provides a comprehensive guide for AI assistants working on the Ch
 - **Runtime**: Bun 1.0.0+ (replaces Node.js for better performance)
 - **Language**: TypeScript 5.0.4
 - **Database**: PostgreSQL with Prisma 4 ORM
-- **Blockchain**: Ethers 6 for Ethereum interactions
+- **Blockchain**: viem for Ethereum interactions (TypeScript-first, high performance)
 - **API**: GraphQL Yoga with Pothos schema builder
 - **Queue**: BullMQ with Redis
 - **Search**: Elasticsearch 8
@@ -50,7 +50,7 @@ This document provides a comprehensive guide for AI assistants working on the Ch
                            │
                 ┌──────────▼──────────┐
                 │  Event Retriever    │
-                │  (Ethers Provider)  │
+                │  (viem Client)      │
                 └──────────┬──────────┘
                            │
                 ┌──────────▼──────────┐
@@ -581,7 +581,7 @@ Chain Cast is governed by the CHAINCAST DAO:
 - [GitHub Issues](https://github.com/layerx-labs/chain-cast/issues)
 - [Bun Documentation](https://bun.sh/docs)
 - [Prisma Documentation](https://www.prisma.io/docs)
-- [Ethers Documentation](https://docs.ethers.org/v6/)
+- [viem Documentation](https://viem.sh/)
 - [GraphQL Yoga](https://the-guild.dev/graphql/yoga-server)
 
 ## Code Style
