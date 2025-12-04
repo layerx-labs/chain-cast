@@ -1,4 +1,3 @@
-
 import { request, gql } from 'graphql-request';
 
 /**
@@ -9,60 +8,59 @@ import { request, gql } from 'graphql-request';
  * that should be executed when events are detected.
  */
 export const CREATE_CONTRACT_CAST = gql`
-    mutation createStream(
-      $address: String!
-      $name: String!
-      $chainId: Int!
-      $abi: String!
-      $type: ContractCastType!
-      $blockNumber: Int!
-      $program: String!
-    ) {
-      createContractCast(
-        data: {
-          address: $address
-          chainId: $chainId
-          name: $name
-          startFrom: $blockNumber
-          abi: $abi
-          type: $type
-          program: $program
-        }
-      ) {
-        id
+  mutation createStream(
+    $address: String!
+    $name: String!
+    $chainId: Int!
+    $abi: String!
+    $type: ContractCastType!
+    $blockNumber: Int!
+    $program: String!
+  ) {
+    createContractCast(
+      data: {
+        address: $address
+        chainId: $chainId
+        name: $name
+        startFrom: $blockNumber
+        abi: $abi
+        type: $type
+        program: $program
       }
+    ) {
+      id
     }
-  `;
+  }
+`;
 
-  /**
+/**
  * GraphQL mutation for deleting a contract cast
  *
  * This mutation removes an existing blockchain event listener from the ChainCast service.
  * It permanently deletes the contract cast and stops all event monitoring.
  */
 export const DELETE_CAST = gql`
-mutation deleteContractCast($id: String!) {
-  deleteContractCast(id: $id) {
-    id
+  mutation deleteContractCast($id: String!) {
+    deleteContractCast(id: $id) {
+      id
+    }
   }
-}
 `;
 
 /**
-* GraphQL query for finding a contract cast
-*
-* This query retrieves information about an existing blockchain event listener
-* based on the contract address and chain ID. It's used to check if a contract
-* cast already exists before creating a new one.
-*/
+ * GraphQL query for finding a contract cast
+ *
+ * This query retrieves information about an existing blockchain event listener
+ * based on the contract address and chain ID. It's used to check if a contract
+ * cast already exists before creating a new one.
+ */
 export const QUERY_CAST = gql`
-query contractCast($address: String!, $chainId: Int!) {
-  contractCast(chainId_address: { chainId: $chainId, address: $address }) {
-    id
+  query contractCast($address: String!, $chainId: Int!) {
+    contractCast(chainId_address: { chainId: $chainId, address: $address }) {
+      id
+    }
   }
-}
 `;
-
 
 /**
  * Deletes a contract cast (blockchain event listener) in the ChainCast service.
@@ -78,11 +76,13 @@ query contractCast($address: String!, $chainId: Int!) {
  */
 export async function deleteContractCast(chainCastUrl: string, id: string) {
   const variables = { id };
-  const data: { deleteContractCast: { id: string } } =
-    await request(chainCastUrl, DELETE_CAST, variables);
+  const data: { deleteContractCast: { id: string } } = await request(
+    chainCastUrl,
+    DELETE_CAST,
+    variables
+  );
   return data.deleteContractCast;
 }
-
 
 /**
  * Queries a contract cast by address and chainId in the ChainCast service.
@@ -99,11 +99,13 @@ export async function deleteContractCast(chainCastUrl: string, id: string) {
  */
 export async function queryContractCast(chainCastUrl: string, address: string, chainId: number) {
   const variables = { address, chainId };
-  const data: { contractCast?: { id: string } } =
-    await request(chainCastUrl, QUERY_CAST, variables);
+  const data: { contractCast?: { id: string } } = await request(
+    chainCastUrl,
+    QUERY_CAST,
+    variables
+  );
   return data.contractCast ?? null;
 }
-
 
 /**
  * Parameters required to create a contract cast (blockchain event listener).
@@ -122,14 +124,14 @@ export async function queryContractCast(chainCastUrl: string, address: string, c
  * when events are detected
  */
 export type CreateContractCastParams = {
-    address: string;
-    name: string;
-    chainId: number;
-    abi: string;
-    type: string;
-    blockNumber: number;
-    compiledProgram: string;
-}
+  address: string;
+  name: string;
+  chainId: number;
+  abi: string;
+  type: string;
+  blockNumber: number;
+  compiledProgram: string;
+};
 
 /**
  * Creates a contract cast (blockchain event listener) in the ChainCast service.

@@ -36,23 +36,23 @@ async function main() {
   console.log('📝 Creating ChainCast Program...');
   const program = [
     {
-      name: "debug",
+      name: 'debug',
       args: {
-        variablesToDebug: ["event.event", "event.blockNumber", "cast.id"]
-      }
+        variablesToDebug: ['event.event', 'event.blockNumber', 'cast.id'],
+      },
     },
     {
-      name: "filter-events",
+      name: 'filter-events',
       args: {
-        eventName: "Transfer"
-      }
+        eventName: 'Transfer',
+      },
     },
     {
-      name: "debug",
+      name: 'debug',
       args: {
-        variablesToDebug: ["event.args.from", "event.args.to", "event.args.value"]
-      }
-    }
+        variablesToDebug: ['event.args.from', 'event.args.to', 'event.args.value'],
+      },
+    },
   ];
 
   const programBase64 = Buffer.from(JSON.stringify(program)).toString('base64');
@@ -63,55 +63,55 @@ async function main() {
   // Use a standard ERC20 ABI since getAbi() might not be available
   const erc20Abi = [
     {
-      "anonymous": false,
-      "inputs": [
+      anonymous: false,
+      inputs: [
         {
-          "indexed": true,
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
+          indexed: true,
+          internalType: 'address',
+          name: 'owner',
+          type: 'address',
         },
         {
-          "indexed": true,
-          "internalType": "address",
-          "name": "spender",
-          "type": "address"
+          indexed: true,
+          internalType: 'address',
+          name: 'spender',
+          type: 'address',
         },
         {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "value",
-          "type": "uint256"
-        }
+          indexed: false,
+          internalType: 'uint256',
+          name: 'value',
+          type: 'uint256',
+        },
       ],
-      "name": "Approval",
-      "type": "event"
+      name: 'Approval',
+      type: 'event',
     },
     {
-      "anonymous": false,
-      "inputs": [
+      anonymous: false,
+      inputs: [
         {
-          "indexed": true,
-          "internalType": "address",
-          "name": "from",
-          "type": "address"
+          indexed: true,
+          internalType: 'address',
+          name: 'from',
+          type: 'address',
         },
         {
-          "indexed": true,
-          "internalType": "address",
-          "name": "to",
-          "type": "address"
+          indexed: true,
+          internalType: 'address',
+          name: 'to',
+          type: 'address',
         },
         {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "value",
-          "type": "uint256"
-        }
+          indexed: false,
+          internalType: 'uint256',
+          name: 'value',
+          type: 'uint256',
+        },
       ],
-      "name": "Transfer",
-      "type": "event"
-    }
+      name: 'Transfer',
+      type: 'event',
+    },
   ];
   const abiBase64 = Buffer.from(JSON.stringify(erc20Abi)).toString('base64');
   console.log('✅ ERC20 ABI encoded\n');
@@ -128,7 +128,7 @@ async function main() {
       abi: abiBase64,
       type: 'CUSTOM',
       blockNumber: 0,
-      compiledProgram: programBase64
+      compiledProgram: programBase64,
     });
     console.log('✅ ChainCast created successfully!\n');
   } catch (error) {
@@ -138,8 +138,10 @@ async function main() {
     console.log(`Chain ID: 1337`);
     console.log(`Program (Base64): ${programBase64}`);
     console.log(`ABI (Base64): ${abiBase64}`);
-    console.log('\nUse the GraphQL API at http://localhost:4400/api/graphql ' +
-      'to create the ChainCast manually.');
+    console.log(
+      '\nUse the GraphQL API at http://localhost:4400/api/graphql ' +
+        'to create the ChainCast manually.'
+    );
   }
 
   // Step 5: Save configuration
@@ -151,8 +153,8 @@ async function main() {
     abi: abiBase64,
     owner: {
       address: owner.address,
-      privateKey: owner.privKey
-    }
+      privateKey: owner.privKey,
+    },
   };
 
   const configPath = path.join(process.cwd(), 'ganache-setup.json');
