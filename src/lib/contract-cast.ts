@@ -221,8 +221,6 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     });
   }
 
-
-
   /**
    * Starts the Contract Cast by recovering past events and setting up event listening.
    *
@@ -240,7 +238,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
 
       await this._recoverEvents();
       log.d(`Stopping Recovering Cast=[${this.getName()}]`);
-      if ((this.getStatus()) !== ContractCastStatus.TERMINATED) {
+      if (this.getStatus() !== ContractCastStatus.TERMINATED) {
         await this._startContractListening();
         await this.setStatus(ContractCastStatus.LISTENING);
       }
@@ -280,7 +278,6 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
             await this._updateCastIndex(currentBlock + 1);
           }
         }
-
       } catch (e: Error | any) {
         log.e(`Failed to stop Contract Cast=[${this.getName()}]${e.message}  ${e.stack}`);
       }

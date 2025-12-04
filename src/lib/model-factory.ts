@@ -92,8 +92,8 @@ export class ModelFactory {
     // Create the appropriate model based on contract type
     const model =
       type !== ContractCastType.CUSTOM
-        ? new constructorZ(web3Con, address)  // Use predefined model for standard contracts
-        : new Model(web3Con, abi as AbiItem[], address);  // Use generic model for custom contracts
+        ? new constructorZ(web3Con, address) // Use predefined model for standard contracts
+        : new Model(web3Con, abi as AbiItem[], address); // Use generic model for custom contracts
 
     return model;
   }

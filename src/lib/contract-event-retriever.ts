@@ -71,7 +71,7 @@ export class EVMContractEventRetriever<M extends Model> implements ContractEvent
    * 1. Processes events in configurable batches to avoid overwhelming the node
    * 2. Uses retry logic for failed requests to handle transient network issues
    * 3. Filters events based on transaction index to avoid processing
- *    duplicates
+   *    duplicates
    * 4. Reports progress to the handler for monitoring long-running operations
    * 5. Respects rate limits by sleeping between batches
    * 6. Checks for stop conditions between batches
@@ -81,7 +81,7 @@ export class EVMContractEventRetriever<M extends Model> implements ContractEvent
    * - Processes blocks in batches of configurable size
    * - For each batch, fetches all events in the block range
    * - Filters events based on transaction index to avoid
- *   duplicates
+   *   duplicates
    * - Calls the handler for each valid event
    * - Reports progress after each batch
    * - Continues until reaching the end block or stop condition

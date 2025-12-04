@@ -1,6 +1,6 @@
 # ChainCast: The Ethereum Developer's Event Processing Toolkit
 
-### Executive Summary
+### Context
 
 ChainCast is the open-source event processing engine that Ethereum developers have been waiting for. Built by developers, for developers, ChainCast provides the tools you need to listen, process, and react to smart contract events across all EVM networks with the simplicity and reliability that modern Ethereum development demands.
 
