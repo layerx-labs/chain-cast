@@ -1,5 +1,4 @@
-// Load environment variables from .env file
-import 'dotenv/config';
+// Bun automatically loads .env files
 import log from '@/services/log';
 import { appConfig } from './config';
 import os from 'os';
