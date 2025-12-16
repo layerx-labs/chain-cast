@@ -17,7 +17,7 @@ const TextTransformSchema = z.object({
     'bigint',
     'int',
     'number',
-    'split'
+    'split',
   ]),
   split: z.string().min(1).optional(),
   output: z.string().min(2),
