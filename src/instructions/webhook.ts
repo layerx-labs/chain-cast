@@ -2,6 +2,7 @@ import { z } from 'zod';
 import log from '@/services/log';
 import axios from 'axios';
 import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
+import { bigIntToString } from '@/lib/object';
 
 const ArgsTypeSchema = z.object({
   url: z.string().url(),
@@ -49,7 +50,7 @@ export class WebHook implements Instruction {
         `[${this.INSTRUCTION_NAME}] Calling webhook for ${args.url} for variable ${args.bodyInput}`
       );
       const response = await axios.post(args.url, {
-        body,
+        body: bigIntToString(body),
         metadata: {
           id: castID,
           address: castAddress,
