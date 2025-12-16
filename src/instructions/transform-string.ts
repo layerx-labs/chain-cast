@@ -18,6 +18,7 @@ const TextTransformSchema = z.object({
     'int',
     'number',
     'split',
+    'parse-json'
   ]),
   split: z.string().min(1).optional(),
   output: z.string().min(2),
@@ -99,6 +100,9 @@ export class TransformString implements Instruction {
           break;
         case 'split':
           output = inputText.split(text?.split ?? ',');
+          break;
+        case 'parse-json':
+          output = JSON.parse(inputText);
           break;
       }
       log.d(`[${this.INSTRUCTION_NAME}] Transform Result ${text?.output} = ${output}`);
