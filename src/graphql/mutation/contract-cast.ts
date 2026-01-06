@@ -4,7 +4,7 @@ import { ContractCastTypeEnum } from '@/graphql/types/contract-cast';
 import createContractCast from '../resolvers/contract-cast/create';
 import updateContractCast from '../resolvers/contract-cast/update';
 import { deleteContractCast } from '../resolvers/contract-cast/delete';
-import web3 from 'web3';
+import { isAddress } from 'viem';
 
 export const EmbedSecretDataInput = builder.inputType('EmbedSecretDataInput', {
   fields: (t) => ({
@@ -32,7 +32,7 @@ export const CreateContractCastDataInput = builder.inputType('CreateContractCast
     address: t.string({
       required: true,
       validate: {
-        refine: [(val) => web3.utils.isAddress(val), { message: 'Not a valid address' }],
+        refine: [(val) => isAddress(val), { message: 'Not a valid address' }],
       },
     }),
     chainId: t.int({
