@@ -1,5 +1,5 @@
-import { LogLevel } from '@taikai/scribal';
-import { __Config, Environment } from '@/types/index';
+import type { Environment, __Config } from '@/types/index';
+import type { LogLevel } from '@taikai/scribal';
 
 /**
  * Application configuration object containing all environment-based settings.

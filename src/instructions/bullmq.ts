@@ -1,7 +1,7 @@
-import { z } from 'zod';
 import log from '@/services/log';
-import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
+import type { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 import { Queue } from 'bullmq';
+import { z } from 'zod';
 import { appConfig } from '../config/index';
 
 const ArgsTypeSchema = z.object({
@@ -58,9 +58,10 @@ export class BullMQProducer implements Instruction {
       } else {
         log.w(`[${this.INSTRUCTION_NAME}] Skipping execution ${cast.id} invalid arguments`);
       }
-    } catch (e: Error | any) {
-      log.e(`[${this.INSTRUCTION_NAME}] Failed to execute on ${cast.id} ${e.message}`);
-      vm.setError(e.message, e.stack);
+    } catch (e: unknown) {
+      const error = e as Error;
+      log.e(`[${this.INSTRUCTION_NAME}] Failed to execute on ${cast.id} ${error.message}`);
+      vm.setError(error.message, error.stack);
     }
   }
 }

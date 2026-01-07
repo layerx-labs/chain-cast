@@ -1,7 +1,7 @@
-import { builder } from '../builder';
 import createSecret from '@/resolvers/secret/create';
-import updateSecret from '@/resolvers/secret/update';
 import deleteSecret from '@/resolvers/secret/delete';
+import updateSecret from '@/resolvers/secret/update';
+import { builder } from '../builder';
 
 export const CreateSecretDataInput = builder.inputType('CreateSecretDataInput', {
   fields: (t) => ({

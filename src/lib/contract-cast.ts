@@ -234,8 +234,9 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
         await this._startContractListening();
         await this.setStatus(ContractCastStatus.LISTENING);
       }
-    } catch (e: Error | any) {
-      log.e(`Failed to start Contract Cast=[${this.getName()}] ${e.message}  ${e.stack}`);
+    } catch (e: unknown) {
+      const error = e as Error;
+      log.e(`Failed to start Contract Cast=[${this.getName()}] ${error.message}  ${error.stack}`);
     }
   }
 

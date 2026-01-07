@@ -1,5 +1,5 @@
 import { UserInputError } from '@/middleware/errors';
-import { Instruction, InstructionCall, InstructionMap, Program } from '@/types/vm';
+import type { Instruction, InstructionCall, InstructionMap, Program } from '@/types/vm';
 import { ErrorsEnum } from '../constants';
 
 /**

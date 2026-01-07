@@ -1,8 +1,8 @@
-import { builder } from '../builder';
 import { DateTimeFilter, PothosPageInfo, SortOrderEnum, StringFilter } from '@/graphql/types';
 import { ContractCastTypeEnum } from '@/graphql/types/contract-cast';
-import { contractCasts, contractCastsPageInfo } from '../resolvers/contract-cast/contract-casts';
+import { builder } from '../builder';
 import { contractCast } from '../resolvers/contract-cast/contract-cast';
+import { contractCasts, contractCastsPageInfo } from '../resolvers/contract-cast/contract-casts';
 
 const ContractCastsWhereInput = builder.inputType('ContractCastsWhereInput', {
   fields: (t) => ({

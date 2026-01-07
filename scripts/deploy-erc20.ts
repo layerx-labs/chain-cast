@@ -1,4 +1,4 @@
-import { createWalletClient, createPublicClient, http, parseEther, defineChain } from 'viem';
+import { createWalletClient, createPublicClient, http, defineChain } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { chainsSupported } from '@/constants/chains';
 import Accounts from './accounts-testing';

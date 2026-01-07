@@ -1,7 +1,7 @@
-import { z } from 'zod';
 import log from '@/services/log';
-import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
+import type { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 import inflection from 'inflection';
+import { z } from 'zod';
 
 const TextTransformSchema = z.object({
   variable: z.string().min(2),
@@ -92,7 +92,7 @@ export class TransformString implements Instruction {
           output = BigInt(inputText);
           break;
         case 'int':
-          output = parseInt(inputText);
+          output = Number.parseInt(inputText);
           break;
         case 'number':
           output = Number(inputText);

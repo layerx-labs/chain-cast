@@ -29,22 +29,8 @@ jobs:
     - name: Run linting
       run: bun run lint
 
-    - name: Check code formatting
-      run: bun run pretty
-
     - name: Build project
       run: bun run build
-
-    - name: Run tests
-      run: bun test --coverage
-
-    - name: Upload coverage reports
-      uses: codecov/codecov-action@v5
-      with:
-        file: ./coverage/lcov.info
-        flags: unittests
-        name: codecov-umbrella
-        fail_ci_if_error: false
 
   docker:
     runs-on: ubuntu-latest

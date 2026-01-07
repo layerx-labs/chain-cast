@@ -1,4 +1,4 @@
-import { SecretManager, SecretMap } from '../types';
+import type { SecretManager, SecretMap } from '../types';
 
 /**
  * In-memory implementation of the SecretManager interface for ChainCast.

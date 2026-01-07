@@ -1,6 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import type { PrismaClient } from '@prisma/client';
+import type { SecretMap } from '../types';
 import { decrypSecret } from './crypto';
-import { SecretMap } from '../types';
 
 /**
  * Loads and decrypts all secrets associated with a specific contract cast from the database.

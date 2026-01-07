@@ -1,10 +1,15 @@
 import log from '@/services/log';
-import { ContractCastType, PrismaClient } from '@prisma/client';
+import type { ContractCastType, PrismaClient } from '@prisma/client';
 
-import { InstructionMap, Instruction, InstructionConstructor, VirtualMachine } from '@/types/vm';
-import { CastInfo, ContractCast, ContractCastConstructor, SecretManager } from '../types';
 import { ChainCastProgram } from '@/lib/program';
+import type {
+  Instruction,
+  InstructionConstructor,
+  InstructionMap,
+  VirtualMachine,
+} from '@/types/vm';
 import { loadSecresFromDb } from '@/util/secrets';
+import type { CastInfo, ContractCast, ContractCastConstructor, SecretManager } from '../types';
 
 /**
  * Central service that manages the lifecycle of all contract casts in the ChainCast system.
@@ -19,7 +24,7 @@ import { loadSecresFromDb } from '@/util/secrets';
 export class ChainCastManager<
   C extends ContractCast,
   VM extends VirtualMachine,
-  S extends SecretManager
+  S extends SecretManager,
 > {
   /** Map of active contract casts indexed by their unique IDs */
   private _casts: { [key: string]: C };

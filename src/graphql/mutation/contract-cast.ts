@@ -1,10 +1,10 @@
+import { ContractCastTypeEnum } from '@/graphql/types/contract-cast';
 import { ChainIds } from '@/types/index';
 import { builder } from '../builder';
-import { ContractCastTypeEnum } from '@/graphql/types/contract-cast';
 import createContractCast from '../resolvers/contract-cast/create';
-import updateContractCast from '../resolvers/contract-cast/update';
 import { deleteContractCast } from '../resolvers/contract-cast/delete';
 import { isAddress } from 'viem';
+import updateContractCast from '../resolvers/contract-cast/update';
 
 export const EmbedSecretDataInput = builder.inputType('EmbedSecretDataInput', {
   fields: (t) => ({

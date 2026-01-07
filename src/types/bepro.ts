@@ -1,4 +1,4 @@
-import { EventReactor, Web3Event } from './events';
+import type { EventReactor, Web3Event } from './events';
 
 export enum NetworkEventsEnum {
   BOUNTY_CREATED = 'BountyCreated',

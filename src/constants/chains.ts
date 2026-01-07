@@ -1,4 +1,4 @@
-import { ChainIds, ChainSupported } from '../types';
+import { ChainIds, type ChainSupported } from '../types';
 
 /**
  * Configuration object defining all blockchain networks supported by ChainCast.

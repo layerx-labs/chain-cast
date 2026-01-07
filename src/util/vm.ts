@@ -33,4 +33,10 @@ export function getVariableFromPath(path: string, obj: any): any {
   } else {
     return null;
   }
+  if (obj?.[segments[0]]) {
+    return obj[segments[0]];
+
+    // Path doesn't exist in the object
+  }
+  return null;
 }

@@ -1,15 +1,15 @@
-import log from '@/services/log';
-import {
-  InstructionMap,
-  InstructionCall,
-  VirtualMachine,
-  VariableDict,
-  Trigger,
-  Program,
-} from '@/types/vm';
-import { CastInfo } from '../types';
 import { Stack } from '@/lib/stack';
+import log from '@/services/log';
+import type {
+  InstructionCall,
+  InstructionMap,
+  Program,
+  Trigger,
+  VariableDict,
+  VirtualMachine,
+} from '@/types/vm';
 import { getVariableFromPath } from '@/util/vm';
+import type { CastInfo } from '../types';
 
 /**
  * ChainCastVirtualMachine implements the VirtualMachine interface to execute
@@ -284,10 +284,11 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     try {
       this.setGlobalVariable(trigger.name, trigger.payload);
       await this.executeInstructions(this._program.getInstructionCalls());
-    } catch (e: Error | any) {
+    } catch (e: unknown) {
+      const error = e as Error;
       log.e(
         `Failed to execute Program ${this._info.getId()} ` +
-          `on Step ${this.getCurrentStackItem()?.name} ${e.message} ${e.stack}`
+          `on Step ${this.getCurrentStackItem()?.name} ${error.message} ${error.stack}`
       );
     } finally {
       // Reinitialize Virtual Machine State

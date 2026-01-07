@@ -22,7 +22,7 @@ This document provides a comprehensive guide for AI assistants working on the Ch
 - **Queue**: BullMQ with Redis
 - **Search**: Elasticsearch 8
 - **Testing**: Bun's built-in test framework
-- **Linting**: ESLint + Prettier
+- **Linting**: Biome (linting and formatting)
 
 ## Architecture
 
@@ -234,9 +234,11 @@ ChainCast automatically recovers missed events:
 - `bun run build` - Install deps and generate Prisma client
 - `bun test` - Run tests
 - `bun test --coverage` - Run tests with coverage
-- `bun run lint` - Lint code
-- `bun run lint:fix` - Fix linting issues
-- `bun run pretty` - Format code with Prettier
+- `bun run lint` - Lint code with Biome
+- `bun run lint:fix` - Fix linting issues with Biome
+- `bun run format` - Format code with Biome
+- `bun run check` - Run all Biome checks (lint + format)
+- `bun run check:fix` - Fix all Biome issues
 - `bun run ganache:dev` - Start local Ganache blockchain
 - `bun run setup:ganache` - Setup Ganache with test contracts
 
@@ -583,13 +585,17 @@ Chain Cast is governed by the CHAINCAST DAO:
 - [Prisma Documentation](https://www.prisma.io/docs)
 - [viem Documentation](https://viem.sh/)
 - [GraphQL Yoga](https://the-guild.dev/graphql/yoga-server)
+- [Biome Documentation](https://biomejs.dev/)
 
 ## Code Style
 
 - **TypeScript**: Strict mode enabled
-- **ESLint**: Google/Standard config
-- **Prettier**: 2 spaces, no semicolons in some places
-- **Imports**: Use `@/` alias for `src/`
+- **Biome**: Linting and formatting (replaces ESLint + Prettier)
+  - 2 spaces indentation
+  - Single quotes
+  - Trailing commas (ES5 style)
+  - Line width: 100 characters
+- **Imports**: Use `@/` alias for `src/`, auto-organized by Biome
 - **Naming**:
   - Classes: PascalCase
   - Functions: camelCase
@@ -609,5 +615,5 @@ When contributing code:
 
 ---
 
-**Last Updated**: 2025-12-04
+**Last Updated**: 2026-01-07
 **Maintained by**: LayerX Labs & CHAINCAST DAO Community

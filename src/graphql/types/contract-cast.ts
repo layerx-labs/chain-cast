@@ -1,5 +1,5 @@
+import { ContractCastStatus, ContractCastType } from '@prisma/client';
 import { builder } from '../builder';
-import { ContractCastType, ContractCastStatus } from '@prisma/client';
 
 /**
  * GraphQL enum type for contract cast types.
