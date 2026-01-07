@@ -48,35 +48,35 @@ Chain Cast is governed by the CHAINCAST DAO, a decentralized autonomous organiza
 - **Requirements**: Detailed business case and revenue projections
 - **Voting Period**: 7 days
 - **Quorum**: 10% of circulating $CAST tokens
-- **Approval**: 60% majority required
+- **Approval**: 20% majority required
 
 #### 2. Feature Development Proposals
 - **Purpose**: Approve major feature development initiatives
 - **Requirements**: Technical specification and resource requirements
 - **Voting Period**: 5 days
 - **Quorum**: 5% of circulating $CAST tokens
-- **Approval**: 50% majority required
+- **Approval**: 30% majority required
 
 #### 3. Partnership Proposals
 - **Purpose**: Approve strategic partnerships and integrations
 - **Requirements**: Partnership terms and expected benefits
 - **Voting Period**: 7 days
 - **Quorum**: 8% of circulating $CAST tokens
-- **Approval**: 55% majority required
+- **Approval**: 25% majority required
 
 #### 4. Treasury Proposals
 - **Purpose**: Approve funding allocations and revenue distribution
 - **Requirements**: Detailed budget and expected outcomes
 - **Voting Period**: 10 days
 - **Quorum**: 15% of circulating $CAST tokens
-- **Approval**: 65% majority required
+- **Approval**: 35% majority required
 
 #### 5. Governance Update Proposals
 - **Purpose**: Update DAO governance structure and processes
 - **Requirements**: Detailed explanation of changes and rationale
 - **Voting Period**: 14 days
 - **Quorum**: 20% of circulating $CAST tokens
-- **Approval**: 75% majority required
+- **Approval**: 45% majority required
 
 ### Voting Process
 
