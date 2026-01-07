@@ -18,7 +18,7 @@ import prisma from '@/services/prisma';
 // Import GraphQL scalar resolvers for extended types
 import { DateResolver, BigIntResolver, URLResolver, JSONResolver } from 'graphql-scalars';
 // Import application context type
-import { AppContext } from '@/types/index';
+import type { AppContext } from '@/types/index';
 // Import validation plugin for input validation
 import ValidationPlugin from '@pothos/plugin-validation';
 // Import custom error class

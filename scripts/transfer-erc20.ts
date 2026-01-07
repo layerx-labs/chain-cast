@@ -3,7 +3,6 @@ import {
   createPublicClient,
   http,
   defineChain,
-  parseUnits,
   getContract,
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
@@ -95,7 +94,7 @@ async function main() {
   try {
     // Get token symbol and decimals
     const symbol = await erc20.read.symbol();
-    const decimals = await erc20.read.decimals();
+    const _decimals = await erc20.read.decimals();
 
     // Get balance before transfer
     const balanceBefore = await erc20.read.balanceOf([recipient.address as `0x${string}`]);

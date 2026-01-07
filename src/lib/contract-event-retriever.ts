@@ -1,10 +1,10 @@
 import type { Abi, PublicClient, Transport, Chain } from 'viem';
 import log from '@/services/log';
 import {
-  ContractEventRetriever,
-  EventRecoverHandler,
+  type ContractEventRetriever,
+  type EventRecoverHandler,
   viemLogToWeb3Event,
-  ViemDecodedLog,
+  type ViemDecodedLog,
 } from '@/types/events';
 import { retry } from '@/util/promise';
 import { appConfig } from '@/config/index';

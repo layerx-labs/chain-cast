@@ -3,8 +3,8 @@ import Accounts from './accounts-testing';
 import { createContractCast } from '@/lib/api';
 import { createWalletClient, createPublicClient, http, defineChain } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import fs from 'fs';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 
 // Define local chain for Ganache
 const localChain = defineChain({
@@ -31,7 +31,7 @@ async function main() {
 
   const account = privateKeyToAccount(owner.privKey as `0x${string}`);
 
-  const walletClient = createWalletClient({
+  const _walletClient = createWalletClient({
     account,
     chain: localChain,
     transport: http(chainsSupported.local.rpcUrl),
@@ -201,7 +201,7 @@ async function main() {
   console.log('\n📋 Summary:');
   console.log(`- Chain ID: ${chainsSupported.local.id}`);
   console.log(`- Contract Address: ${contractAddress}`);
-  console.log(`- ChainCast API: http://localhost:4400/api/graphql`);
+  console.log('- ChainCast API: http://localhost:4400/api/graphql');
   console.log(`- Ganache RPC: ${chainsSupported.local.rpcUrl}`);
   console.log('\n🚀 Next Steps:');
   console.log('1. Start Ganache: bun run ganache:dev');
