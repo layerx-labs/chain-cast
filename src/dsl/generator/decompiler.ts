@@ -96,6 +96,7 @@ function decompileInstruction(instruction: InstructionCall): DSLInstruction {
               })),
             }),
           },
+          // biome-ignore lint/suspicious/noThenProperty: DSL condition branch, not Promise
           then: parseGoto(args.onTrue as string),
           else: parseGoto(args.onFalse as string),
           branches,

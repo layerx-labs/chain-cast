@@ -65,7 +65,7 @@ describe('castc CLI', () => {
 
     // Dynamic import to run the CLI
     try {
-      await import(cliPath + `?t=${Date.now()}`);
+      await import(`${cliPath}?t=${Date.now()}`);
     } catch (error) {
       // Ignore exit errors
       if (!(error instanceof Error && error.message.includes('Process exited'))) {

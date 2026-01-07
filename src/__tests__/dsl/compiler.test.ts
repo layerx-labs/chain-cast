@@ -143,7 +143,8 @@ program:
       expect(result.data?.base64).toBeDefined();
 
       // Verify base64 is valid
-      const decoded = Buffer.from(result.data!.base64!, 'base64').toString('utf-8');
+      const base64 = result.data?.base64 ?? '';
+      const decoded = Buffer.from(base64, 'base64').toString('utf-8');
       const parsed = JSON.parse(decoded);
       expect(parsed).toHaveLength(1);
       expect(parsed[0].name).toBe('set');
@@ -335,7 +336,7 @@ program:
       expect(result.data?.instructions).toHaveLength(4);
 
       // Verify structure
-      const instructions = result.data!.instructions;
+      const instructions = result.data?.instructions;
       expect(instructions[0].name).toBe('filter-events');
       expect(instructions[1].name).toBe('set');
       expect(instructions[2].name).toBe('transform-string');

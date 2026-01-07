@@ -402,6 +402,7 @@ describe('DSL Transformers', () => {
             when: {
               all: [{ variable: 'amount', operator: '>', compareTo: 'threshold' }],
             },
+            // biome-ignore lint/suspicious/noThenProperty: DSL condition branch
             then: 'branch_0',
             else: 'branch_1',
             branches: {
@@ -435,6 +436,7 @@ describe('DSL Transformers', () => {
                 { variable: 'event.event', operator: '=', compareTo: 'Approval' },
               ],
             },
+            // biome-ignore lint/suspicious/noThenProperty: DSL condition branch
             then: 'branch_0',
             else: 'branch_1',
             branches: {
@@ -458,6 +460,7 @@ describe('DSL Transformers', () => {
             when: {
               all: [{ variable: 'amount', operator: '>', compareTo: '100' }],
             },
+            // biome-ignore lint/suspicious/noThenProperty: DSL condition branch
             then: 'branch_0',
             else: 'branch_1',
             branches: {
@@ -467,6 +470,7 @@ describe('DSL Transformers', () => {
                     when: {
                       all: [{ variable: 'amount', operator: '<', compareTo: '1000' }],
                     },
+                    // biome-ignore lint/suspicious/noThenProperty: DSL condition branch
                     then: 'branch_0',
                     else: 'branch_1',
                     branches: {

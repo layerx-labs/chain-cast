@@ -465,6 +465,7 @@ describe('DSL Validator Schemas', () => {
           when: {
             all: [{ variable: 'amount', operator: '>', compareTo: 'threshold' }],
           },
+          // biome-ignore lint/suspicious/noThenProperty: DSL condition branch
           then: 'branch_0',
           else: 'branch_1',
           branches: {
@@ -487,6 +488,7 @@ describe('DSL Validator Schemas', () => {
               { variable: 'event.event', operator: '=', compareTo: 'Approval' },
             ],
           },
+          // biome-ignore lint/suspicious/noThenProperty: DSL condition branch
           then: 'branch_0',
           else: 'branch_1',
           branches: {
@@ -506,6 +508,7 @@ describe('DSL Validator Schemas', () => {
           when: {
             all: [{ variable: 'amount', operator: '>', compareTo: '100' }],
           },
+          // biome-ignore lint/suspicious/noThenProperty: DSL condition branch
           then: 'branch_0',
           else: 'branch_1',
           branches: {
@@ -515,6 +518,7 @@ describe('DSL Validator Schemas', () => {
                   when: {
                     all: [{ variable: 'amount', operator: '<', compareTo: '1000' }],
                   },
+                  // biome-ignore lint/suspicious/noThenProperty: DSL condition branch
                   then: 'branch_0',
                   else: 'branch_1',
                   branches: {
@@ -537,6 +541,7 @@ describe('DSL Validator Schemas', () => {
       const instruction = {
         condition: {
           when: {},
+          // biome-ignore lint/suspicious/noThenProperty: DSL condition branch
           then: 'branch_0',
           else: 'branch_1',
           branches: {

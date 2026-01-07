@@ -292,13 +292,13 @@ program:
       expect(compiled.success).toBe(true);
 
       // Decompile back to DSL
-      const decompiled = decompile(compiled.data!.instructions, {
+      const _decompiled = decompile(compiled.data?.instructions, {
         name: 'Test Pipeline',
       });
 
       // Compile again
       const recompiled = compile(
-        decompileToYAML(compiled.data!.instructions, { name: 'Test Pipeline' })
+        decompileToYAML(compiled.data?.instructions, { name: 'Test Pipeline' })
       );
       expect(recompiled.success).toBe(true);
 
@@ -331,7 +331,7 @@ program:
       const compiled = compile(originalSource);
       expect(compiled.success).toBe(true);
 
-      const yaml = decompileToYAML(compiled.data!.instructions);
+      const yaml = decompileToYAML(compiled.data?.instructions);
       const recompiled = compile(yaml);
       expect(recompiled.success).toBe(true);
 
@@ -388,7 +388,7 @@ program:
       const compiled = compile(originalSource);
       expect(compiled.success).toBe(true);
 
-      const yaml = decompileToYAML(compiled.data!.instructions, { name: 'Complex Pipeline' });
+      const yaml = decompileToYAML(compiled.data?.instructions, { name: 'Complex Pipeline' });
       const recompiled = compile(yaml);
       expect(recompiled.success).toBe(true);
 
@@ -413,7 +413,8 @@ program:
       expect(compiled.data?.base64).toBeDefined();
 
       // Decompile from base64
-      const yaml = decompileFromBase64(compiled.data!.base64!);
+      const base64 = compiled.data?.base64 ?? '';
+      const yaml = decompileFromBase64(base64);
 
       // Compile again
       const recompiled = compile(yaml);

@@ -53,11 +53,17 @@ program
         process.exit(1);
       }
 
-      const output = options.base64 ? result.data!.base64! : result.data!.json;
+      const data = result.data;
+      if (!data) {
+        console.error('Error: Compilation produced no output');
+        process.exit(1);
+      }
+
+      const output = options.base64 ? data.base64 : data.json;
 
       if (options.output) {
         const outputPath = resolve(options.output);
-        writeFileSync(outputPath, output);
+        writeFileSync(outputPath, output ?? '');
         console.log(`Compiled successfully: ${outputPath}`);
       } else {
         console.log(output);
@@ -139,11 +145,14 @@ program
           return;
         }
 
-        const output = options.base64 ? result.data!.base64! : result.data!.json;
+        const data = result.data;
+        if (!data) return;
+
+        const output = options.base64 ? data.base64 : data.json;
 
         if (options.output) {
           const outputPath = resolve(options.output);
-          writeFileSync(outputPath, output);
+          writeFileSync(outputPath, output ?? '');
           console.log(`\n[${new Date().toLocaleTimeString()}] Compiled: ${outputPath}`);
         } else {
           console.log(`\n[${new Date().toLocaleTimeString()}] Compiled successfully`);

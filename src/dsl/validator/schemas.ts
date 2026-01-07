@@ -170,8 +170,7 @@ export const spreadsheetSchema = z.object({
 });
 
 // Forward declaration for recursive type
-// biome-ignore lint/suspicious/noExplicitAny: Recursive schema requires lazy evaluation
-type LazyConditionSchema = z.ZodLazy<z.ZodObject<any>>;
+type LazyConditionSchema = z.ZodLazy<z.ZodObject<Record<string, unknown>>>;
 
 /**
  * Condition instruction (with recursive nested instructions)
@@ -188,6 +187,7 @@ export const conditionSchema: LazyConditionSchema = z.lazy(() =>
           (data) => data.all !== undefined || data.any !== undefined,
           'Either "all" or "any" conditions must be specified'
         ),
+      // biome-ignore lint/suspicious/noThenProperty: DSL condition branch, not Promise
       then: z.string().min(1, 'Then branch reference is required'),
       else: z.string().min(1, 'Else branch reference is required'),
       branches: z.record(z.string(), z.array(instructionSchema)),
