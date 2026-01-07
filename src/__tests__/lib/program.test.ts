@@ -3,23 +3,38 @@ import { ChainCastProgram } from '@/lib/program';
 import type { Instruction, InstructionArgs, InstructionMap, VirtualMachine } from '@/types/vm';
 import { z } from 'zod';
 
+// Define schemas outside classes to ensure they're initialized before class instantiation
+const mockSchema = z.object({
+  value: z.string(),
+});
+
+const debugSchema = z.object({
+  variablesToDebug: z.array(z.string()),
+});
+
+const setSchema = z.object({
+  variable: z.string().min(2),
+  value: z.any(),
+});
+
 // Mock instruction for testing
 class MockInstruction implements Instruction {
-  INSTRUCTION_NAME = 'mock';
-  private schema = z.object({
-    value: z.string(),
-  });
+  INSTRUCTION_NAME: string;
+
+  constructor() {
+    this.INSTRUCTION_NAME = 'mock';
+  }
 
   name(): string {
     return this.INSTRUCTION_NAME;
   }
 
   getArgsSchema() {
-    return this.schema;
+    return mockSchema;
   }
 
   validateArgs(args: InstructionArgs | undefined): boolean {
-    return this.schema.safeParse(args).success;
+    return mockSchema.safeParse(args).success;
   }
 
   onAction(_vm: VirtualMachine): void {
@@ -29,21 +44,22 @@ class MockInstruction implements Instruction {
 
 // Mock debug instruction
 class MockDebugInstruction implements Instruction {
-  INSTRUCTION_NAME = 'debug';
-  private schema = z.object({
-    variablesToDebug: z.array(z.string()),
-  });
+  INSTRUCTION_NAME: string;
+
+  constructor() {
+    this.INSTRUCTION_NAME = 'debug';
+  }
 
   name(): string {
     return this.INSTRUCTION_NAME;
   }
 
   getArgsSchema() {
-    return this.schema;
+    return debugSchema;
   }
 
   validateArgs(args: InstructionArgs | undefined): boolean {
-    return this.schema.safeParse(args).success;
+    return debugSchema.safeParse(args).success;
   }
 
   onAction(_vm: VirtualMachine): void {
@@ -53,22 +69,22 @@ class MockDebugInstruction implements Instruction {
 
 // Mock set instruction
 class MockSetInstruction implements Instruction {
-  INSTRUCTION_NAME = 'set';
-  private schema = z.object({
-    variable: z.string().min(2),
-    value: z.any(),
-  });
+  INSTRUCTION_NAME: string;
+
+  constructor() {
+    this.INSTRUCTION_NAME = 'set';
+  }
 
   name(): string {
     return this.INSTRUCTION_NAME;
   }
 
   getArgsSchema() {
-    return this.schema;
+    return setSchema;
   }
 
   validateArgs(args: InstructionArgs | undefined): boolean {
-    return this.schema.safeParse(args).success;
+    return setSchema.safeParse(args).success;
   }
 
   onAction(_vm: VirtualMachine): void {
