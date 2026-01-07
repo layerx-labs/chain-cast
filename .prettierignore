@@ -1,5 +1,0 @@
-src/migrations/*
-scripts/migrations/all_txs_21_07_19.json
-coverage/*
-src/utils/sanitizers.js
-dist/*

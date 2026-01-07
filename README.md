@@ -189,9 +189,11 @@ bun test --coverage
 - `bun run dev:debug`: Start application with debug mode (inspect on port 4321)
 - `bun run build`: Install dependencies and generate Prisma client
 - `bun run start`: Start the production server
-- `bun run pretty`: Format code with prettier
-- `bun run lint`: Run ESLint on the code
-- `bun run lint:fix`: Fix ESLint issues automatically
+- `bun run lint`: Lint code with Biome
+- `bun run lint:fix`: Fix lint issues automatically
+- `bun run format`: Format code with Biome
+- `bun run check`: Run all Biome checks (lint + format)
+- `bun run check:fix`: Fix all Biome issues
 - `bun run db:reset`: Reset the database
 - `bun run db:migrate`: Run database migrations
 - `bun run db:push`: Push Prisma schema to database
@@ -200,10 +202,10 @@ bun test --coverage
 
 - **Bun**: Fast JavaScript runtime and package manager
 - **Prisma 4**: ORM for database interactions
-- **Ethers 6**: Ethereum library for blockchain interactions
+- **viem**: TypeScript-first Ethereum library for blockchain interactions
 - **PostgreSQL**: Primary database
 - **GraphQL Yoga**: GraphQL server
-- **ESLint + Prettier**: Code quality and formatting
+- **Biome**: Fast linting and formatting (replaces ESLint + Prettier)
 - **Bun Test**: Built-in testing framework
 - **TypeScript**: Type-safe JavaScript (runs natively without compilation)
 

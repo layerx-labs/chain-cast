@@ -1,8 +1,8 @@
 import { ErrorsEnum } from '@/constants/index';
-import { Resolver } from '@/graphql/types';
+import type { Resolver } from '@/graphql/types';
 import { ChainCastProgram } from '@/lib/program';
 import { UserInputError } from '@/middleware/errors';
-import { ContractCast } from '@prisma/client';
+import type { ContractCast } from '@prisma/client';
 
 export type UpdateContractCastArgType = {
   where: {

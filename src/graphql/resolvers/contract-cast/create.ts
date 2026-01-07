@@ -1,10 +1,10 @@
+import crypto from 'node:crypto';
 import { ErrorsEnum } from '@/constants/index';
-import { Resolver } from '@/graphql/types';
+import type { Resolver } from '@/graphql/types';
 import { ChainCastProgram } from '@/lib/program';
 import { UserInputError } from '@/middleware/errors';
 import { encryptSecret } from '@/util/crypto';
-import { ContractCast, ContractCastType } from '@prisma/client';
-import crypto from 'crypto';
+import type { ContractCast, ContractCastType } from '@prisma/client';
 
 export type CreateContractCastArgType = {
   data: {

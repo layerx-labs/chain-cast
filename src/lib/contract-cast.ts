@@ -4,15 +4,15 @@
  * It handles event recovery, listening, and processing for smart contracts.
  */
 
-import type { Abi, PublicClient, Transport, Chain } from 'viem';
-import { ContractEventListener, EventListenerHandler, Web3Event } from '@/types/events';
 import log from '@/services/log';
-import { ContractCastType, ContractCastStatus } from '@prisma/client';
-import { InstructionMap, Program, VirtualMachine } from '@/types/vm';
-import { CastInfo, ContractCast, SecretManager, SecretMap } from '../types';
 import db from '@/services/prisma';
-import EVMContractListener from './contract-listener';
+import type { ContractEventListener, EventListenerHandler, Web3Event } from '@/types/events';
+import type { InstructionMap, Program, VirtualMachine } from '@/types/vm';
+import { ContractCastStatus, type ContractCastType } from '@prisma/client';
+import type { Abi, Chain, PublicClient, Transport } from 'viem';
+import type { CastInfo, ContractCast, SecretManager, SecretMap } from '../types';
 import { EVMContractEventRetriever } from './contract-event-retriever';
+import EVMContractListener from './contract-listener';
 import { createHttpClient } from './viem-client';
 
 /**
@@ -234,8 +234,9 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
         await this._startContractListening();
         await this.setStatus(ContractCastStatus.LISTENING);
       }
-    } catch (e: Error | any) {
-      log.e(`Failed to start Contract Cast=[${this.getName()}] ${e.message}  ${e.stack}`);
+    } catch (e: unknown) {
+      const error = e as Error;
+      log.e(`Failed to start Contract Cast=[${this.getName()}] ${error.message}  ${error.stack}`);
     }
   }
 
@@ -271,8 +272,9 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
             await this._updateCastIndex(Number(currentBlock) + 1);
           }
         }
-      } catch (e: Error | any) {
-        log.e(`Failed to stop Contract Cast=[${this.getName()}]${e.message}  ${e.stack}`);
+      } catch (e: unknown) {
+        const error = e as Error;
+        log.e(`Failed to stop Contract Cast=[${this.getName()}]${error.message}  ${error.stack}`);
       }
     } else {
       await this.setStatus(ContractCastStatus.TERMINATED);

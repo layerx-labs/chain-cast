@@ -1,7 +1,7 @@
-import { z } from 'zod';
 import log from '@/services/log';
+import type { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 import { Client } from '@elastic/elasticsearch';
-import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
+import { z } from 'zod';
 
 const ArgsTypeSchema = z.object({
   bodyInput: z.string().min(3),
@@ -66,8 +66,9 @@ export class ElasticSearch implements Instruction {
         },
       });
       log.d(`Event successfully pushed to Elastic Search on ${castID} `, response._id);
-    } catch (e: Error | any) {
-      log.e(`Error pushing body to Elastic Search on ${castID} ${e.message}`);
+    } catch (e: unknown) {
+      const error = e as Error;
+      log.e(`Error pushing body to Elastic Search on ${castID} ${error.message}`);
     }
   }
 }

@@ -1,7 +1,7 @@
-import { Resolver } from '@/graphql/types';
+import crypto from 'node:crypto';
+import type { Resolver } from '@/graphql/types';
 import { encryptSecret } from '@/util/crypto';
-import { Secret } from '@prisma/client';
-import crypto from 'crypto';
+import type { Secret } from '@prisma/client';
 
 export type ArgsType = {
   data: {

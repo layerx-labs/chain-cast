@@ -1,6 +1,6 @@
-import { AppContext } from '@/types/index';
-import { builder } from '../builder';
+import type { AppContext } from '@/types/index';
 import { Prisma } from '@prisma/client';
+import { builder } from '../builder';
 
 /**
  * Result class for GraphQL operation responses.
@@ -46,8 +46,8 @@ export type MakeDeepNullable<T> = {
   [K in keyof T]: undefined extends T[K]
     ? MakeDeepNullable<T[K]> | null // Make undefined properties nullable
     : IsObject<T, K> extends true
-    ? MakeDeepNullable<T[K]> // Recursively apply to nested objects
-    : T[K]; // Keep primitive types as-is
+      ? MakeDeepNullable<T[K]> // Recursively apply to nested objects
+      : T[K]; // Keep primitive types as-is
 };
 
 /**

@@ -1,13 +1,6 @@
-import {
-  createWalletClient,
-  createPublicClient,
-  http,
-  defineChain,
-  parseUnits,
-  getContract,
-} from 'viem';
-import { privateKeyToAccount } from 'viem/accounts';
 import { chainsSupported } from '@/constants/chains';
+import { http, createPublicClient, createWalletClient, defineChain, getContract } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
 import Accounts from './accounts-testing';
 
 // Standard ERC20 ABI for transfers
@@ -95,7 +88,7 @@ async function main() {
   try {
     // Get token symbol and decimals
     const symbol = await erc20.read.symbol();
-    const decimals = await erc20.read.decimals();
+    const _decimals = await erc20.read.decimals();
 
     // Get balance before transfer
     const balanceBefore = await erc20.read.balanceOf([recipient.address as `0x${string}`]);

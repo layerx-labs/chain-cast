@@ -1,6 +1,6 @@
-import { z } from 'zod';
 import log from '@/services/log';
-import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
+import type { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
+import { z } from 'zod';
 
 const NumberTransformSchema = z.object({
   variableLeft: z.string().min(2),
@@ -67,7 +67,7 @@ export class TransformNumber implements Instruction {
           output = input1 / input2;
           break;
         case 'pow':
-          output = Math.pow(input1, input2);
+          output = input1 ** input2;
           break;
         case 'bigint':
           output = BigInt(input1);

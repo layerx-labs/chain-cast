@@ -1,4 +1,4 @@
-import { request, gql } from 'graphql-request';
+import { gql, request } from 'graphql-request';
 
 /**
  * GraphQL mutation for creating a contract cast

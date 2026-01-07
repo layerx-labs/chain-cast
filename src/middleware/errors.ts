@@ -41,15 +41,14 @@ export function errorHandlingFunction(err: unknown, message: string): Error {
     return err;
 
     // In development or production we mask the error and print a log
-  } else {
-    // Log the full error details for debugging purposes
-    log.e(
-      `Server Error on Name={${originalError?.name}} ` +
-        `Message={${originalError?.message}} ` +
-        `StackTrace={\n${originalError?.stack}}`
-    );
-
-    // Mask the error for clients, showing different levels of detail based on environment
-    return maskError(maskError, message, (appConfig.environment === 'development') as boolean);
   }
+  // Log the full error details for debugging purposes
+  log.e(
+    `Server Error on Name={${originalError?.name}} ` +
+      `Message={${originalError?.message}} ` +
+      `StackTrace={\n${originalError?.stack}}`
+  );
+
+  // Mask the error for clients, showing different levels of detail based on environment
+  return maskError(maskError, message, (appConfig.environment === 'development') as boolean);
 }

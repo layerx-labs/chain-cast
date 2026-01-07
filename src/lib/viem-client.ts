@@ -1,17 +1,17 @@
-import {
-  createPublicClient,
-  http,
-  webSocket,
-  type PublicClient,
-  type Chain,
-  type Transport,
-  type HttpTransport,
-  type WebSocketTransport,
-  defineChain,
-} from 'viem';
-import { mainnet, sepolia, polygon, polygonAmoy, arbitrum, optimism, base } from 'viem/chains';
 import { chainsSupported } from '@/constants/chains';
 import { ChainIds } from '@/types/index';
+import {
+  http,
+  type Chain,
+  type HttpTransport,
+  type PublicClient,
+  type Transport,
+  type WebSocketTransport,
+  createPublicClient,
+  defineChain,
+  webSocket,
+} from 'viem';
+import { arbitrum, base, mainnet, optimism, polygon, polygonAmoy, sepolia } from 'viem/chains';
 
 /**
  * Maps chain IDs to viem chain definitions.
@@ -95,7 +95,7 @@ export function getViemChain(chainId: number): Chain {
 /**
  * Configuration options for creating viem clients.
  */
-export interface ViemClientOptions {
+export type ViemClientOptions = {
   /** Number of retry attempts for failed requests */
   retryCount?: number;
   /** Delay between retries in milliseconds */
@@ -104,7 +104,7 @@ export interface ViemClientOptions {
   timeout?: number;
   /** Enable multicall batching for eth_call requests */
   batch?: boolean;
-}
+};
 
 const DEFAULT_OPTIONS: Required<ViemClientOptions> = {
   retryCount: 5,

@@ -1,5 +1,5 @@
 import log from '@/services/log';
-import { Instruction, VirtualMachine, InstructionArgs } from '@/types/vm';
+import type { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 import { z } from 'zod';
 
 const ArgsTypeSchema = z.object({

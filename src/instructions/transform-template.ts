@@ -1,7 +1,7 @@
-import { z } from 'zod';
 import log from '@/services/log';
-import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
+import type { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 import Handlebars from 'handlebars';
+import { z } from 'zod';
 
 const TemplateTransformSchema = z.object({
   context: z.array(z.string().min(2)),
