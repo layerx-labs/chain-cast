@@ -93,7 +93,7 @@ export class ChainCastProgram implements Program {
    * @throws Error if the string is not valid base64 or the JSON is malformed
    */
   private _decodeCode(stringCode: string) {
-    const decodedProgram = Buffer.from(stringCode, 'base64').toString('ascii');
+    const decodedProgram = Buffer.from(stringCode, 'base64').toString('utf-8');
     const calls = JSON.parse(decodedProgram);
     return calls;
   }

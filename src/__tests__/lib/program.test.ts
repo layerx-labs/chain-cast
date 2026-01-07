@@ -6,6 +6,12 @@ import type { InstructionMap } from '@/types/vm';
 import { Debug } from '@/processors/debug';
 import { Set } from '@/processors/set';
 
+// Helper function to encode instructions consistently across platforms
+// Using Buffer ensures consistent encoding on both macOS and Linux
+function encodeInstructions(instructions: unknown[]): string {
+  return Buffer.from(JSON.stringify(instructions)).toString('base64');
+}
+
 describe('ChainCastProgram', () => {
   let program: ChainCastProgram;
   let supportedInstructions: InstructionMap;
@@ -29,7 +35,7 @@ describe('ChainCastProgram', () => {
   describe('load', () => {
     it('should load a valid program', () => {
       const instructions = [{ name: 'debug', args: { variablesToDebug: ['event'] } }];
-      const encoded = btoa(JSON.stringify(instructions));
+      const encoded = encodeInstructions(instructions);
 
       program.load(encoded);
 
@@ -42,7 +48,7 @@ describe('ChainCastProgram', () => {
         { name: 'debug', args: { variablesToDebug: ['event'] } },
         { name: 'set', args: { variable: 'processed', value: true } },
       ];
-      const encoded = btoa(JSON.stringify(instructions));
+      const encoded = encodeInstructions(instructions);
 
       program.load(encoded);
 
@@ -58,7 +64,7 @@ describe('ChainCastProgram', () => {
     });
 
     it('should throw error for invalid JSON', () => {
-      const invalidJson = btoa('{invalid json}');
+      const invalidJson = Buffer.from('{invalid json}').toString('base64');
       expect(() => {
         program.load(invalidJson);
       }).toThrow();
@@ -66,7 +72,7 @@ describe('ChainCastProgram', () => {
 
     it('should throw error for unknown instruction', () => {
       const instructions = [{ name: 'unknown-instruction', args: {} }];
-      const encoded = btoa(JSON.stringify(instructions));
+      const encoded = encodeInstructions(instructions);
 
       expect(() => {
         program.load(encoded);
@@ -75,7 +81,7 @@ describe('ChainCastProgram', () => {
 
     it('should throw UserInputError for invalid args', () => {
       const instructions = [{ name: 'debug', args: { invalidArg: true } }];
-      const encoded = btoa(JSON.stringify(instructions));
+      const encoded = encodeInstructions(instructions);
 
       expect(() => {
         program.load(encoded);
@@ -84,7 +90,7 @@ describe('ChainCastProgram', () => {
 
     it('should throw error for set instruction with short variable name', () => {
       const instructions = [{ name: 'set', args: { variable: 'x', value: 1 } }];
-      const encoded = btoa(JSON.stringify(instructions));
+      const encoded = encodeInstructions(instructions);
 
       expect(() => {
         program.load(encoded);
@@ -95,21 +101,21 @@ describe('ChainCastProgram', () => {
   describe('compile', () => {
     it('should return true for valid program', () => {
       const instructions = [{ name: 'debug', args: { variablesToDebug: ['event'] } }];
-      const encoded = btoa(JSON.stringify(instructions));
+      const encoded = encodeInstructions(instructions);
 
       expect(program.compile(encoded)).toBe(true);
     });
 
     it('should return false for invalid args', () => {
       const instructions = [{ name: 'debug', args: { invalidArg: true } }];
-      const encoded = btoa(JSON.stringify(instructions));
+      const encoded = encodeInstructions(instructions);
 
       expect(program.compile(encoded)).toBe(false);
     });
 
     it('should not modify program state when compiling', () => {
       const instructions = [{ name: 'debug', args: { variablesToDebug: ['event'] } }];
-      const encoded = btoa(JSON.stringify(instructions));
+      const encoded = encodeInstructions(instructions);
 
       program.compile(encoded);
 
@@ -118,7 +124,7 @@ describe('ChainCastProgram', () => {
 
     it('should throw error for unknown instruction during compile', () => {
       const instructions = [{ name: 'unknown', args: {} }];
-      const encoded = btoa(JSON.stringify(instructions));
+      const encoded = encodeInstructions(instructions);
 
       expect(() => {
         program.compile(encoded);
@@ -136,7 +142,7 @@ describe('ChainCastProgram', () => {
         { name: 'debug', args: { variablesToDebug: ['event'] } },
         { name: 'set', args: { variable: 'test', value: 123 } },
       ];
-      const encoded = btoa(JSON.stringify(instructions));
+      const encoded = encodeInstructions(instructions);
 
       program.load(encoded);
 
@@ -153,7 +159,7 @@ describe('ChainCastProgram', () => {
         { name: 'debug', args: { variablesToDebug: ['event'] } },
         { name: 'set', args: { variable: 'test', value: 123 } },
       ];
-      const encoded = btoa(JSON.stringify(instructions));
+      const encoded = encodeInstructions(instructions);
 
       program.load(encoded);
 
@@ -163,7 +169,7 @@ describe('ChainCastProgram', () => {
 
     it('should return undefined for out of bounds index', () => {
       const instructions = [{ name: 'debug', args: { variablesToDebug: ['event'] } }];
-      const encoded = btoa(JSON.stringify(instructions));
+      const encoded = encodeInstructions(instructions);
 
       program.load(encoded);
 
@@ -182,7 +188,7 @@ describe('ChainCastProgram', () => {
         { name: 'set', args: { variable: 'test', value: 123 } },
         { name: 'debug', args: { variablesToDebug: ['test'] } },
       ];
-      const encoded = btoa(JSON.stringify(instructions));
+      const encoded = encodeInstructions(instructions);
 
       program.load(encoded);
 
@@ -192,7 +198,7 @@ describe('ChainCastProgram', () => {
 
   describe('empty program', () => {
     it('should load empty program array', () => {
-      const encoded = btoa(JSON.stringify([]));
+      const encoded = encodeInstructions([]);
 
       program.load(encoded);
 
@@ -200,7 +206,7 @@ describe('ChainCastProgram', () => {
     });
 
     it('should compile empty program as valid', () => {
-      const encoded = btoa(JSON.stringify([]));
+      const encoded = encodeInstructions([]);
 
       expect(program.compile(encoded)).toBe(true);
     });
