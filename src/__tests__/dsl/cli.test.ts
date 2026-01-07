@@ -247,9 +247,7 @@ program:
     });
 
     it('should decompile to output file', async () => {
-      const jsonContent = JSON.stringify([
-        { name: 'set', args: { variable: 'test', value: 123 } },
-      ]);
+      const jsonContent = JSON.stringify([{ name: 'set', args: { variable: 'test', value: 123 } }]);
       const inputFile = createTestFile('input.json', jsonContent);
       const outputFile = join(testDir, 'output.yaml');
 
@@ -288,9 +286,7 @@ program:
     });
 
     it('should decompile base64 encoded content', async () => {
-      const jsonContent = JSON.stringify([
-        { name: 'set', args: { variable: 'test', value: 42 } },
-      ]);
+      const jsonContent = JSON.stringify([{ name: 'set', args: { variable: 'test', value: 42 } }]);
       const base64Content = Buffer.from(jsonContent).toString('base64');
       const inputFile = createTestFile('input.b64', base64Content);
 
