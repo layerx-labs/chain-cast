@@ -115,14 +115,14 @@ export const chainsSupported: ChainSupported = {
     blockExplorer: 'https://basescan.io/',
     primaryColor: '#DDDDDD',
   },
-  // Local development network - typically Ganache or Hardhat
+  // Local development network - typically Hardhat or Anvil
   local: {
     id: process.env.LOCAL_CHAIN_ID ? Number(process.env.LOCAL_CHAIN_ID) : ChainIds.LOCAL,
     rpcUrl: process.env.WEB3_RPC_LOCAL_URL || 'http://127.0.0.1:8545',
     wsUrl: process.env.WEB3_WS_LOCAL_URL || 'ws://127.0.0.1:8545',
     currency: 'ETH',
     currencyDecimals: 18,
-    name: 'Ganache Network',
+    name: 'Local Network',
     shortName: 'Local',
     primaryColor: '#DDDDDD',
   },
