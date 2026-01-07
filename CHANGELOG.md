@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.2.0] - 2025-01-07
+## [1.2.0] - 2026-01-07
 
 ### Added
 - Comprehensive unit test suite with 80%+ coverage
@@ -65,6 +65,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Minor bug fixes and stability improvements
 
+## [1.1.0] - 2024-10-03
+
+### Added
+- Unique `name` field for ContractCast with database constraint
+  - Database migration to add `name` column with unique index
+  - GraphQL schema updated to support name field
+- Enhanced EVMContractCast class with comprehensive documentation
+- ContractCast status tracking (`IDLE`, `RUNNING`, `STOPPED`, etc.)
+- Getter methods for ContractCast properties (`getName`, `getId`, `getStatus`, etc.)
+
+### Changed
+- Improved logging throughout the codebase
+  - Logs now display ContractCast name for better traceability
+  - More uniform log formatting across components
+- Refactored ContractCast class with better encapsulation
+- Updated chain configuration structure in `src/constants/chains.ts`
+- Enhanced GraphQL resolvers with improved error handling
+- Updated example configurations for better clarity
+
+### Fixed
+- `addCast` function now properly handles cast registration
+- Contract event listener initialization issues
+- Time utility edge cases
+
 ## [1.0.0] - 2024-01-XX
 
 ### Added
@@ -108,6 +132,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **1.2.0**: Major runtime and tooling migration (Bun, viem, Biome) + comprehensive tests
 - **1.1.1**: Bug fixes and stability improvements
+- **1.1.0**: ContractCast naming, status tracking, and improved logging
 - **1.0.0**: Initial release with core functionality
 
 ## Contributing
