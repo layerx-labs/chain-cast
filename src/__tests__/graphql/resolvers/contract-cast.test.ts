@@ -1,6 +1,5 @@
 import { describe, expect, it, beforeEach, mock } from 'bun:test';
 import type { ContractCast, ContractCastType } from '@prisma/client';
-import { ErrorsEnum } from '@/constants/index';
 
 // Mock the log service
 mock.module('@/services/log', () => ({
@@ -13,7 +12,7 @@ mock.module('@/services/log', () => ({
 }));
 
 // Mock ChainCastProgram - need to control compile() return value
-let mockCompileResult = true;
+const mockCompileResult = true;
 mock.module('@/lib/program', () => ({
   ChainCastProgram: class MockProgram {
     compile(code: string) {
@@ -37,9 +36,16 @@ mock.module('@/lib/program', () => ({
 }));
 
 // Import resolvers after mocking
-import { contractCast, type ContractCastArgType } from '@/graphql/resolvers/contract-cast/contract-cast';
-import createContractCast, { type CreateContractCastArgType } from '@/graphql/resolvers/contract-cast/create';
-import updateContractCast, { type UpdateContractCastArgType } from '@/graphql/resolvers/contract-cast/update';
+import {
+  contractCast,
+  type ContractCastArgType,
+} from '@/graphql/resolvers/contract-cast/contract-cast';
+import createContractCast, {
+  type CreateContractCastArgType,
+} from '@/graphql/resolvers/contract-cast/create';
+import updateContractCast, {
+  type UpdateContractCastArgType,
+} from '@/graphql/resolvers/contract-cast/update';
 import { deleteContractCast } from '@/graphql/resolvers/contract-cast/delete';
 import { UserInputError } from '@/middleware/errors';
 
@@ -162,7 +168,9 @@ describe('Contract Cast Resolvers', () => {
   });
 
   describe('createContractCast mutation', () => {
-    const validProgram = btoa(JSON.stringify([{ name: 'debug', args: { variablesToDebug: ['event'] } }]));
+    const validProgram = btoa(
+      JSON.stringify([{ name: 'debug', args: { variablesToDebug: ['event'] } }])
+    );
     const validAbi = btoa(JSON.stringify([{ type: 'event', name: 'Transfer' }]));
 
     it('should create a new contract cast', async () => {
@@ -200,7 +208,9 @@ describe('Contract Cast Resolvers', () => {
         },
       };
 
-      await expect(createContractCast(null, args, ctx as any, null)).rejects.toThrow(UserInputError);
+      await expect(createContractCast(null, args, ctx as any, null)).rejects.toThrow(
+        UserInputError
+      );
     });
 
     it('should throw UserInputError for invalid program', async () => {
@@ -216,7 +226,9 @@ describe('Contract Cast Resolvers', () => {
         },
       };
 
-      await expect(createContractCast(null, args, ctx as any, null)).rejects.toThrow(UserInputError);
+      await expect(createContractCast(null, args, ctx as any, null)).rejects.toThrow(
+        UserInputError
+      );
     });
 
     it('should throw UserInputError when CUSTOM type has no ABI', async () => {
@@ -232,7 +244,9 @@ describe('Contract Cast Resolvers', () => {
         },
       };
 
-      await expect(createContractCast(null, args, ctx as any, null)).rejects.toThrow(UserInputError);
+      await expect(createContractCast(null, args, ctx as any, null)).rejects.toThrow(
+        UserInputError
+      );
     });
 
     it('should create secrets when provided', async () => {
@@ -282,7 +296,9 @@ describe('Contract Cast Resolvers', () => {
   });
 
   describe('updateContractCast mutation', () => {
-    const validProgram = btoa(JSON.stringify([{ name: 'debug', args: { variablesToDebug: ['event'] } }]));
+    const validProgram = btoa(
+      JSON.stringify([{ name: 'debug', args: { variablesToDebug: ['event'] } }])
+    );
 
     it('should update cast program by id', async () => {
       ctx.db.contractCast.update.mockImplementation(() => Promise.resolve(sampleCast));
@@ -319,7 +335,9 @@ describe('Contract Cast Resolvers', () => {
         data: { program: validProgram },
       };
 
-      await expect(updateContractCast(null, args, ctx as any, null)).rejects.toThrow(UserInputError);
+      await expect(updateContractCast(null, args, ctx as any, null)).rejects.toThrow(
+        UserInputError
+      );
     });
 
     it('should throw UserInputError for invalid program', async () => {
@@ -328,7 +346,9 @@ describe('Contract Cast Resolvers', () => {
         data: { program: 'invalid-program' },
       };
 
-      await expect(updateContractCast(null, args, ctx as any, null)).rejects.toThrow(UserInputError);
+      await expect(updateContractCast(null, args, ctx as any, null)).rejects.toThrow(
+        UserInputError
+      );
     });
 
     it('should update ABI without restart validation', async () => {
@@ -375,7 +395,9 @@ describe('Contract Cast Resolvers', () => {
 
       const args = { id: 'non-existent' };
 
-      await expect(deleteContractCast(null, args, ctx as any, null)).rejects.toThrow(UserInputError);
+      await expect(deleteContractCast(null, args, ctx as any, null)).rejects.toThrow(
+        UserInputError
+      );
     });
 
     it('should call manager.deleteCast before database delete', async () => {

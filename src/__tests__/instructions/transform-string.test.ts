@@ -154,7 +154,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe('Hello world');
+        expect(globalVariables.result).toBe('Hello world');
       });
     });
 
@@ -168,7 +168,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe('hello world');
+        expect(globalVariables.result).toBe('hello world');
       });
     });
 
@@ -182,7 +182,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe('HELLO WORLD');
+        expect(globalVariables.result).toBe('HELLO WORLD');
       });
     });
 
@@ -196,7 +196,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe('hello world');
+        expect(globalVariables.result).toBe('hello world');
       });
     });
 
@@ -210,7 +210,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe('HelloWorld');
+        expect(globalVariables.result).toBe('HelloWorld');
       });
     });
 
@@ -224,7 +224,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe('hello_world');
+        expect(globalVariables.result).toBe('hello_world');
       });
     });
 
@@ -238,7 +238,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe('hello-world');
+        expect(globalVariables.result).toBe('hello-world');
       });
     });
 
@@ -252,7 +252,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(BigInt('1000000000000000000'));
+        expect(globalVariables.result).toBe(BigInt('1000000000000000000'));
       });
     });
 
@@ -266,7 +266,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(42);
+        expect(globalVariables.result).toBe(42);
       });
 
       it('should parse integer from decimal string', async () => {
@@ -278,7 +278,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(42);
+        expect(globalVariables.result).toBe(42);
       });
     });
 
@@ -292,7 +292,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(3.14);
+        expect(globalVariables.result).toBe(3.14);
       });
     });
 
@@ -306,7 +306,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toEqual(['a', 'b', 'c']);
+        expect(globalVariables.result).toEqual(['a', 'b', 'c']);
       });
 
       it('should split string by custom separator', async () => {
@@ -318,7 +318,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toEqual(['a', 'b', 'c']);
+        expect(globalVariables.result).toEqual(['a', 'b', 'c']);
       });
     });
 
@@ -338,7 +338,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe('HELLO WORLD');
+        expect(globalVariables.result).toBe('HELLO WORLD');
       });
     });
 
@@ -352,7 +352,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBeUndefined();
+        expect(globalVariables.result).toBeUndefined();
       });
 
       it('should skip when variable does not exist', async () => {
@@ -364,7 +364,7 @@ describe('TransformString Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBeUndefined();
+        expect(globalVariables.result).toBeUndefined();
       });
 
       it('should return early when args are missing', async () => {

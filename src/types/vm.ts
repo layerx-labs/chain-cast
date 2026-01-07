@@ -2,7 +2,7 @@
 /** Dictionary type for storing variables with arbitrary values */
 export type VariableDict = { [key: string]: any };
 
-import { z } from 'zod';
+import type { z } from 'zod';
 
 /**
  * Represents a single instruction call within a program.

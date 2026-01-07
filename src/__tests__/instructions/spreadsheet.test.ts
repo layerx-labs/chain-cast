@@ -21,9 +21,7 @@ const mockSheetsAppend = mock(() =>
 mock.module('googleapis', () => ({
   google: {
     auth: {
-      GoogleAuth: class MockGoogleAuth {
-        constructor(_options?: unknown) {}
-      },
+      GoogleAuth: class MockGoogleAuth {},
     },
     sheets: () => ({
       spreadsheets: {

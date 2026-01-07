@@ -35,7 +35,10 @@ mock.module('@/lib/viem-client', () => ({
 }));
 
 // Import after mocking
-import { EVMContractEventRetriever, type EventRetrieverConfig } from '@/lib/contract-event-retriever';
+import {
+  EVMContractEventRetriever,
+  type EventRetrieverConfig,
+} from '@/lib/contract-event-retriever';
 
 describe('EVMContractEventRetriever', () => {
   let retriever: EVMContractEventRetriever;
@@ -58,7 +61,11 @@ describe('EVMContractEventRetriever', () => {
     abi: testAbi,
   };
 
-  const createMockLogs = (count: number, startBlock: number, startTxIndex: number = 0): ViemDecodedLog[] => {
+  const createMockLogs = (
+    count: number,
+    startBlock: number,
+    startTxIndex = 0
+  ): ViemDecodedLog[] => {
     return Array.from({ length: count }, (_, i) => ({
       address: '0x1234567890abcdef1234567890abcdef12345678',
       blockHash: `0x${'a'.repeat(64)}`,
@@ -215,9 +222,9 @@ describe('EVMContractEventRetriever', () => {
       await retriever.recover(100, 0, 150);
 
       expect(receivedEvent).not.toBeNull();
-      expect(receivedEvent!.event).toBe('Transfer');
-      expect(receivedEvent!.blockNumber).toBe(100);
-      expect(typeof receivedEvent!.returnValues).toBe('object');
+      expect(receivedEvent?.event).toBe('Transfer');
+      expect(receivedEvent?.blockNumber).toBe(100);
+      expect(typeof receivedEvent?.returnValues).toBe('object');
     });
 
     it('should reset isRecovering after completion', async () => {

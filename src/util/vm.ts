@@ -26,12 +26,6 @@ export function getVariableFromPath(path: string, obj: any): any {
     return getVariableFromPath(relativePath, obj[segments[0]]);
 
     // If there's one segment and the property exists on the object
-  } else if (obj && obj[segments[0]]) {
-    return obj[segments[0]];
-
-    // Path doesn't exist in the object
-  } else {
-    return null;
   }
   if (obj?.[segments[0]]) {
     return obj[segments[0]];

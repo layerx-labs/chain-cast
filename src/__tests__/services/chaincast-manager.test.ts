@@ -1,6 +1,18 @@
 import { describe, expect, it, beforeEach, mock } from 'bun:test';
-import type { Instruction, InstructionMap, Program, VirtualMachine, InstructionArgs } from '@/types/vm';
-import type { CastInfo, ContractCast, SecretManager, SecretMap, ContractCastConstructor } from '@/types';
+import type {
+  Instruction,
+  InstructionMap,
+  Program,
+  VirtualMachine,
+  InstructionArgs,
+} from '@/types/vm';
+import type {
+  CastInfo,
+  ContractCast,
+  SecretManager,
+  SecretMap,
+  ContractCastConstructor,
+} from '@/types';
 import type { PrismaClient, ContractCastType } from '@prisma/client';
 
 // Mock dependencies
@@ -72,8 +84,6 @@ class MockSecretManager implements SecretManager {
 class MockVirtualMachine implements VirtualMachine {
   private globalVariables: Record<string, unknown> = {};
   private program: Program | null = null;
-
-  constructor(_castInfo: CastInfo, _supportedInstructions: InstructionMap) {}
 
   getGlobalVariables(): Record<string, unknown> {
     return this.globalVariables;
@@ -251,7 +261,11 @@ describe('ChainCastManager', () => {
     } as unknown as Partial<PrismaClient>;
 
     manager = new ChainCastManager(
-      MockContractCast as unknown as ContractCastConstructor<MockContractCast, MockSecretManager, MockVirtualMachine>,
+      MockContractCast as unknown as ContractCastConstructor<
+        MockContractCast,
+        MockSecretManager,
+        MockVirtualMachine
+      >,
       MockVirtualMachine,
       MockSecretManager,
       mockDb as PrismaClient
@@ -263,7 +277,7 @@ describe('ChainCastManager', () => {
       manager.registerInstruction('mock', MockInstruction);
 
       const instructions = manager.getSupportedInstructions();
-      expect(instructions['mock']).toBe(MockInstruction);
+      expect(instructions.mock).toBe(MockInstruction);
     });
 
     it('should allow multiple instruction registrations', () => {
@@ -285,7 +299,7 @@ describe('ChainCastManager', () => {
       manager.registerInstruction('test', MockInstruction);
 
       const instructions = manager.getSupportedInstructions();
-      expect(instructions['test']).toBeDefined();
+      expect(instructions.test).toBeDefined();
     });
   });
 

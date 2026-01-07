@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, mock, spyOn } from 'bun:test';
+import { describe, expect, it, beforeEach, mock } from 'bun:test';
 import type { InstructionMap, Program, VirtualMachine } from '@/types/vm';
 import type { CastInfo, SecretManager, SecretMap } from '@/types';
 import { ContractCastStatus, ContractCastType } from '@prisma/client';

@@ -139,7 +139,7 @@ describe('TransformNumber Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(15);
+        expect(globalVariables.result).toBe(15);
       });
     });
 
@@ -158,7 +158,7 @@ describe('TransformNumber Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(7);
+        expect(globalVariables.result).toBe(7);
       });
     });
 
@@ -177,7 +177,7 @@ describe('TransformNumber Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(20);
+        expect(globalVariables.result).toBe(20);
       });
     });
 
@@ -196,7 +196,7 @@ describe('TransformNumber Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(5);
+        expect(globalVariables.result).toBe(5);
       });
 
       it('should handle division by zero', async () => {
@@ -213,7 +213,7 @@ describe('TransformNumber Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(Infinity);
+        expect(globalVariables.result).toBe(Number.POSITIVE_INFINITY);
       });
     });
 
@@ -232,7 +232,7 @@ describe('TransformNumber Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(256);
+        expect(globalVariables.result).toBe(256);
       });
     });
 
@@ -250,7 +250,7 @@ describe('TransformNumber Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(BigInt(1000000));
+        expect(globalVariables.result).toBe(BigInt(1000000));
       });
     });
 
@@ -268,7 +268,7 @@ describe('TransformNumber Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBeUndefined();
+        expect(globalVariables.result).toBeUndefined();
       });
 
       it('should skip when variable does not exist', async () => {
@@ -284,7 +284,7 @@ describe('TransformNumber Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBeUndefined();
+        expect(globalVariables.result).toBeUndefined();
       });
 
       it('should use 0 when variableRight is missing', async () => {
@@ -300,7 +300,7 @@ describe('TransformNumber Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(10);
+        expect(globalVariables.result).toBe(10);
       });
 
       it('should return early when args are missing', async () => {

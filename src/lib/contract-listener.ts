@@ -1,12 +1,12 @@
-import type { Abi, PublicClient, Transport, Chain, WatchContractEventReturnType } from 'viem';
-import {
-  ContractEventListener,
-  EventListenerHandler,
-  viemLogToWeb3Event,
-  ViemDecodedLog,
-} from '@/types/events';
 import log from '@/services/log';
-import { createWebSocketClient, createHttpClient } from './viem-client';
+import {
+  type ContractEventListener,
+  type EventListenerHandler,
+  type ViemDecodedLog,
+  viemLogToWeb3Event,
+} from '@/types/events';
+import type { Abi, Chain, PublicClient, Transport, WatchContractEventReturnType } from 'viem';
+import { createHttpClient, createWebSocketClient } from './viem-client';
 
 /**
  * Configuration for creating an EVMContractListener instance.
@@ -72,7 +72,7 @@ export class EVMContractListener implements ContractEventListener {
     // Falls back to HTTP client if WebSocket is not available
     try {
       this._client = createWebSocketClient(config.chainId);
-    } catch (error) {
+    } catch (_error) {
       log.d(`WebSocket not available for chain ${config.chainId}, using HTTP polling`);
       this._client = createHttpClient(config.chainId);
     }

@@ -132,7 +132,7 @@ describe('TransformArray Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(5);
+        expect(globalVariables.result).toBe(5);
       });
 
       it('should return 0 for empty array', async () => {
@@ -144,7 +144,7 @@ describe('TransformArray Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(0);
+        expect(globalVariables.result).toBe(0);
       });
     });
 
@@ -158,7 +158,7 @@ describe('TransformArray Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe('b');
+        expect(globalVariables.result).toBe('b');
       });
 
       it('should return first element when position is 0', async () => {
@@ -170,7 +170,7 @@ describe('TransformArray Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe('first');
+        expect(globalVariables.result).toBe('first');
       });
 
       it('should return undefined for out of bounds position', async () => {
@@ -182,7 +182,7 @@ describe('TransformArray Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBeUndefined();
+        expect(globalVariables.result).toBeUndefined();
       });
     });
 
@@ -196,8 +196,8 @@ describe('TransformArray Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(3);
-        expect(globalVariables['items']).toEqual([1, 2]);
+        expect(globalVariables.result).toBe(3);
+        expect(globalVariables.items).toEqual([1, 2]);
       });
 
       it('should return undefined for empty array', async () => {
@@ -209,7 +209,7 @@ describe('TransformArray Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBeUndefined();
+        expect(globalVariables.result).toBeUndefined();
       });
     });
 
@@ -223,8 +223,8 @@ describe('TransformArray Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe(1);
-        expect(globalVariables['items']).toEqual([2, 3]);
+        expect(globalVariables.result).toBe(1);
+        expect(globalVariables.items).toEqual([2, 3]);
       });
 
       it('should return undefined for empty array', async () => {
@@ -236,7 +236,7 @@ describe('TransformArray Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBeUndefined();
+        expect(globalVariables.result).toBeUndefined();
       });
     });
 
@@ -250,7 +250,7 @@ describe('TransformArray Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBeUndefined();
+        expect(globalVariables.result).toBeUndefined();
       });
 
       it('should return early when args are missing', async () => {

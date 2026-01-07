@@ -131,7 +131,7 @@ describe('TransformTemplate Instruction', () => {
 
       await instruction.onAction(mockVm);
 
-      expect(globalVariables['message']).toBe('Hello, Alice!');
+      expect(globalVariables.message).toBe('Hello, Alice!');
     });
 
     it('should render template with multiple context variables', async () => {
@@ -150,7 +150,7 @@ describe('TransformTemplate Instruction', () => {
 
       await instruction.onAction(mockVm);
 
-      expect(globalVariables['fullName']).toBe('John Doe');
+      expect(globalVariables.fullName).toBe('John Doe');
     });
 
     it('should handle nested variable paths', async () => {
@@ -173,7 +173,7 @@ describe('TransformTemplate Instruction', () => {
 
       await instruction.onAction(mockVm);
 
-      expect(globalVariables['message']).toBe('Transfer from 0x1234 to 0x5678');
+      expect(globalVariables.message).toBe('Transfer from 0x1234 to 0x5678');
     });
 
     it('should handle object context variables', async () => {
@@ -191,7 +191,7 @@ describe('TransformTemplate Instruction', () => {
 
       await instruction.onAction(mockVm);
 
-      expect(globalVariables['message']).toBe('User: Bob (Admin)');
+      expect(globalVariables.message).toBe('User: Bob (Admin)');
     });
 
     it('should handle missing context variables gracefully', async () => {
@@ -208,7 +208,7 @@ describe('TransformTemplate Instruction', () => {
       await instruction.onAction(mockVm);
 
       // Handlebars renders missing variables as empty string
-      expect(globalVariables['message']).toBe('Value: ');
+      expect(globalVariables.message).toBe('Value: ');
     });
 
     it('should return early when args are missing', async () => {
@@ -238,7 +238,7 @@ describe('TransformTemplate Instruction', () => {
 
       await instruction.onAction(mockVm);
 
-      expect(globalVariables['summary']).toBe('Amount: 1000, Fee: 50');
+      expect(globalVariables.summary).toBe('Amount: 1000, Fee: 50');
     });
   });
 });

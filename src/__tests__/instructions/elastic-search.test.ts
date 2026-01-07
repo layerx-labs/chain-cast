@@ -15,7 +15,6 @@ mock.module('@/services/log', () => ({
 const mockEsIndex = mock(() => Promise.resolve({ _id: 'doc-id' }));
 mock.module('@elastic/elasticsearch', () => ({
   Client: class MockClient {
-    constructor(_options?: unknown) {}
     index = mockEsIndex;
   },
 }));

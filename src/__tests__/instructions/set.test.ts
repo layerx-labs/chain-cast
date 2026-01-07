@@ -104,7 +104,7 @@ describe('Set Instruction', () => {
 
       instruction.onAction(mockVm);
 
-      expect(globalVariables['myVar']).toBe('test-value');
+      expect(globalVariables.myVar).toBe('test-value');
     });
 
     it('should set a numeric variable', () => {
@@ -115,7 +115,7 @@ describe('Set Instruction', () => {
 
       instruction.onAction(mockVm);
 
-      expect(globalVariables['count']).toBe(42);
+      expect(globalVariables.count).toBe(42);
     });
 
     it('should set a boolean variable', () => {
@@ -126,7 +126,7 @@ describe('Set Instruction', () => {
 
       instruction.onAction(mockVm);
 
-      expect(globalVariables['active']).toBe(true);
+      expect(globalVariables.active).toBe(true);
     });
 
     it('should set an object variable', () => {
@@ -138,11 +138,11 @@ describe('Set Instruction', () => {
 
       instruction.onAction(mockVm);
 
-      expect(globalVariables['data']).toEqual(objValue);
+      expect(globalVariables.data).toEqual(objValue);
     });
 
     it('should overwrite existing variable', () => {
-      globalVariables['myVar'] = 'initial';
+      globalVariables.myVar = 'initial';
       currentStackItem = {
         name: 'set',
         args: { variable: 'myVar', value: 'updated' },
@@ -150,7 +150,7 @@ describe('Set Instruction', () => {
 
       instruction.onAction(mockVm);
 
-      expect(globalVariables['myVar']).toBe('updated');
+      expect(globalVariables.myVar).toBe('updated');
     });
 
     it('should not set variable when args are missing', () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach, mock } from 'bun:test';
-import type { EventListenerHandler, Web3Event } from '@/types/events';
+import type { EventListenerHandler } from '@/types/events';
 
 // Mock dependencies
 mock.module('@/services/log', () => ({

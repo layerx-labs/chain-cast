@@ -25,7 +25,6 @@ mock.module('@/config/index', () => ({
 const mockQueueAdd = mock(() => Promise.resolve({ id: 'job-id' }));
 mock.module('bullmq', () => ({
   Queue: class MockQueue {
-    constructor(_name: string, _options?: unknown) {}
     add = mockQueueAdd;
   },
 }));

@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, mock } from 'bun:test';
+import { describe, expect, it, beforeEach } from 'bun:test';
 import { ChainCastVirtualMachine } from '@/lib/vm';
 import type {
   CastInfo,
@@ -297,7 +297,7 @@ describe('ChainCastVirtualMachine', () => {
 
         // During execution, instruction is on stack
         const originalOnAction = MockInstruction.prototype.onAction;
-        MockInstruction.prototype.onAction = function (vm: VirtualMachine) {
+        MockInstruction.prototype.onAction = (vm: VirtualMachine) => {
           expect(vm.getCurrentStackItem()).toEqual(call);
           expect(vm.getStack()).toHaveLength(1);
         };

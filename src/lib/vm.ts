@@ -217,7 +217,7 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     const backtrace = this._formatStackBacktrace(this._executedBacktrace);
 
     // Get event context for additional debugging info
-    const event = this._globalVariables['event'] as
+    const event = this._globalVariables.event as
       | { event?: string; blockNumber?: number }
       | undefined;
     const eventName = event?.event ?? 'unknown';
@@ -257,7 +257,7 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     return stack
       .map((call, index) => {
         const argsStr = call.args ? JSON.stringify(call.args) : '{}';
-        const truncatedArgs = argsStr.length > 100 ? argsStr.substring(0, 100) + '...' : argsStr;
+        const truncatedArgs = argsStr.length > 100 ? `${argsStr.substring(0, 100)}...` : argsStr;
         return `  #${index} ${call.name} args=${truncatedArgs}`;
       })
       .join('\n');

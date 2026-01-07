@@ -132,7 +132,7 @@ describe('TransformObject Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toEqual(['name', 'age', 'city']);
+        expect(globalVariables.result).toEqual(['name', 'age', 'city']);
       });
 
       it('should return empty array for empty object', async () => {
@@ -144,7 +144,7 @@ describe('TransformObject Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toEqual([]);
+        expect(globalVariables.result).toEqual([]);
       });
     });
 
@@ -158,7 +158,7 @@ describe('TransformObject Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toEqual([1, 2, 3]);
+        expect(globalVariables.result).toEqual([1, 2, 3]);
       });
     });
 
@@ -175,7 +175,7 @@ describe('TransformObject Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBe('Alice');
+        expect(globalVariables.result).toBe('Alice');
       });
 
       it('should return undefined for non-existent key', async () => {
@@ -190,7 +190,7 @@ describe('TransformObject Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toBeUndefined();
+        expect(globalVariables.result).toBeUndefined();
       });
     });
 
@@ -208,8 +208,8 @@ describe('TransformObject Instruction', () => {
         await instruction.onAction(mockVm);
 
         // delete returns true on success
-        expect(globalVariables['result']).toBe(true);
-        expect((globalVariables['data'] as Record<string, unknown>)['age']).toBeUndefined();
+        expect(globalVariables.result).toBe(true);
+        expect((globalVariables.data as Record<string, unknown>).age).toBeUndefined();
       });
     });
 
@@ -227,7 +227,7 @@ describe('TransformObject Instruction', () => {
 
         await instruction.onAction(mockVm);
 
-        expect(globalVariables['result']).toEqual(['from', 'to', 'value']);
+        expect(globalVariables.result).toEqual(['from', 'to', 'value']);
       });
     });
 
@@ -242,7 +242,7 @@ describe('TransformObject Instruction', () => {
         await instruction.onAction(mockVm);
 
         // With fallback to empty object, keys returns []
-        expect(globalVariables['result']).toEqual([]);
+        expect(globalVariables.result).toEqual([]);
       });
 
       it('should return early when args are missing', async () => {

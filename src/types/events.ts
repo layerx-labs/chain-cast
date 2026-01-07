@@ -1,4 +1,4 @@
-import type { Log, Abi, DecodeEventLogReturnType } from 'viem';
+import type { Log } from 'viem';
 
 /**
  * Represents a blockchain event in a normalized format.
