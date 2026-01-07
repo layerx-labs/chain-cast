@@ -1,106 +1,20 @@
 import { describe, expect, it, beforeEach } from 'bun:test';
 import { ChainCastProgram } from '@/lib/program';
-import type { Instruction, InstructionArgs, InstructionMap, VirtualMachine } from '@/types/vm';
-import { z } from 'zod';
+import type { InstructionMap } from '@/types/vm';
 
-// Define schemas outside classes to ensure they're initialized before class instantiation
-const mockSchema = z.object({
-  value: z.string(),
-});
-
-const debugSchema = z.object({
-  variablesToDebug: z.array(z.string()),
-});
-
-const setSchema = z.object({
-  variable: z.string().min(2),
-  value: z.any(),
-});
-
-// Mock instruction for testing
-class MockInstruction implements Instruction {
-  INSTRUCTION_NAME: string;
-
-  constructor() {
-    this.INSTRUCTION_NAME = 'mock';
-  }
-
-  name(): string {
-    return this.INSTRUCTION_NAME;
-  }
-
-  getArgsSchema() {
-    return mockSchema;
-  }
-
-  validateArgs(args: InstructionArgs | undefined): boolean {
-    return mockSchema.safeParse(args).success;
-  }
-
-  onAction(_vm: VirtualMachine): void {
-    // No-op for testing
-  }
-}
-
-// Mock debug instruction
-class MockDebugInstruction implements Instruction {
-  INSTRUCTION_NAME: string;
-
-  constructor() {
-    this.INSTRUCTION_NAME = 'debug';
-  }
-
-  name(): string {
-    return this.INSTRUCTION_NAME;
-  }
-
-  getArgsSchema() {
-    return debugSchema;
-  }
-
-  validateArgs(args: InstructionArgs | undefined): boolean {
-    return debugSchema.safeParse(args).success;
-  }
-
-  onAction(_vm: VirtualMachine): void {
-    // No-op for testing
-  }
-}
-
-// Mock set instruction
-class MockSetInstruction implements Instruction {
-  INSTRUCTION_NAME: string;
-
-  constructor() {
-    this.INSTRUCTION_NAME = 'set';
-  }
-
-  name(): string {
-    return this.INSTRUCTION_NAME;
-  }
-
-  getArgsSchema() {
-    return setSchema;
-  }
-
-  validateArgs(args: InstructionArgs | undefined): boolean {
-    return setSchema.safeParse(args).success;
-  }
-
-  onAction(_vm: VirtualMachine): void {
-    // No-op for testing
-  }
-}
+// Import actual instruction classes to avoid cross-platform constructor issues
+import { Debug } from '@/processors/debug';
+import { Set } from '@/processors/set';
 
 describe('ChainCastProgram', () => {
   let program: ChainCastProgram;
   let supportedInstructions: InstructionMap;
 
   beforeEach(() => {
+    // Use actual instruction classes
     supportedInstructions = {
-      mock: MockInstruction,
-      debug: MockDebugInstruction,
-      set: MockSetInstruction,
+      debug: Debug,
+      set: Set,
     };
     program = new ChainCastProgram(supportedInstructions);
   });
