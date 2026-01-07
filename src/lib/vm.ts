@@ -45,6 +45,10 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
   private _errorStack: any = null;
   /** Flag indicating if the VM has been halted */
   private _halt = false;
+  /** The instruction that caused the halt or error */
+  private _stoppedByInstruction: InstructionCall | null = null;
+  /** Snapshot of executed instructions when halt/error occurred */
+  private _executedBacktrace: InstructionCall[] = [];
   /** Global variables accessible to all instructions */
   private _globalVariables: VariableDict = {};
   /** Call stack for tracking instruction execution */
@@ -142,6 +146,10 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
    */
   halt(halt: boolean): void {
     this._halt = halt;
+    if (halt) {
+      this._stoppedByInstruction = this.getCurrentStackItem() ?? null;
+      this._executedBacktrace = [...this.getStack()];
+    }
   }
 
   /**
@@ -162,6 +170,8 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
   setError(message: string, stack: any): void {
     this._error = message;
     this._errorStack = stack;
+    this._stoppedByInstruction = this.getCurrentStackItem() ?? null;
+    this._executedBacktrace = [...this.getStack()];
   }
 
   /**
@@ -192,8 +202,65 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
       await instruction.onAction(this);
       this._stack.pop();
     } else {
-      log.d(`Virtual Machine is halted or has errorr , rolling Back`);
+      this._logExecutionStopped(step);
     }
+  }
+
+  /**
+   * Logs detailed context when VM execution is stopped due to halt or error.
+   *
+   * @param skippedStep - The instruction that was skipped due to halt/error
+   */
+  private _logExecutionStopped(skippedStep: InstructionCall): void {
+    const castId = this._info.getId();
+    const stoppedBy = this._stoppedByInstruction?.name ?? 'unknown';
+    const backtrace = this._formatStackBacktrace(this._executedBacktrace);
+
+    // Get event context for additional debugging info
+    const event = this._globalVariables['event'] as
+      | { event?: string; blockNumber?: number }
+      | undefined;
+    const eventName = event?.event ?? 'unknown';
+    const blockNumber = event?.blockNumber ?? 'unknown';
+
+    if (this._error) {
+      // Log error with full context including event info
+      log.e(
+        `[VM Error] Cast=${castId} | Event="${eventName}" Block=${blockNumber} | ` +
+          `Instruction="${stoppedBy}" | Error: ${this._error}`
+      );
+      log.e(`[VM Error] Backtrace:\n${backtrace}`);
+      if (this._errorStack) {
+        log.e(`[VM Error] Stack trace:\n${this._errorStack}`);
+      }
+      log.d(`[VM Error] Skipping instruction "${skippedStep.name}" due to previous error`);
+    } else if (this._halt) {
+      // Halted (intentional, e.g., filter-events)
+      log.d(
+        `[VM Halt] Cast=${castId} | Event="${eventName}" Block=${blockNumber} | ` +
+          `Halted by instruction="${stoppedBy}" | Skipping "${skippedStep.name}"`
+      );
+      log.d(`[VM Halt] Backtrace:\n${backtrace}`);
+    }
+  }
+
+  /**
+   * Formats the instruction stack as a readable backtrace string.
+   *
+   * @param stack - Array of instruction calls in execution order
+   * @returns Formatted backtrace string
+   */
+  private _formatStackBacktrace(stack: InstructionCall[]): string {
+    if (stack.length === 0) {
+      return '  (empty stack)';
+    }
+    return stack
+      .map((call, index) => {
+        const argsStr = call.args ? JSON.stringify(call.args) : '{}';
+        const truncatedArgs = argsStr.length > 100 ? argsStr.substring(0, 100) + '...' : argsStr;
+        return `  #${index} ${call.name} args=${truncatedArgs}`;
+      })
+      .join('\n');
   }
 
   /**
@@ -238,6 +305,8 @@ export class ChainCastVirtualMachine<CI extends CastInfo> implements VirtualMach
     this._error = null;
     this._errorStack = null;
     this._halt = false;
+    this._stoppedByInstruction = null;
+    this._executedBacktrace = [];
     this._globalVariables = {};
     this._stack.clear();
   }

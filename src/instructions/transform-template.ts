@@ -39,10 +39,11 @@ export class TransformTemplate implements Instruction {
     if (!step || !step.args) {
       return;
     }
+
     const args: ArgsType = {
-      context: (step?.args?.variable as string[]) ?? '',
-      template: (step?.args?.transform as string) ?? '',
-      output: (step?.args?.key as string) ?? '',
+      context: (step?.args?.context as string[]) ?? '',
+      template: (step?.args?.template as string) ?? '',
+      output: (step?.args?.output as string) ?? '',
     };
 
     this.templateTransform(vm, args);
