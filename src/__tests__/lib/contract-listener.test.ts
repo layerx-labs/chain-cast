@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, mock } from 'bun:test';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import type { EventListenerHandler } from '@/types/events';
 
 // Mock dependencies
@@ -32,7 +32,7 @@ mock.module('@/lib/viem-client', () => ({
 }));
 
 // Import after mocking
-import { EVMContractListener, type ContractListenerConfig } from '@/lib/contract-listener';
+import { type ContractListenerConfig, EVMContractListener } from '@/lib/contract-listener';
 
 describe('EVMContractListener', () => {
   let listener: EVMContractListener;

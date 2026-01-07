@@ -1,5 +1,5 @@
-import { describe, expect, it, beforeEach, mock } from 'bun:test';
-import type { VirtualMachine, InstructionCall } from '@/types/vm';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
+import type { InstructionCall, VirtualMachine } from '@/types/vm';
 
 // Mock axios before importing WebHook
 const mockAxiosPost = mock(() => Promise.resolve({ status: 200, statusText: 'OK' }));

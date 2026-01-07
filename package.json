@@ -3,6 +3,9 @@
   "version": "1.2.0",
   "description": "A DAO-governed blockchain event processing platform designed to listen, process and stream events from smart contracts deployed on various EVM blockchain networks",
   "main": "src/main.ts",
+  "bin": {
+    "castc": "./src/dsl/cli/castc.ts"
+  },
   "scripts": {
     "dev": "bun --watch src/main.ts",
     "dev:debug": "bun --inspect=4321 --watch src/main.ts",
@@ -22,7 +25,11 @@
     "db:migrate": "bunx prisma migrate dev",
     "db:push": "bunx prisma db push",
     "setup:ganache": "bun scripts/setup-ganache.ts",
-    "ganache:dev": "ganache -h 0.0.0.0 -p 8545 -a 50 -s 0x6d2119524d65ea0b15b214ef260d3acdf8ca0ec6ec68045b5785d970f5ad97bd3d0025d212e625a8a21920852cc165c10faa6d8387a0c2530d1ffc0d265d92935749"
+    "ganache:dev": "ganache -h 0.0.0.0 -p 8545 -a 50 -s 0x6d2119524d65ea0b15b214ef260d3acdf8ca0ec6ec68045b5785d970f5ad97bd3d0025d212e625a8a21920852cc165c10faa6d8387a0c2530d1ffc0d265d92935749",
+    "castc": "bun src/dsl/cli/castc.ts",
+    "castc:compile": "bun src/dsl/cli/castc.ts compile",
+    "castc:validate": "bun src/dsl/cli/castc.ts validate",
+    "castc:decompile": "bun src/dsl/cli/castc.ts decompile"
   },
   "repository": {
     "type": "git",
@@ -72,6 +79,7 @@
     "@types/express": "^4.17.17",
     "axios": "^1.4.0",
     "bullmq": "^3.15.1",
+    "commander": "^14.0.2",
     "cookie": "^0.5.0",
     "cookie-parser": "^1.4.6",
     "express": "^4.18.2",
@@ -82,6 +90,7 @@
     "handlebars": "^4.7.7",
     "inflection": "^2.0.1",
     "viem": "^2.21.0",
+    "yaml": "^2.8.2",
     "zod": "^3.21.4"
   }
 }

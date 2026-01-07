@@ -1,6 +1,6 @@
-import { describe, expect, it, beforeEach, mock } from 'bun:test';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import { BullMQProducer } from '@/processors/bullmq';
-import type { VirtualMachine, InstructionCall } from '@/types/vm';
+import type { InstructionCall, VirtualMachine } from '@/types/vm';
 
 // Mock dependencies
 mock.module('@/services/log', () => ({

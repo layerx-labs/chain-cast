@@ -1,7 +1,7 @@
+import { bigIntToString } from '@/lib/object';
 import log from '@/services/log';
 import type { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 import axios from 'axios';
-import { bigIntToString } from '@/lib/object';
 import { z } from 'zod';
 
 const ArgsTypeSchema = z.object({
