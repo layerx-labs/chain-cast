@@ -17,9 +17,11 @@
 - **Robust Data Flow**: Ensures uninterrupted data flow with comprehensive error handling
 
 ### Programmable Event Processing Pipeline
+- **YAML-Based DSL**: Write event processing pipelines using a simple, declarative YAML syntax
 - **Customizable Processing**: Define customized event processing pipelines tailored to your specific needs
 - **Flexible Configuration**: Programmable configurations for defining sequences of processors and actions
 - **Extensible Framework**: Support for data transformation, filtering, enrichment, aggregation, and custom operations
+- **Built-in Compiler**: Validate and compile DSL pipelines with the `castc` CLI tool
 
 ### Extensible Instructions Architecture
 Chain Cast's virtual machine is built around a modular instructions architecture that allows for easy extension and customization:
@@ -164,8 +166,63 @@ bun run dev
 bun scripts/transfer-erc20.ts
 ```
 
+## 🔧 Writing Custom Pipelines
+
+Chain Cast features a powerful YAML-based DSL (Domain-Specific Language) that allows you to create custom event processing pipelines without writing code. Pipelines are fully programmable and can include:
+
+- **Event filtering** - Process only specific events
+- **Data transformations** - Manipulate strings, numbers, objects, and arrays
+- **Conditional logic** - Branch execution based on event data
+- **External integrations** - Send data to webhooks, queues, databases, and more
+
+### Example Pipeline
+
+```yaml
+version: "1.0"
+name: "High Value Transfer Monitor"
+description: "Alert on large token transfers"
+
+program:
+  - filter-events:
+      events: ["Transfer"]
+
+  - set:
+      variable: threshold
+      value: 1000000000000000000000  # 1000 tokens
+
+  - condition:
+      when:
+        all:
+          - variable: event.returnValues.value
+            operator: ">"
+            compareTo: threshold
+      then: branch_0
+      else: branch_1
+      branches:
+        branch_0:
+          - webhook:
+              url: "https://api.example.com/alerts"
+              body: event
+        branch_1:
+          - debug:
+              variables: [event]
+```
+
+### Compile and Deploy
+
+```bash
+# Validate your pipeline
+bun run castc validate my-pipeline.yaml
+
+# Compile to base64 for the ChainCast API
+bun run castc compile my-pipeline.yaml --base64
+```
+
+For the complete DSL reference and more examples, see the **[DSL Programming Guide](./doc/DSL-GUIDE.md)**.
+
 ## 📚 Documentation
 
+- [DSL Programming Guide](./doc/DSL-GUIDE.md) - Learn how to write custom event processing pipelines
 - [API Documentation](./doc/README.md)
 - [Contributing Guidelines](./CONTRIBUTING.md)
 - [Code of Conduct](./CODE_OF_CONDUCT.md)
