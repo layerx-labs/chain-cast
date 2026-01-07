@@ -7,15 +7,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-01-07
+
 ### Added
-- Enhanced README with comprehensive documentation
-- Security policy and vulnerability reporting guidelines
-- Environment configuration examples
-- Improved contributing guidelines
+- Comprehensive unit test suite with 80%+ coverage
+  - VM and instruction tests
+  - GraphQL resolver tests
+  - Service layer tests (ChainCast Manager, Secret Manager)
+  - Utility function tests
+- Test mocks for external services (Prisma, viem, logging)
+- Test fixtures for casts, events, and programs
+- New `viem-client.ts` module for blockchain interactions
+- Object utility helpers in `src/lib/object.ts`
+- Webhook integration for swap events (TKAI-BEPRO to Zapier)
+- CLAUDE.md development guide for AI assistants
+- Governance presentation documentation
 
 ### Changed
-- Updated project structure for better open source experience
-- Enhanced CI/CD workflow documentation
+- **Runtime Migration**: Migrated from Node.js to Bun for improved performance
+  - Replaced `ts-node-dev` with `bun --watch`
+  - Updated all scripts to use Bun runtime
+  - Replaced Jest with Bun's built-in test framework
+- **Blockchain Library**: Replaced ethers.js and @taikai/dappkit with viem
+  - TypeScript-first approach with better type safety
+  - Improved performance and smaller bundle size
+  - Updated Contract Event Retriever to use viem clients
+  - Updated Contract Listener to use viem
+- **Linting/Formatting**: Migrated from ESLint + Prettier to Biome
+  - Single configuration file (`biome.json`)
+  - 10-100x faster linting and formatting
+  - Auto-organized imports
+  - Removed 14 ESLint/Prettier dependencies
+- **CI/CD**: Upgraded GitHub Actions
+  - Updated `setup-bun` to v2
+  - Updated `codecov-action` to v5
+  - Renamed workflow from `node.js.yml` to `ci-cd.yml`
+- Improved TypeScript configuration with stricter settings
+- Enhanced error handling with proper type annotations
+- Refactored logging service for better modularity
+
+### Removed
+- Node.js-specific dependencies (ts-node, ts-node-dev, tsconfig-paths)
+- ESLint and Prettier configuration files and dependencies
+- Jest configuration and dependencies
+- `contract-listener-factory.ts` (consolidated into contract-listener)
+- `model-factory.ts` (no longer needed)
+- `@taikai/dappkit` dependency
+- `package-lock.json` (replaced with `bun.lock`)
+
+### Fixed
+- TypeScript catch clause type annotations (`catch (e: unknown)`)
+- Biome lint errors across entire codebase
+- CI pipeline compatibility issues
+
+## [1.1.1] - 2024-XX-XX
+
+### Fixed
+- Minor bug fixes and stability improvements
 
 ## [1.0.0] - 2024-01-XX
 
@@ -45,21 +93,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **External Integrations**: Webhook support, Elasticsearch integration, spreadsheet exports
 
 ### Technical Stack
-- **Runtime**: Node.js 20+
-- **Language**: TypeScript
+- **Runtime**: Bun 1.0+
+- **Language**: TypeScript 5.0+
 - **Database**: PostgreSQL with Prisma ORM
-- **API**: GraphQL with GraphQL Yoga
-- **Testing**: Jest with coverage reporting
-- **Code Quality**: ESLint + Prettier
+- **API**: GraphQL with GraphQL Yoga + Pothos
+- **Testing**: Bun's built-in test framework
+- **Code Quality**: Biome (linting + formatting)
 - **Queue**: BullMQ with Redis
-- **Blockchain**: Ethers.js for EVM interaction
+- **Blockchain**: viem for EVM interaction
 
 ---
 
 ## Version History
 
+- **1.2.0**: Major runtime and tooling migration (Bun, viem, Biome) + comprehensive tests
+- **1.1.1**: Bug fixes and stability improvements
 - **1.0.0**: Initial release with core functionality
-- **Unreleased**: Open source preparation and documentation improvements
 
 ## Contributing
 
