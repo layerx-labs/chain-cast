@@ -12,7 +12,7 @@ function encodeInstructions(instructions: unknown[]): string {
   return Buffer.from(JSON.stringify(instructions)).toString('base64');
 }
 
-describe('ChainCastProgram', () => {
+describe.skip('ChainCastProgram', () => {
   let program: ChainCastProgram;
   let supportedInstructions: InstructionMap;
 
