@@ -60,10 +60,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Biome lint errors across entire codebase
 - CI pipeline compatibility issues
 
-## [1.1.1] - 2024-XX-XX
+## [1.1.1] - 2024-11-04
+
+### Added
+- Comprehensive open source documentation
+  - `CONTRIBUTING.md` with detailed contribution guidelines
+  - `CODE_OF_CONDUCT.md` for community standards
+  - `SECURITY.md` with vulnerability reporting guidelines
+  - `GOVERNANCE.md` outlining DAO governance structure
+  - `ROADMAP.md` with project milestones
+  - `GETTING-STARTED.md` quick start guide
+- GitHub issue and PR templates
+  - Bug report template
+  - Feature request template
+  - Question template
+  - Pull request template
+- ERC20 monitor example configuration (`examples/erc20-monitor.json`)
+- Ganache setup script for local development (`scripts/setup-ganache.ts`)
+- Environment configuration example (`env.example`)
+- Expanded API documentation in `doc/README.md`
+- Code documentation for core library modules
+
+### Changed
+- Enhanced README with comprehensive project documentation
+- Improved CI/CD workflow with better test coverage reporting
+- Updated LICENSE for dual MIT/Commercial licensing
+- Refactored ContractCast with status field persistence
+- Enhanced GraphQL types with additional fields
 
 ### Fixed
-- Minor bug fixes and stability improvements
+- Docker image optimized by removing test dependencies
+- Chain configuration constant naming
 
 ## [1.1.0] - 2024-10-03
 
@@ -131,7 +158,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Version History
 
 - **1.2.0**: Major runtime and tooling migration (Bun, viem, Biome) + comprehensive tests
-- **1.1.1**: Bug fixes and stability improvements
+- **1.1.1**: Open source documentation, GitHub templates, and developer tooling
 - **1.1.0**: ContractCast naming, status tracking, and improved logging
 - **1.0.0**: Initial release with core functionality
 
