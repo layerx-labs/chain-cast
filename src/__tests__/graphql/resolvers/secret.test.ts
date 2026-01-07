@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, mock } from 'bun:test';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import type { Secret } from '@prisma/client';
 
 // Mock the log service
@@ -13,8 +13,8 @@ mock.module('@/services/log', () => ({
 
 // Import resolvers after mocking
 import createSecret from '@/graphql/resolvers/secret/create';
-import updateSecret from '@/graphql/resolvers/secret/update';
 import deleteSecret from '@/graphql/resolvers/secret/delete';
+import updateSecret from '@/graphql/resolvers/secret/update';
 import { UserInputError } from '@/middleware/errors';
 
 // Mock SecretManager for cast

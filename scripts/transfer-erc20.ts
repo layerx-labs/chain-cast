@@ -1,12 +1,6 @@
-import {
-  createWalletClient,
-  createPublicClient,
-  http,
-  defineChain,
-  getContract,
-} from 'viem';
-import { privateKeyToAccount } from 'viem/accounts';
 import { chainsSupported } from '@/constants/chains';
+import { http, createPublicClient, createWalletClient, defineChain, getContract } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
 import Accounts from './accounts-testing';
 
 // Standard ERC20 ABI for transfers

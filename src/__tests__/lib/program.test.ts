@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from 'bun:test';
+import { beforeEach, describe, expect, it } from 'bun:test';
 import { ChainCastProgram } from '@/lib/program';
 import type { InstructionMap } from '@/types/vm';
 

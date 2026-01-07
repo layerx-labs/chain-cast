@@ -1,19 +1,19 @@
-import { describe, expect, it, beforeEach, mock } from 'bun:test';
-import type {
-  Instruction,
-  InstructionMap,
-  Program,
-  VirtualMachine,
-  InstructionArgs,
-} from '@/types/vm';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import type {
   CastInfo,
   ContractCast,
+  ContractCastConstructor,
   SecretManager,
   SecretMap,
-  ContractCastConstructor,
 } from '@/types';
-import type { PrismaClient, ContractCastType } from '@prisma/client';
+import type {
+  Instruction,
+  InstructionArgs,
+  InstructionMap,
+  Program,
+  VirtualMachine,
+} from '@/types/vm';
+import type { ContractCastType, PrismaClient } from '@prisma/client';
 
 // Mock dependencies
 mock.module('@/services/log', () => ({

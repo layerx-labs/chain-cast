@@ -1,5 +1,5 @@
-import { describe, expect, it, beforeEach, mock } from 'bun:test';
-import type { EventRecoverHandler, Web3Event, ViemDecodedLog } from '@/types/events';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
+import type { EventRecoverHandler, ViemDecodedLog, Web3Event } from '@/types/events';
 
 // Mock dependencies
 mock.module('@/services/log', () => ({

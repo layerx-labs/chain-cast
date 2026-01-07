@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach, mock } from 'bun:test';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import type { ContractCast, ContractCastType } from '@prisma/client';
 
 // Mock the log service
@@ -37,16 +37,16 @@ mock.module('@/lib/program', () => ({
 
 // Import resolvers after mocking
 import {
-  contractCast,
   type ContractCastArgType,
+  contractCast,
 } from '@/graphql/resolvers/contract-cast/contract-cast';
 import createContractCast, {
   type CreateContractCastArgType,
 } from '@/graphql/resolvers/contract-cast/create';
+import { deleteContractCast } from '@/graphql/resolvers/contract-cast/delete';
 import updateContractCast, {
   type UpdateContractCastArgType,
 } from '@/graphql/resolvers/contract-cast/update';
-import { deleteContractCast } from '@/graphql/resolvers/contract-cast/delete';
 import { UserInputError } from '@/middleware/errors';
 
 // Mock context type
