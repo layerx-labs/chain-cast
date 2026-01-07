@@ -12,6 +12,7 @@
 ## 🌟 Features
 
 ### Event Listening and Recovery
+- **Universal Event Support**: Process **any event** from any smart contract—not limited to ERC-20 transfers. Simply provide your contract's ABI when creating a Cast, and ChainCast will monitor all specified events
 - **Real-time Event Monitoring**: Establishes connections with smart contracts and monitors their event logs in real-time
 - **Automatic Recovery**: Automatically recovers missed events during network interruptions or downtime
 - **Robust Data Flow**: Ensures uninterrupted data flow with comprehensive error handling
