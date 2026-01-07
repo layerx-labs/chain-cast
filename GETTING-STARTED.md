@@ -45,6 +45,8 @@ LOG_LEVEL=debug
 SILENT=false
 LOG_TO_FILE=false
 
+# Make sur your api key supports this
+BLOCKS_PER_CALL=1000
 # API Configuration
 CHAIN_CAST_API_PORT=4400
 
@@ -124,7 +126,7 @@ mutation createLXMonitor {
     address: "0xcf3c8be2e2c42331da80ef210e9b1b307c03d36a"
     name: "LX Token Transfer Monitor"
     chainId: 1
-    startFrom: 0
+    startFrom: 10950415
     abi: "W3siYW5vbnltb3VzIjpmYWxzZSwiaW5wdXRzIjpbeyJpbmRleGVkIjp0cnVlLCJpbnRlcm5hbFR5cGUiOiJhZGRyZXNzIiwibmFtZSI6ImZyb20iLCJ0eXBlIjoiYWRkcmVzcyJ9LHsiaW5kZXhlZCI6dHJ1ZSwiaW50ZXJuYWxUeXBlIjoiYWRkcmVzcyIsIm5hbWUiOiJ0byIsInR5cGUiOiJhZGRyZXNzIn0seyJpbmRleGVkIjpmYWxzZSwiaW50ZXJuYWxUeXBlIjoidWludDI1NiIsIm5hbWUiOiJ2YWx1ZSIsInR5cGUiOiJ1aW50MjU2In1dLCJuYW1lIjoiVHJhbnNmZXIiLCJ0eXBlIjoiZXZlbnQifV0="
     type: CUSTOM
     program: "W3sibmFtZSI6ImRlYnVnIiwiYXJncyI6eyJ2YXJpYWJsZXNUb0RlYnVnIjpbImV2ZW50LmV2ZW50IiwiZXZlbnQuYmxvY2tOdW1iZXIiLCJjYXN0LmlkIl19fSx7Im5hbWUiOiJmaWx0ZXItZXZlbnRzIiwiYXJncyI6eyJldmVudE5hbWUiOiJUcmFuc2ZlciJ9fSx7Im5hbWUiOiJkZWJ1ZyIsImFyZ3MiOnsidmFyaWFibGVzVG9EZWJ1ZyI6WyJldmVudC5hcmdzLmZyb20iLCJldmVudC5hcmdzLnRvIiwiZXZlbnQuYXJncy52YWx1ZSJdfX1d"
@@ -147,7 +149,7 @@ curl -X POST http://localhost:4400/api/graphql \
       "address": "0xcf3c8be2e2c42331da80ef210e9b1b307c03d36a",
       "name": "LX Token Transfer Monitor",
       "chainId": 1,
-      "blockNumber": 0,
+      "blockNumber": 10950415,
       "abi": "W3siYW5vbnltb3VzIjpmYWxzZSwiaW5wdXRzIjpbeyJpbmRleGVkIjp0cnVlLCJpbnRlcm5hbFR5cGUiOiJhZGRyZXNzIiwibmFtZSI6ImZyb20iLCJ0eXBlIjoiYWRkcmVzcyJ9LHsiaW5kZXhlZCI6dHJ1ZSwiaW50ZXJuYWxUeXBlIjoiYWRkcmVzcyIsIm5hbWUiOiJ0byIsInR5cGUiOiJhZGRyZXNzIn0seyJpbmRleGVkIjpmYWxzZSwiaW50ZXJuYWxUeXBlIjoidWludDI1NiIsIm5hbWUiOiJ2YWx1ZSIsInR5cGUiOiJ1aW50MjU2In1dLCJuYW1lIjoiVHJhbnNmZXIiLCJ0eXBlIjoiZXZlbnQifV0=",
       "type": "CUSTOM",
       "program": "W3sibmFtZSI6ImRlYnVnIiwiYXJncyI6eyJ2YXJpYWJsZXNUb0RlYnVnIjpbImV2ZW50LmV2ZW50IiwiZXZlbnQuYmxvY2tOdW1iZXIiLCJjYXN0LmlkIl19fSx7Im5hbWUiOiJmaWx0ZXItZXZlbnRzIiwiYXJncyI6eyJldmVudE5hbWUiOiJUcmFuc2ZlciJ9fSx7Im5hbWUiOiJkZWJ1ZyIsImFyZ3MiOnsidmFyaWFibGVzVG9EZWJ1ZyI6WyJldmVudC5hcmdzLmZyb20iLCJldmVudC5hcmdzLnRvIiwiZXZlbnQuYXJncy52YWx1ZSJdfX1d"
