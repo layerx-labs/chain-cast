@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        bun-version: [1.x]
+        bun-version: [1.3.5]
         # See supported Bun release schedule at https://bun.sh/docs/installation
 
     steps:
