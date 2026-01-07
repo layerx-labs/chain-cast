@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **DSL Compiler (castc)**: YAML-based domain-specific language for pipeline definitions
+  - New CLI tool (`castc`) with compile, validate, and decompile commands
+  - YAML parser for human-readable pipeline configurations
+  - AST-based compiler with comprehensive validation
+  - Decompiler to convert JSON programs back to YAML
+  - Template transformers for variable interpolation
+  - Comprehensive DSL documentation (`doc/DSL-GUIDE.md`)
+  - Full test suite for DSL components (cli, compiler, decompiler, parser, validator, transformers)
+- New dependencies: `commander` for CLI, `yaml` for YAML parsing
+
+### Changed
+- Updated dependencies to latest semver-compatible versions:
+  - `typescript`: 5.0.4 → 5.9.3
+  - `viem`: 2.21.0 → 2.43.5
+  - `zod`: 3.21.4 → 3.25.76
+  - `@elastic/elasticsearch`: 8.8.1 → 8.19.1
+  - `axios`: 1.4.0 → 1.13.2
+  - `graphql`: 16.6.0 → 16.12.0
+  - And other minor updates
+- Updated README with DSL programming guide reference and custom pipelines section
+- Bumped package version to 1.2.0
+
 ## [1.2.0] - 2026-01-07
 
 ### Added
