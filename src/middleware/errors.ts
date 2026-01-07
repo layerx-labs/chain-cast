@@ -42,6 +42,7 @@ export function errorHandlingFunction(err: unknown, message: string): Error {
 
     // In development or production we mask the error and print a log
   }
+
   // Log the full error details for debugging purposes
   log.e(
     `Server Error on Name={${originalError?.name}} ` +

@@ -1,6 +1,6 @@
-import { chainsSupported } from '@/constants/chains';
-import { http, createPublicClient, createWalletClient, defineChain } from 'viem';
+import { createWalletClient, createPublicClient, http, defineChain } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
+import { chainsSupported } from '@/constants/chains';
 import Accounts from './accounts-testing';
 
 // Standard ERC20 bytecode (OpenZeppelin ERC20 with constructor for name, symbol, initialSupply)

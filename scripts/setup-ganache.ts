@@ -1,10 +1,10 @@
+import { chainsSupported } from '@/constants/chains';
+import Accounts from './accounts-testing';
+import { createContractCast } from '@/lib/api';
+import { createWalletClient, createPublicClient, http, defineChain } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
 import fs from 'node:fs';
 import path from 'node:path';
-import { chainsSupported } from '@/constants/chains';
-import { createContractCast } from '@/lib/api';
-import { http, createPublicClient, createWalletClient, defineChain } from 'viem';
-import { privateKeyToAccount } from 'viem/accounts';
-import Accounts from './accounts-testing';
 
 // Define local chain for Ganache
 const localChain = defineChain({

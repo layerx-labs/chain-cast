@@ -41,8 +41,8 @@ export async function retry<T extends (...args: any[]) => any>(
     const result = await fn(...args);
     return result;
   } catch (e: unknown) {
-    const error = e as Error;
     // Log the retry attempt and error
+    const error = e as Error;
     log.d(`Retry ${currRetry} failed. ${error.message}`);
 
     // If we've exceeded max retries, throw the error

@@ -1,12 +1,12 @@
-import log from '@/services/log';
+import type { Abi, PublicClient, Transport, Chain, WatchContractEventReturnType } from 'viem';
 import {
   type ContractEventListener,
   type EventListenerHandler,
-  type ViemDecodedLog,
   viemLogToWeb3Event,
+  type ViemDecodedLog,
 } from '@/types/events';
-import type { Abi, Chain, PublicClient, Transport, WatchContractEventReturnType } from 'viem';
-import { createHttpClient, createWebSocketClient } from './viem-client';
+import log from '@/services/log';
+import { createWebSocketClient, createHttpClient } from './viem-client';
 
 /**
  * Configuration for creating an EVMContractListener instance.

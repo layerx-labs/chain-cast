@@ -4,15 +4,15 @@
  * It handles event recovery, listening, and processing for smart contracts.
  */
 
-import log from '@/services/log';
-import db from '@/services/prisma';
+import type { Abi, PublicClient, Transport, Chain } from 'viem';
 import type { ContractEventListener, EventListenerHandler, Web3Event } from '@/types/events';
+import log from '@/services/log';
+import { type ContractCastType, ContractCastStatus } from '@prisma/client';
 import type { InstructionMap, Program, VirtualMachine } from '@/types/vm';
-import { ContractCastStatus, type ContractCastType } from '@prisma/client';
-import type { Abi, Chain, PublicClient, Transport } from 'viem';
 import type { CastInfo, ContractCast, SecretManager, SecretMap } from '../types';
-import { EVMContractEventRetriever } from './contract-event-retriever';
+import db from '@/services/prisma';
 import EVMContractListener from './contract-listener';
+import { EVMContractEventRetriever } from './contract-event-retriever';
 import { createHttpClient } from './viem-client';
 
 /**
