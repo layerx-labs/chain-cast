@@ -1,5 +1,5 @@
 import log from '@/services/log';
-import { Instruction, VirtualMachine, InstructionArgs } from '@/types/vm';
+import type { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 import { z } from 'zod';
 
 type Expression = z.infer<typeof ExpressionSchema>;
@@ -79,7 +79,7 @@ export class Condition implements Instruction {
       res = !this._evaluateExpressions(vm, args.OR);
     }
 
-    if (res == true) {
+    if (res === true) {
       await this._nextAction(vm, args, true);
     } else {
       await this._nextAction(vm, args, false);

@@ -1,6 +1,0 @@
-coverage/
-functions/processImg/node_modules
-src/client/index.js
-src/client/prisma-schema.js
-config/config.js
-dist/

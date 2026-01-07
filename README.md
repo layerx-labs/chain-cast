@@ -87,9 +87,11 @@ export class CustomInstruction implements Instruction {
 
 ## 🚀 Quick Start
 
+> **⚡ Powered by Bun**: Chain Cast runs on Bun runtime for faster startup times, native TypeScript execution, and improved performance. No build step required!
+
 ### Prerequisites
 
-- **Node.js**: 20.0.0 or above
+- **Bun**: 1.0.0 or above ([Install Bun](https://bun.sh/docs/installation))
 - **PostgreSQL**: Local database recommended for development
 - **Redis**: For queue management (optional for development)
 
@@ -103,7 +105,7 @@ export class CustomInstruction implements Instruction {
 
 2. **Install dependencies**
    ```bash
-   npm install
+   bun install
    ```
 
 3. **Set up environment variables**
@@ -122,12 +124,12 @@ export class CustomInstruction implements Instruction {
 
 4. **Initialize the database**
    ```bash
-   npx prisma migrate reset
+   bunx prisma migrate reset
    ```
 
 5. **Start the development environment**
    ```bash
-   npm run dev
+   bun run dev
    ```
 
    This will start:
@@ -150,16 +152,16 @@ This guide includes:
 
 ```bash
 # Start Ganache
-npm run ganache:dev
+bun run ganache:dev
 
 # Deploy ERC20 and create ChainCast (automated)
-npm run setup:ganache
+bun run setup:ganache
 
 # Start ChainCast service
-npm run dev
+bun run dev
 
-# Test with token transfers
-npm run transfer:erc20
+# Test with token transfers (if available)
+bun scripts/transfer-erc20.ts
 ```
 
 ## 📚 Documentation
@@ -173,37 +175,39 @@ npm run transfer:erc20
 
 ```bash
 # Run all tests
-npm run test
+bun test
 
 # Run tests with coverage
-npm run test:coverage
-
-# Debug tests
-npm run test:debug
+bun test --coverage
 ```
 
 ## 🏗️ Development
 
 ### Available Scripts
 
-- `npm run dev`: Start application in development mode
-- `npm run dev:debug`: Start application with debug mode
-- `npm run build`: Build the application for production
-- `npm run start`: Start the production server
-- `npm run pretty`: Check code against prettier standards
-- `npm run prettier`: Format code with prettier
-- `npm run lint`: Run ESLint on the code
-- `npm run lint:fix`: Fix ESLint issues automatically
+- `bun run dev`: Start application in development mode with hot reload
+- `bun run dev:debug`: Start application with debug mode (inspect on port 4321)
+- `bun run build`: Install dependencies and generate Prisma client
+- `bun run start`: Start the production server
+- `bun run lint`: Lint code with Biome
+- `bun run lint:fix`: Fix lint issues automatically
+- `bun run format`: Format code with Biome
+- `bun run check`: Run all Biome checks (lint + format)
+- `bun run check:fix`: Fix all Biome issues
+- `bun run db:reset`: Reset the database
+- `bun run db:migrate`: Run database migrations
+- `bun run db:push`: Push Prisma schema to database
 
 ### Technology Stack
 
+- **Bun**: Fast JavaScript runtime and package manager
 - **Prisma 4**: ORM for database interactions
-- **Ethers 6**: Ethers 6 Based Application
+- **viem**: TypeScript-first Ethereum library for blockchain interactions
 - **PostgreSQL**: Primary database
 - **GraphQL Yoga**: GraphQL server
-- **ESLint + Prettier**: Code quality and formatting
-- **Jest**: Testing framework with coverage
-- **TypeScript**: Type-safe JavaScript
+- **Biome**: Fast linting and formatting (replaces ESLint + Prettier)
+- **Bun Test**: Built-in testing framework
+- **TypeScript**: Type-safe JavaScript (runs natively without compilation)
 
 ## 🤝 Contributing
 
@@ -214,7 +218,7 @@ We welcome contributions! Please see our [Contributing Guidelines](./CONTRIBUTIN
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/amazing-feature`
 3. Make your changes and add tests
-4. Ensure all tests pass: `npm run test`
+4. Ensure all tests pass: `bun test`
 5. Commit your changes: `git commit -m 'Add amazing feature'`
 6. Push to the branch: `git push origin feature/amazing-feature`
 7. Open a Pull Request

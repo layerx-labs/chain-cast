@@ -1,7 +1,8 @@
-import { z } from 'zod';
+import { bigIntToString } from '@/lib/object';
 import log from '@/services/log';
+import type { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
 import axios from 'axios';
-import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
+import { z } from 'zod';
 
 const ArgsTypeSchema = z.object({
   url: z.string().url(),
@@ -49,14 +50,14 @@ export class WebHook implements Instruction {
         `[${this.INSTRUCTION_NAME}] Calling webhook for ${args.url} for variable ${args.bodyInput}`
       );
       const response = await axios.post(args.url, {
-        body,
+        body: bigIntToString(body),
         metadata: {
           id: castID,
           address: castAddress,
           chainId: castChainId,
         },
       });
-      if (response.status != 200) {
+      if (response.status !== 200) {
         log.w(
           `[${this.INSTRUCTION_NAME}] Weekhook failed to be called ` +
             `${response.status} ${response.statusText} on url `,

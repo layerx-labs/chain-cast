@@ -1,6 +1,6 @@
-import { z } from 'zod';
 import log from '@/services/log';
-import { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
+import type { Instruction, InstructionArgs, VirtualMachine } from '@/types/vm';
+import { z } from 'zod';
 
 const ObjectTransformSchema = z.object({
   variable: z.string().min(2),

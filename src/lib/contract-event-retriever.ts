@@ -1,13 +1,31 @@
-import { Model } from '@taikai/dappkit';
-import log from '@/services/log';
-import { ContractEventRetriever, EventRecoverHandler } from '@/types/events';
-import { retry } from '@/util/promise';
 import { appConfig } from '@/config/index';
+import log from '@/services/log';
+import {
+  type ContractEventRetriever,
+  type EventRecoverHandler,
+  type ViemDecodedLog,
+  viemLogToWeb3Event,
+} from '@/types/events';
+import { retry } from '@/util/promise';
+import type { Abi, Chain, PublicClient, Transport } from 'viem';
 import { sleep } from './time';
+import { createHttpClient } from './viem-client';
+
+/**
+ * Configuration for creating an EVMContractEventRetriever instance.
+ */
+export type EventRetrieverConfig = {
+  /** The blockchain network ID */
+  chainId: number;
+  /** The contract address to fetch events from */
+  address: `0x${string}`;
+  /** The contract ABI */
+  abi: Abi;
+};
 
 /**
  * EVMContractEventRetriever is responsible for recovering (fetching) past events
- * from an EVM-compatible contract, in a batched and resumable way.
+ * from an EVM-compatible contract using viem, in a batched and resumable way.
  *
  * This class implements the ContractEventRetriever interface to provide a robust
  * mechanism for retrieving historical blockchain events. It processes events in
@@ -20,12 +38,14 @@ import { sleep } from './time';
  * - Progress reporting for long-running operations
  * - Transaction index filtering to avoid duplicate processing
  * - Rate limiting between batches to respect node limits
- *
- * @template M - The type of the contract model, extending Model from dappkit
  */
-export class EVMContractEventRetriever<M extends Model> implements ContractEventRetriever {
-  /** The contract model instance used to fetch events */
-  private _contract: Model;
+export class EVMContractEventRetriever implements ContractEventRetriever {
+  /** The viem public client for blockchain interactions */
+  private _client: PublicClient<Transport, Chain>;
+  /** The contract address to fetch events from */
+  private _address: `0x${string}`;
+  /** The contract ABI for decoding events */
+  private _abi: Abi;
   /** Flag indicating if a recovery operation is currently in progress */
   private _isRecovering = false;
   /** The handler for event recovery callbacks and progress reporting */
@@ -34,10 +54,12 @@ export class EVMContractEventRetriever<M extends Model> implements ContractEvent
   /**
    * Creates a new EVMContractEventRetriever instance.
    *
-   * @param model - The contract model instance to use for event fetching
+   * @param config - Configuration containing chainId, address, and ABI
    */
-  constructor(model: M) {
-    this._contract = model;
+  constructor(config: EventRetrieverConfig) {
+    this._client = createHttpClient(config.chainId);
+    this._address = config.address;
+    this._abi = config.abi;
   }
 
   /**
@@ -71,7 +93,7 @@ export class EVMContractEventRetriever<M extends Model> implements ContractEvent
    * 1. Processes events in configurable batches to avoid overwhelming the node
    * 2. Uses retry logic for failed requests to handle transient network issues
    * 3. Filters events based on transaction index to avoid processing
- *    duplicates
+   *    duplicates
    * 4. Reports progress to the handler for monitoring long-running operations
    * 5. Respects rate limits by sleeping between batches
    * 6. Checks for stop conditions between batches
@@ -81,7 +103,7 @@ export class EVMContractEventRetriever<M extends Model> implements ContractEvent
    * - Processes blocks in batches of configurable size
    * - For each batch, fetches all events in the block range
    * - Filters events based on transaction index to avoid
- *   duplicates
+   *   duplicates
    * - Calls the handler for each valid event
    * - Reports progress after each batch
    * - Continues until reaching the end block or stop condition
@@ -98,32 +120,38 @@ export class EVMContractEventRetriever<M extends Model> implements ContractEvent
         // Determine the end block for this batch, respecting the configured batch size and
         // the toBlock limit
         const endBlock = Math.min(startBlock + appConfig.recover.blocksPerCall, toBlock);
-        const options = {
-          fromBlock: startBlock,
-          toBlock: endBlock,
-        };
 
-        // Function to fetch all events in the current block range
-        const func = async () => {
-          return this._contract.contract.self.getPastEvents('allEvents', options);
+        // Function to fetch all events in the current block range using viem
+        const fetchEvents = async (): Promise<ViemDecodedLog[]> => {
+          const logs = await this._client.getContractEvents({
+            address: this._address,
+            abi: this._abi,
+            fromBlock: BigInt(startBlock),
+            toBlock: BigInt(endBlock),
+          });
+
+          // The logs from getContractEvents are already decoded with eventName and args
+          return logs as ViemDecodedLog[];
         };
 
         // Retry fetching events in case of transient errors, as per configuration
-        const events = await retry(func, [], appConfig.recover.retries, 10);
+        const events = await retry(fetchEvents, [], appConfig.recover.retries, 10);
 
         // Sleep between batches to avoid overloading the node
         await sleep(appConfig.recover.sleepMs);
 
         // Process each event in the batch
         for (const event of events) {
+          const blockNumber = Number(event.blockNumber ?? 0);
+          const transactionIndex = Number(event.transactionIndex ?? 0);
+
           // Skip events in the starting block that have a transaction index less than fromTxIndex
-          if (!(event.blockNumber == fromBlock && event.transactionIndex < fromTxIndex)) {
-            this._handler && (await this._handler.onEvent(event));
+          if (!(blockNumber === fromBlock && transactionIndex < fromTxIndex)) {
+            // Convert viem log format to Web3Event format for backward compatibility
+            const web3Event = viemLogToWeb3Event(event);
+            this._handler && (await this._handler.onEvent(web3Event));
           } else {
-            log.d(
-              `Skipping event ${event.blockNumber} and ${event.transactionIndex} ` +
-                `on ${this._contract.contractAddress}`
-            );
+            log.d(`Skipping event ${blockNumber} and ${transactionIndex} ` + `on ${this._address}`);
           }
         }
 

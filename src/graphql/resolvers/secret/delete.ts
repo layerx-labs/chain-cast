@@ -1,7 +1,7 @@
-import { Resolver } from '@/graphql/types';
-import { Secret } from '@prisma/client';
 import { ErrorsEnum } from '@/constants/index';
+import type { Resolver } from '@/graphql/types';
 import { UserInputError } from '@/middleware/errors';
+import type { Secret } from '@prisma/client';
 
 export type ArgsType = {
   where: {

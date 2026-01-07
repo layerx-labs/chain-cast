@@ -1,8 +1,8 @@
-import { builder } from '../builder';
 import { DateTimeFilter, PothosPageInfo, SortOrderEnum, StringFilter } from '@/graphql/types';
 import { ContractCastTypeEnum } from '@/graphql/types/contract-cast';
-import { contractCasts, contractCastsPageInfo } from '../resolvers/contract-cast/contract-casts';
+import { builder } from '../builder';
 import { contractCast } from '../resolvers/contract-cast/contract-cast';
+import { contractCasts, contractCastsPageInfo } from '../resolvers/contract-cast/contract-casts';
 
 const ContractCastsWhereInput = builder.inputType('ContractCastsWhereInput', {
   fields: (t) => ({
@@ -32,17 +32,19 @@ export const ContractCastsOrderByEnum = builder.enumType('ContractCastsOrderByEn
   values: ['id', 'type', 'address', 'chainId', 'blockNumber', 'createdAt'] as const,
 });
 
-const ContractCastChainIdAddressUniqueInput =
-  builder.inputType('ContractCastChainIdAddressUniqueInput', {
-  fields: (t) => ({
-    chainId: t.int({
-      required: true,
+const ContractCastChainIdAddressUniqueInput = builder.inputType(
+  'ContractCastChainIdAddressUniqueInput',
+  {
+    fields: (t) => ({
+      chainId: t.int({
+        required: true,
+      }),
+      address: t.string({
+        required: true,
+      }),
     }),
-    address: t.string({
-      required: true,
-    }),
-  }),
-});
+  }
+);
 
 builder.queryFields((t) => ({
   contractCast: t.prismaField({

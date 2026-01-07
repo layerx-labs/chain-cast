@@ -1,6 +1,12 @@
-import { ChainIds, ChainSupported } from '../types';
+import { ChainIds, type ChainSupported } from '../types';
 
+/**
+ * Configuration object defining all blockchain networks supported by ChainCast.
+ * Each chain includes RPC endpoints, WebSocket URLs, block explorers, and metadata.
+ * URLs can be overridden via environment variables or default to Ankr public endpoints.
+ */
 export const chainsSupported: ChainSupported = {
+  // Ethereum Mainnet - Production Ethereum network
   ethereum: {
     id: ChainIds.ETHEREUM,
     rpcUrl:
@@ -16,6 +22,7 @@ export const chainsSupported: ChainSupported = {
     shortName: 'Ethereum',
     primaryColor: '#DDDDDD',
   },
+  // Ethereum Sepolia Testnet - Ethereum's official test network
   sepolia: {
     id: ChainIds.SEPOLIA,
     rpcUrl:
@@ -31,6 +38,7 @@ export const chainsSupported: ChainSupported = {
     shortName: 'Sepolia',
     primaryColor: '#DDDDDD',
   },
+  // Polygon Amoy Testnet - Polygon's test network
   amoy: {
     id: ChainIds.AMOY,
     rpcUrl:
@@ -46,6 +54,7 @@ export const chainsSupported: ChainSupported = {
     shortName: 'Polygon Amoy Test',
     primaryColor: '#DDDDDD',
   },
+  // Polygon Mainnet - Production Polygon network (formerly Mumbai)
   polygon: {
     id: ChainIds.POLYGON,
     rpcUrl:
@@ -61,7 +70,7 @@ export const chainsSupported: ChainSupported = {
     shortName: 'Polygon Main Net',
     primaryColor: '#DDDDDD',
   },
-  // Arbitrum One Main Net
+  // Arbitrum One Mainnet - Layer 2 scaling solution on Ethereum
   arbitrum: {
     id: ChainIds.ARBITRUM_MAIN_NET,
     name: 'Arbitrum One Main Net',
@@ -77,7 +86,7 @@ export const chainsSupported: ChainSupported = {
     blockExplorer: 'https://arbiscan.io',
     primaryColor: '#DDDDDD',
   },
-  // Optimism Main Net
+  // Optimism Mainnet - Layer 2 scaling solution on Ethereum
   optimism: {
     id: ChainIds.OPTIMISM_MAIN_NET,
     name: 'Optimism Main Net',
@@ -93,7 +102,7 @@ export const chainsSupported: ChainSupported = {
     blockExplorer: 'https://optimistic.etherscan.io/',
     primaryColor: '#DDDDDD',
   },
-  // Base Main Net
+  // Base Mainnet - Coinbase's Layer 2 network on Ethereum
   base: {
     id: ChainIds.BASE_MAIN_NET,
     name: 'Base Main Net',
@@ -106,6 +115,7 @@ export const chainsSupported: ChainSupported = {
     blockExplorer: 'https://basescan.io/',
     primaryColor: '#DDDDDD',
   },
+  // Local development network - typically Ganache or Hardhat
   local: {
     id: process.env.LOCAL_CHAIN_ID ? Number(process.env.LOCAL_CHAIN_ID) : ChainIds.LOCAL,
     rpcUrl: process.env.WEB3_RPC_LOCAL_URL || 'http://127.0.0.1:8545',

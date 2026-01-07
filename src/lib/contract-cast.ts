@@ -4,19 +4,16 @@
  * It handles event recovery, listening, and processing for smart contracts.
  */
 
-import { Web3Connection } from '@taikai/dappkit';
-import { ContractEventListener, EventListenerHandler, Web3Event } from '@/types/events';
 import log from '@/services/log';
-import { ContractCastType, ContractCastStatus } from '@prisma/client';
-import { chainsSupported } from '@/constants/chains';
-import { InstructionMap, Program, VirtualMachine } from '@/types/vm';
-import { CastInfo, ContractCast, SecretManager, SecretMap } from '../types';
 import db from '@/services/prisma';
-import { ContractListenerFactory } from './contract-listener-factory';
-import EVMContractListener from './contract-listener';
-import { ModelFactory } from './model-factory';
+import type { ContractEventListener, EventListenerHandler, Web3Event } from '@/types/events';
+import type { InstructionMap, Program, VirtualMachine } from '@/types/vm';
+import { ContractCastStatus, type ContractCastType } from '@prisma/client';
+import type { Abi, Chain, PublicClient, Transport } from 'viem';
+import type { CastInfo, ContractCast, SecretManager, SecretMap } from '../types';
 import { EVMContractEventRetriever } from './contract-event-retriever';
-import { AbiItem } from 'web3-utils';
+import EVMContractListener from './contract-listener';
+import { createHttpClient } from './viem-client';
 
 /**
  * EVMContractCast class implements the ContractCast interface and EventListenerHandler
@@ -41,11 +38,11 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   /** Optional name for the contract cast */
   private _name: string | null;
   /** Ethereum contract address being monitored */
-  private _address: string;
+  private _address: `0x${string}`;
   /** Chain ID where the contract is deployed */
   private _chainId: number;
   /** Contract ABI (Application Binary Interface) */
-  private _abi: AbiItem[] = [];
+  private _abi: Abi = [];
   /** Last processed block number */
   private _blockNumber: number;
   /** Last processed transaction index within the block */
@@ -54,8 +51,8 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   private _listener: ContractEventListener | null = null;
   /** Virtual machine to execute programs in response to events */
   private _vm: VM;
-  /** Web3 connection to interact with the blockchain */
-  private _web3Con: Web3Connection;
+  /** Viem public client for blockchain interactions */
+  private _client: PublicClient<Transport, Chain>;
   /** Current status of the contract cast */
   private _status: ContractCastStatus = ContractCastStatus.IDLE;
   /** Manager for handling secrets needed by the contract cast */
@@ -92,13 +89,13 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     this._id = id;
     this._type = type;
     this._name = name;
-    this._address = address;
+    this._address = address as `0x${string}`;
     this._chainId = chainId;
 
     // For CUSTOM contract types, decode the ABI from base64
     if (this._type === 'CUSTOM') {
       const decodedABI = Buffer.from(abi, 'base64').toString('ascii');
-      this._abi = JSON.parse(decodedABI) as AbiItem[];
+      this._abi = JSON.parse(decodedABI) as Abi;
     }
 
     this._blockNumber = blockNumber;
@@ -107,13 +104,8 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     // Initialize the virtual machine with this cast as context
     this._vm = new vmConstructor(this, supportedProcessors);
 
-    // Set up Web3 connection using the appropriate chain RPC URL
-    const [chain] = Object.values(chainsSupported).filter((chain) => chain.id == this.getChainId());
-    const web3Con = new Web3Connection({
-      debug: false,
-      web3Host: chain.rpcUrl,
-    });
-    this._web3Con = web3Con;
+    // Set up viem client for blockchain interactions
+    this._client = createHttpClient(chainId);
 
     // Initialize the secret manager
     this._secretManager = new creator();
@@ -221,8 +213,6 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
     });
   }
 
-
-
   /**
    * Starts the Contract Cast by recovering past events and setting up event listening.
    *
@@ -240,12 +230,13 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
 
       await this._recoverEvents();
       log.d(`Stopping Recovering Cast=[${this.getName()}]`);
-      if ((this.getStatus()) !== ContractCastStatus.TERMINATED) {
+      if (this.getStatus() !== ContractCastStatus.TERMINATED) {
         await this._startContractListening();
         await this.setStatus(ContractCastStatus.LISTENING);
       }
-    } catch (e: Error | any) {
-      log.e(`Failed to start Contract Cast=[${this.getName()}] ${e.message}  ${e.stack}`);
+    } catch (e: unknown) {
+      const error = e as Error;
+      log.e(`Failed to start Contract Cast=[${this.getName()}] ${error.message}  ${error.stack}`);
     }
   }
 
@@ -268,21 +259,22 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
          * latest block position and transaction Index;
          * */
         if (this.getStatus() !== ContractCastStatus.RECOVERING) {
-          const currentBlock = await this._web3Con.eth.getBlockNumber();
-          const txCount = await this._web3Con.eth.getBlockTransactionCount(currentBlock);
+          const currentBlock = await this._client.getBlockNumber();
+          const block = await this._client.getBlock({ blockNumber: currentBlock });
+          const txCount = block.transactions.length;
           if (
-            currentBlock == this.getBlockNumber() &&
+            Number(currentBlock) === this.getBlockNumber() &&
             this.getTxIndex() &&
             txCount >= this.getTxIndex() + 1
           ) {
-            await this._updateCastIndex(currentBlock, this.getTxIndex() + 1);
+            await this._updateCastIndex(Number(currentBlock), this.getTxIndex() + 1);
           } else {
-            await this._updateCastIndex(currentBlock + 1);
+            await this._updateCastIndex(Number(currentBlock) + 1);
           }
         }
-
-      } catch (e: Error | any) {
-        log.e(`Failed to stop Contract Cast=[${this.getName()}]${e.message}  ${e.stack}`);
+      } catch (e: unknown) {
+        const error = e as Error;
+        log.e(`Failed to stop Contract Cast=[${this.getName()}]${error.message}  ${error.stack}`);
       }
     } else {
       await this.setStatus(ContractCastStatus.TERMINATED);
@@ -343,7 +335,7 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
    */
   async onEvent<N extends string, T>(event: Web3Event<N, T>) {
     log.d(
-      `New Event ${event.event} goint to be executed by the program ` +
+      `New Event ${event.event} going to be executed by the program ` +
         `${event.blockNumber}:${event.transactionIndex}`
     );
     // Set cast information as a global variable in the VM
@@ -366,8 +358,8 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
    *
    * @param changed - Information about the changed event
    */
-  onEventChanged(changed: any): void {
-    log.d(`Event Changed on Cast=[${this.getName()}] ${changed}`);
+  onEventChanged(changed: Web3Event<string, unknown>): void {
+    log.d(`Event Changed on Cast=[${this.getName()}] ${JSON.stringify(changed)}`);
   }
 
   /**
@@ -392,26 +384,24 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   }
 
   /**
-   * Sets up the contract event listener for the specified contract type.
-   *
-   * @param type - The contract type to set up the listener for
+   * Sets up the contract event listener.
    */
-  private async _setupListener(type: ContractCastType) {
-    const factory = new ContractListenerFactory();
+  private async _setupListener() {
     try {
-      // Create the appropriate listener for this contract type
-      this._listener = factory.create(
-        EVMContractListener,
-        type,
-        this._chainId,
-        this._address,
-        this._abi,
-        this._name
-      );
+      // Create the listener with viem configuration
+      this._listener = new EVMContractListener({
+        chainId: this._chainId,
+        address: this._address,
+        abi: this._abi,
+        name: this._name,
+      });
+
       // Set this cast as the event handler
       this._listener.setHandler(this);
+
       // Start listening from the minimum of current block and last processed block
-      const fromBlock = Math.min(this.getBlockNumber(), await this._web3Con.eth.getBlockNumber());
+      const currentBlock = await this._client.getBlockNumber();
+      const fromBlock = Math.min(this.getBlockNumber(), Number(currentBlock));
       await this._listener.startListening(fromBlock);
     } catch (e: any) {
       log.e(
@@ -423,14 +413,13 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
 
   /**
    * Starts listening for contract events.
-   * Sets up the appropriate listener based on contract type.
    */
   private async _startContractListening() {
     log.i(
       `Starting Consuming Events for Cast=[${this.getName()}] ${this._type} ` +
         `on ${this._address}`
     );
-    await this._setupListener(this._type);
+    await this._setupListener();
   }
 
   /**
@@ -447,31 +436,29 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
   /**
    * Recovers past events from the blockchain that occurred since the last processed block.
    *
-   * Creates a model for the contract, sets up an event retriever, and processes
+   * Uses the EVMContractEventRetriever with viem to fetch and process
    * all events from the last known position to the current block.
    */
   private async _recoverEvents() {
-    const currentBlock = await this._web3Con.eth.getBlockNumber();
-    if (this.getBlockNumber() <= currentBlock) {
+    const currentBlock = await this._client.getBlockNumber();
+    if (this.getBlockNumber() <= Number(currentBlock)) {
       const fromBlock = this.getBlockNumber();
       const fromTxIndex = this._transactionIndex;
       log.i(
         `Starting Recovering events Cast=[${this.getName()}] ` +
           `from=[${fromBlock}] txIndex=[${fromTxIndex}] to=[${currentBlock}]`
       );
-      // Create a model for this contract type
-      const model = new ModelFactory().create(
-        this._type,
-        this.getChainId(),
-        this.getAddress(),
-        this._abi
-      );
-      await model.loadAbi();
-      // Set up the event retriever
-      const retriever = new EVMContractEventRetriever(model);
+
+      // Set up the event retriever with viem
+      const retriever = new EVMContractEventRetriever({
+        chainId: this._chainId,
+        address: this._address,
+        abi: this._abi,
+      });
       retriever.setHandler(this);
+
       // Recover events from the last known position to the current block
-      await retriever.recover(fromBlock, fromTxIndex, currentBlock);
+      await retriever.recover(fromBlock, fromTxIndex, Number(currentBlock));
     }
   }
 

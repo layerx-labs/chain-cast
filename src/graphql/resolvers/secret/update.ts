@@ -1,9 +1,9 @@
+import crypto from 'node:crypto';
 import { ErrorsEnum } from '@/constants/index';
-import { Resolver } from '@/graphql/types';
+import type { Resolver } from '@/graphql/types';
 import { UserInputError } from '@/middleware/errors';
-import { Secret } from '@prisma/client';
-import crypto from 'crypto';
 import { encryptSecret } from '@/util/crypto';
+import type { Secret } from '@prisma/client';
 
 export type ArgsType = {
   where: {

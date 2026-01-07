@@ -1,52 +1,51 @@
-# Builder Image
+# Bun-optimized Dockerfile for ChainCast
+# Multi-stage build for smaller final image
 
-FROM node:20.13-alpine3.20 AS builder
-
-RUN apk add python3 g++ make \
-    ca-certificates \
-    nodejs \
-    yarn
-
+# Base image with Bun runtime
+FROM oven/bun:1-alpine AS base
 WORKDIR /app
 
-COPY package*.json ./
+# Install stage - dependencies only
+FROM base AS install
 
-COPY .npmrc ./
+# Copy package files and prisma schema
+COPY package.json bun.lockb* ./
+COPY prisma ./prisma/
 
-RUN npm install --no-audit
+# Install all dependencies (including devDependencies for prisma generate)
+RUN bun install --frozen-lockfile || bun install
 
+# Generate Prisma client
+RUN bunx prisma generate
+
+# Release stage - production image
+FROM base AS release
+
+# Copy node_modules from install stage
+COPY --from=install /app/node_modules ./node_modules
+
+# Copy prisma folder (includes generated client)
+COPY --from=install /app/prisma ./prisma
+
+# Copy application source code
 COPY . .
 
-RUN npx prisma generate
-
-RUN  npm run build
-    
-FROM node:20.13-alpine3.20 AS release
-
-RUN apk add python3 g++ make \
-    ca-certificates \
-    openssl-dev \
-    nodejs \
-    yarn
-
-WORKDIR /app
-
+# Create logs directory
 RUN mkdir -p logs
 
-COPY package*.json ./
-
-COPY . .
-
-RUN NODE_ENV=production npm install --only=production --no-audit
-
-COPY --from=builder /app/dist ./dist
-
-ENV NODE_ENV production
-
+# Set environment variables
+ENV NODE_ENV=production
 ENV PORT=55000
 
+# Expose the application port
 EXPOSE 55000
 
+# Mount volume for logs
 VOLUME /app/logs
 
-CMD ["npm","run", "start"]
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:55000/api/graphql || exit 1
+
+# Run the application with Bun
+CMD ["bun", "src/main.ts"]

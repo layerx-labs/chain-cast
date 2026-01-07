@@ -1,5 +1,5 @@
-import { PageInfo, Resolver } from '@/graphql/types';
-import { ContractCast, ContractCastType, Prisma } from '@prisma/client';
+import { PageInfo, type Resolver } from '@/graphql/types';
+import type { ContractCast, ContractCastType, Prisma } from '@prisma/client';
 
 export type ContractCastsArgType = {
   where?: {
@@ -76,6 +76,6 @@ export const contractCastsPageInfo: Resolver<PageInfo, ContractCastsArgPageInfoT
   const count = await ctx.db.contractCast.count({
     where,
   });
-  const pageCount = count % perPage == 0 ? count / perPage : Math.floor(count / perPage) + 1;
+  const pageCount = count % perPage === 0 ? count / perPage : Math.floor(count / perPage) + 1;
   return new PageInfo(perPage, pageCount, count);
 };
