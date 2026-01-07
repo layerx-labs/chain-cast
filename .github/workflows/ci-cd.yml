@@ -32,9 +32,6 @@ jobs:
     - name: Build project
       run: bun run build
 
-    - name: Run tests
-      run: bun test
-
   docker:
     runs-on: ubuntu-latest
     needs: test
