@@ -5,11 +5,11 @@
  */
 
 import type { Abi, PublicClient, Transport, Chain } from 'viem';
-import { ContractEventListener, EventListenerHandler, Web3Event } from '@/types/events';
+import type { ContractEventListener, EventListenerHandler, Web3Event } from '@/types/events';
 import log from '@/services/log';
-import { ContractCastType, ContractCastStatus } from '@prisma/client';
-import { InstructionMap, Program, VirtualMachine } from '@/types/vm';
-import { CastInfo, ContractCast, SecretManager, SecretMap } from '../types';
+import { type ContractCastType, ContractCastStatus } from '@prisma/client';
+import type { InstructionMap, Program, VirtualMachine } from '@/types/vm';
+import type { CastInfo, ContractCast, SecretManager, SecretMap } from '../types';
 import db from '@/services/prisma';
 import EVMContractListener from './contract-listener';
 import { EVMContractEventRetriever } from './contract-event-retriever';
@@ -272,8 +272,9 @@ export class EVMContractCast<VM extends VirtualMachine, T extends SecretManager>
             await this._updateCastIndex(Number(currentBlock) + 1);
           }
         }
-      } catch (e: Error | any) {
-        log.e(`Failed to stop Contract Cast=[${this.getName()}]${e.message}  ${e.stack}`);
+      } catch (e: unknown) {
+        const error = e as Error;
+        log.e(`Failed to stop Contract Cast=[${this.getName()}]${error.message}  ${error.stack}`);
       }
     } else {
       await this.setStatus(ContractCastStatus.TERMINATED);
