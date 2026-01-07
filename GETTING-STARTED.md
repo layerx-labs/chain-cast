@@ -1,33 +1,40 @@
 # Getting Started with ChainCast
 
-This guide will walk you through setting up ChainCast with a local Ganache blockchain, deploying an ERC20 token, and creating a program to monitor token transfers.
+This guide walks you through setting up ChainCast to monitor **$LX token transfers on Ethereum mainnet**. By the end, you'll have a working pipeline that captures real-time transfer events from a production blockchain.
+
+## What You'll Build
+
+You'll create a ChainCast that:
+- Connects to Ethereum mainnet via Alchemy RPC
+- Monitors the $LX token contract for Transfer events
+- Processes and logs transfer details (from, to, value)
 
 ## Prerequisites
 
-- Node.js >= 20.0.0
-- npm >= 8.0.0
-- PostgreSQL database
-- Git
+- **Bun**: >= 1.0.0 ([Install Bun](https://bun.sh/docs/installation))
+- **PostgreSQL**: Running database instance
+- **Alchemy Account**: Free tier works ([Sign up](https://www.alchemy.com/))
+- **Git**: For cloning the repository
 
 ## Step 1: Clone and Install Dependencies
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/layerx-labs/chain-cast.git
 cd chain-cast
 
 # Install dependencies
-npm install
+bun install
 ```
 
 ## Step 2: Set Up Environment Variables
 
 ```bash
 # Copy the environment example file
-cp env.example .env
+cp env.example .env.local
 ```
 
-Edit the `.env` file with your configuration:
+Edit the `.env.local` file with your configuration:
 
 ```env
 # Database Configuration
@@ -41,89 +48,30 @@ LOG_TO_FILE=false
 # API Configuration
 CHAIN_CAST_API_PORT=4400
 
-# Redis Configuration (optional for development)
-REDIS_URL=redis://localhost:6379
-
-# Local Blockchain Configuration
-LOCAL_CHAIN_ID=1337
-WEB3_RPC_LOCAL_URL=http://127.0.0.1:8545
-WEB3_WS_LOCAL_URL=ws://127.0.0.1:8545
+# Ethereum Mainnet RPC (Alchemy)
+# Get your API key from https://dashboard.alchemy.com/
+WEB3_RPC_ETH_MAIN_NET_URL=https://eth-mainnet.g.alchemy.com/v2/YOUR_ALCHEMY_API_KEY
+WEB3_WS_ETH_MAIN_NET_URL=wss://eth-mainnet.g.alchemy.com/v2/YOUR_ALCHEMY_API_KEY
 ```
+
+Replace `YOUR_ALCHEMY_API_KEY` with your actual Alchemy API key.
 
 ## Step 3: Set Up Database
 
 ```bash
 # Generate Prisma client
-npx prisma generate
+bunx prisma generate
 
 # Run database migrations
-npx prisma migrate deploy
+bunx prisma migrate deploy
 
 # (Optional) Reset database if needed
-npm run db:reset
+bun run db:reset
 ```
 
-## Step 4: Start Ganache Local Blockchain
+## Step 4: Create a ChainCast Program
 
-```bash
-# Start Ganache with predefined accounts and seed
-npm run ganache:dev
-```
-
-This command starts Ganache with:
-- Host: 0.0.0.0
-- Port: 8545
-- 50 accounts with 100 ETH each
-- Deterministic seed for consistent addresses
-
-## Step 5: Deploy ERC20 Token and Create ChainCast (Automated)
-
-In a new terminal window:
-
-```bash
-# Deploy ERC20 token and create ChainCast automatically
-npm run setup:ganache
-```
-
-This script will:
-- Deploy a token called "Trolha Token" (TROLHA) with 1,000,000 tokens
-- Create a ChainCast program to monitor Transfer events
-- Automatically create the ChainCast via the GraphQL API
-- Save configuration to `ganache-setup.json`
-
-**Alternative Manual Setup:**
-
-If you prefer to do it manually:
-
-```bash
-# Deploy the ERC20 token to Ganache
-npm run deploy:local
-```
-
-This will deploy a token called "Trolha Token" (TROLHA) with:
-- Name: Trolha Token
-- Symbol: TROLHA
-- Total Supply: 1,000,000 tokens
-- Owner: First account from the testing accounts
-
-**Note:** Save the deployed contract address for the next step.
-
-## Step 6: Start ChainCast Service
-
-In another terminal window:
-
-```bash
-# Start the ChainCast service
-npm run dev
-```
-
-The service will be available at `http://localhost:4400/api/graphql`
-
-**Note:** If you used the automated setup, the ChainCast should already be created and listening for events.
-
-## Step 7: Create a ChainCast Program (Manual Setup Only)
-
-If you're doing manual setup, create a program file to monitor ERC20 transfers. Create a file called `erc20-monitor.json`:
+Create a program file to monitor $LX token transfers. Create a file called `examples/lx-token-monitor.json`:
 
 ```json
 [
@@ -149,56 +97,107 @@ If you're doing manual setup, create a program file to monitor ERC20 transfers. 
 ```
 
 This program will:
-1. Debug the incoming event data
+1. Log the incoming event type and block number
 2. Filter for only "Transfer" events
-3. Debug the transfer details (from, to, value)
+3. Log the transfer details (sender, recipient, amount)
 
-**Reference:** See `examples/erc20-monitor.json` for a complete example with webhook integration.
+## Step 5: Start ChainCast Service
 
-## Step 8: Create ChainCast via API (Manual Setup Only)
+```bash
+# Start the ChainCast service
+bun run dev
+```
 
-If you're doing manual setup, use the GraphQL API to create a contract cast. You can use tools like GraphQL Playground or curl:
+The service will be available at `http://localhost:4400/api/graphql`
+
+## Step 6: Create ChainCast via GraphQL API
+
+Use the GraphQL API to create a contract cast for the $LX token. You can use the GraphQL Playground at `http://localhost:4400/api/graphql` or curl:
+
+### Using GraphQL Playground
+
+Navigate to `http://localhost:4400/api/graphql` and run:
+
+```graphql
+mutation createLXMonitor {
+  createContractCast(data: {
+    address: "0xcf3c8be2e2c42331da80ef210e9b1b307c03d36a"
+    name: "LX Token Transfer Monitor"
+    chainId: 1
+    startFrom: 0
+    abi: "W3siYW5vbnltb3VzIjpmYWxzZSwiaW5wdXRzIjpbeyJpbmRleGVkIjp0cnVlLCJpbnRlcm5hbFR5cGUiOiJhZGRyZXNzIiwibmFtZSI6ImZyb20iLCJ0eXBlIjoiYWRkcmVzcyJ9LHsiaW5kZXhlZCI6dHJ1ZSwiaW50ZXJuYWxUeXBlIjoiYWRkcmVzcyIsIm5hbWUiOiJ0byIsInR5cGUiOiJhZGRyZXNzIn0seyJpbmRleGVkIjpmYWxzZSwiaW50ZXJuYWxUeXBlIjoidWludDI1NiIsIm5hbWUiOiJ2YWx1ZSIsInR5cGUiOiJ1aW50MjU2In1dLCJuYW1lIjoiVHJhbnNmZXIiLCJ0eXBlIjoiZXZlbnQifV0="
+    type: CUSTOM
+    program: "W3sibmFtZSI6ImRlYnVnIiwiYXJncyI6eyJ2YXJpYWJsZXNUb0RlYnVnIjpbImV2ZW50LmV2ZW50IiwiZXZlbnQuYmxvY2tOdW1iZXIiLCJjYXN0LmlkIl19fSx7Im5hbWUiOiJmaWx0ZXItZXZlbnRzIiwiYXJncyI6eyJldmVudE5hbWUiOiJUcmFuc2ZlciJ9fSx7Im5hbWUiOiJkZWJ1ZyIsImFyZ3MiOnsidmFyaWFibGVzVG9EZWJ1ZyI6WyJldmVudC5hcmdzLmZyb20iLCJldmVudC5hcmdzLnRvIiwiZXZlbnQuYXJncy52YWx1ZSJdfX1d"
+  }) {
+    id
+    name
+    status
+  }
+}
+```
+
+### Using curl
 
 ```bash
 curl -X POST http://localhost:4400/api/graphql \
   -H "Content-Type: application/json" \
   -d '{
-    "query": "mutation createStream($address: String!, $name: String!, $chainId: Int!, $abi: String!, $type: ContractCastType!, $blockNumber: Int!, $program: String!) { createContractCast(data: { address: $address, chainId: $chainId, name: $name, startFrom: $blockNumber, abi: $abi, type: $type, program: $program }) { id } }",
+    "query": "mutation createStream($address: String!, $name: String!, $chainId: Int!, $abi: String!, $type: ContractCastType!, $blockNumber: Int!, $program: String!) { createContractCast(data: { address: $address, chainId: $chainId, name: $name, startFrom: $blockNumber, abi: $abi, type: $type, program: $program }) { id name status } }",
     "variables": {
-      "address": "YOUR_DEPLOYED_ERC20_ADDRESS",
-      "name": "ERC20 Transfer Monitor",
-      "chainId": 1337,
+      "address": "0xcf3c8be2e2c42331da80ef210e9b1b307c03d36a",
+      "name": "LX Token Transfer Monitor",
+      "chainId": 1,
       "blockNumber": 0,
-      "abi": "YOUR_ERC20_ABI_BASE64_ENCODED",
+      "abi": "W3siYW5vbnltb3VzIjpmYWxzZSwiaW5wdXRzIjpbeyJpbmRleGVkIjp0cnVlLCJpbnRlcm5hbFR5cGUiOiJhZGRyZXNzIiwibmFtZSI6ImZyb20iLCJ0eXBlIjoiYWRkcmVzcyJ9LHsiaW5kZXhlZCI6dHJ1ZSwiaW50ZXJuYWxUeXBlIjoiYWRkcmVzcyIsIm5hbWUiOiJ0byIsInR5cGUiOiJhZGRyZXNzIn0seyJpbmRleGVkIjpmYWxzZSwiaW50ZXJuYWxUeXBlIjoidWludDI1NiIsIm5hbWUiOiJ2YWx1ZSIsInR5cGUiOiJ1aW50MjU2In1dLCJuYW1lIjoiVHJhbnNmZXIiLCJ0eXBlIjoiZXZlbnQifV0=",
       "type": "CUSTOM",
       "program": "W3sibmFtZSI6ImRlYnVnIiwiYXJncyI6eyJ2YXJpYWJsZXNUb0RlYnVnIjpbImV2ZW50LmV2ZW50IiwiZXZlbnQuYmxvY2tOdW1iZXIiLCJjYXN0LmlkIl19fSx7Im5hbWUiOiJmaWx0ZXItZXZlbnRzIiwiYXJncyI6eyJldmVudE5hbWUiOiJUcmFuc2ZlciJ9fSx7Im5hbWUiOiJkZWJ1ZyIsImFyZ3MiOnsidmFyaWFibGVzVG9EZWJ1ZyI6WyJldmVudC5hcmdzLmZyb20iLCJldmVudC5hcmdzLnRvIiwiZXZlbnQuYXJncy52YWx1ZSJdfX1d"
     }
   }'
 ```
 
-**Important Notes:**
-- Replace `YOUR_DEPLOYED_ERC20_ADDRESS` with the actual address from Step 5
-- Replace `YOUR_ERC20_ABI_BASE64_ENCODED` with the base64-encoded ERC20 ABI
-- The `program` field contains the base64-encoded version of the JSON program from Step 7
+**Note:** The `abi` and `program` fields are base64-encoded. The ABI contains the ERC20 Transfer event signature, and the program contains the processing instructions from Step 4.
 
-## Step 9: Test the Setup
+## Step 7: Monitor Live Transfers
 
-1. **Transfer tokens** using the transfer script:
-   ```bash
-   npm run transfer:erc20
-   ```
+Once the ChainCast is created, it will:
+1. Start recovering historical Transfer events from the $LX token contract
+2. Begin listening for new Transfer events in real-time
+3. Process each event through your program pipeline
+4. Output debug logs showing transfer details
 
-2. **Monitor logs** in the ChainCast service terminal to see the transfer events being processed
+Check the ChainCast service terminal to see the transfer events being processed:
 
-3. **Check the database** to see the contract cast status:
-   ```bash
-   npx prisma studio
-   ```
+```
+[DEBUG] event.event: Transfer
+[DEBUG] event.blockNumber: 19234567
+[DEBUG] event.args.from: 0x1234...
+[DEBUG] event.args.to: 0x5678...
+[DEBUG] event.args.value: 1000000000000000000
+```
 
-4. **View configuration** (if using automated setup):
-   ```bash
-   cat ganache-setup.json
-   ```
+## Step 8: Query the ChainCast Status
+
+Check the status of your ChainCast using the GraphQL API:
+
+```graphql
+query getChainCasts {
+  contractCasts {
+    id
+    name
+    status
+    chainId
+    lastBlock
+    address
+  }
+}
+```
+
+## About the $LX Token
+
+- **Contract Address**: `0xcf3c8be2e2c42331da80ef210e9b1b307c03d36a`
+- **Chain**: Ethereum Mainnet (Chain ID: 1)
+- **Token**: LayerX Token ($LX)
+- **View on Etherscan**: [LX Token Contract](https://etherscan.io/token/0xcf3c8be2e2c42331da80ef210e9b1b307c03d36a)
 
 ## Troubleshooting
 
@@ -206,52 +205,67 @@ curl -X POST http://localhost:4400/api/graphql \
 
 1. **Database Connection Error**
    - Ensure PostgreSQL is running
-   - Check your DATABASE_URL in .env
-   - Run `npx prisma migrate deploy`
+   - Check your `DATABASE_URL` in `.env.local`
+   - Run `bunx prisma migrate deploy`
 
-2. **Ganache Connection Error**
-   - Ensure Ganache is running on port 8545
-   - Check the ganache:dev script in package.json
+2. **RPC Connection Error**
+   - Verify your Alchemy API key is correct
+   - Ensure you're using the Ethereum mainnet endpoints
+   - Check Alchemy dashboard for rate limits
 
-3. **Contract Deployment Failed**
-   - Ensure Ganache is running
-   - Check that the testing accounts have sufficient ETH
-   - Verify the chain ID matches (1337)
+3. **No Events Appearing**
+   - The $LX token may have low transfer activity
+   - Set `startFrom: 0` to recover historical events
+   - Check logs for any error messages
 
 4. **ChainCast Service Won't Start**
-   - Check all environment variables in .env
+   - Check all environment variables in `.env.local`
    - Ensure database migrations are applied
    - Check port 4400 is available
 
-### Useful Commands
+### Viewing Logs
 
+For more detailed logging:
 ```bash
-# Reset everything and start fresh
-npm run db:reset
-npm run ganache:dev
+# Set debug logging in .env.local
+LOG_LEVEL=debug
+```
 
-# In another terminal
-npm run deploy:local
+### Database Inspection
 
-# In another terminal
-npm run dev
+Use Prisma Studio to inspect the database:
+```bash
+bunx prisma studio
 ```
 
 ## Next Steps
 
-- Explore the available instructions in `src/instructions/`
-- Create more complex programs with multiple instructions
-- Add webhook notifications for transfers
-- Implement data transformation and filtering
-- Set up monitoring and alerting
+Now that you have ChainCast monitoring $LX transfers, you can:
 
-## API Reference
+- **Add Webhook Notifications**: Send transfer data to external services
+  ```json
+  {
+    "name": "webhook",
+    "args": {
+      "url": "https://your-api.com/webhook",
+      "method": "POST",
+      "body": "event"
+    }
+  }
+  ```
 
-The ChainCast GraphQL API provides the following main operations:
+- **Write Custom Pipelines with YAML**: Use the DSL compiler for more complex logic
+  ```bash
+  bun run castc compile my-pipeline.yaml --base64
+  ```
 
-- `createContractCast`: Create a new contract cast
-- `deleteContractCast`: Delete an existing contract cast
-- `contractCast`: Query a specific contract cast
-- `contractCasts`: List all contract casts
+- **Monitor Multiple Contracts**: Create additional ChainCasts for other tokens or contracts
 
-For more information, visit the GraphQL playground at `http://localhost:4400/api/graphql` when the service is running.
+- **Explore the Instructions**: See `src/instructions/` for all available processing instructions
+
+## Additional Resources
+
+- [DSL Programming Guide](./doc/DSL-GUIDE.md) - Write custom event processing pipelines
+- [API Documentation](./doc/README.md) - Full GraphQL API reference
+- [Examples](./examples/) - Sample programs and configurations
+- [GitHub Issues](https://github.com/layerx-labs/chain-cast/issues) - Report bugs or request features

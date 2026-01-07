@@ -91,7 +91,7 @@ export type __Config = {
 export type ChainNames =
   | 'ethereum' // Ethereum Mainnet
   | 'amoy' // Polygon Amoy Testnet
-  | 'local' // Local development network (Ganache/Hardhat)
+  | 'local' // Local development network (Hardhat/Anvil)
   | 'polygon' // Polygon Mainnet
   | 'sepolia' // Ethereum Sepolia Testnet
   | 'arbitrum' // Arbitrum One Mainnet

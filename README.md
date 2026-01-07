@@ -137,34 +137,17 @@ export class CustomInstruction implements Instruction {
    This will start:
    - API server at `http://localhost:4400/api/graphql`
 
-## 🎯 Getting Started with Ganache
+## 🎯 Getting Started
 
-For a complete setup with local blockchain testing, follow our comprehensive guide:
+Ready to monitor real blockchain events? Follow our comprehensive guide:
 
 **[📖 Getting Started Guide](./GETTING-STARTED.md)**
 
-This guide includes:
-- Setting up Ganache local blockchain
-- Deploying ERC20 tokens
-- Creating ChainCast programs to monitor transfers
-- Automated setup scripts
-- Troubleshooting tips
-
-### Quick Ganache Setup
-
-```bash
-# Start Ganache
-bun run ganache:dev
-
-# Deploy ERC20 and create ChainCast (automated)
-bun run setup:ganache
-
-# Start ChainCast service
-bun run dev
-
-# Test with token transfers (if available)
-bun scripts/transfer-erc20.ts
-```
+This guide walks you through monitoring **$LX token transfers on Ethereum mainnet**, demonstrating how ChainCast works with production chains. You'll learn to:
+- Set up ChainCast with Alchemy RPC
+- Create event processing programs
+- Monitor live token transfers in real-time
+- Use the GraphQL API to manage casts
 
 ## 🔧 Writing Custom Pipelines
 

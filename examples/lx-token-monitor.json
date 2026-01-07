@@ -1,0 +1,20 @@
+[
+  {
+    "name": "debug",
+    "args": {
+      "variablesToDebug": ["event.event", "event.blockNumber", "cast.id"]
+    }
+  },
+  {
+    "name": "filter-events",
+    "args": {
+      "eventName": "Transfer"
+    }
+  },
+  {
+    "name": "debug",
+    "args": {
+      "variablesToDebug": ["event.args.from", "event.args.to", "event.args.value"]
+    }
+  }
+]
