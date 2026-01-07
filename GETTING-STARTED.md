@@ -4,7 +4,7 @@ This guide walks you through setting up ChainCast to monitor **$LX token transfe
 
 ## What You'll Build
 
-You'll create a ChainCast that:
+You'll create a Contract Cast that:
 - Connects to Ethereum mainnet via Alchemy RPC
 - Monitors the $LX token contract for Transfer events
 - Processes and logs transfer details (from, to, value)
@@ -71,7 +71,7 @@ bunx prisma migrate deploy
 bun run db:reset
 ```
 
-## Step 4: Create a ChainCast Program
+## Step 4: Create a Contract Cast Program
 
 Create a program file to monitor $LX token transfers. Create a file called `examples/lx-token-monitor.json`:
 
@@ -112,7 +112,7 @@ bun run dev
 
 The service will be available at `http://localhost:4400/api/graphql`
 
-## Step 6: Create ChainCast via GraphQL API
+## Step 6: Create Contract Cast via GraphQL API
 
 Use the GraphQL API to create a contract cast for the $LX token. You can use the GraphQL Playground at `http://localhost:4400/api/graphql` or curl:
 
@@ -161,7 +161,7 @@ curl -X POST http://localhost:4400/api/graphql \
 
 ## Step 7: Monitor Live Transfers
 
-Once the ChainCast is created, it will:
+Once the Contract Cast is created, it will:
 1. Start recovering historical Transfer events from the $LX token contract
 2. Begin listening for new Transfer events in real-time
 3. Process each event through your program pipeline
@@ -177,9 +177,9 @@ Check the ChainCast service terminal to see the transfer events being processed:
 [DEBUG] event.args.value: 1000000000000000000
 ```
 
-## Step 8: Query the ChainCast Status
+## Step 8: Query the Contract Cast Status
 
-Check the status of your ChainCast using the GraphQL API:
+Check the status of your Contract Cast using the GraphQL API:
 
 ```graphql
 query getChainCasts {
@@ -261,7 +261,7 @@ Now that you have ChainCast monitoring $LX transfers, you can:
   bun run castc compile my-pipeline.yaml --base64
   ```
 
-- **Monitor Multiple Contracts**: Create additional ChainCasts for other tokens or contracts
+- **Monitor Multiple Contracts**: Create additional Contract Casts for other tokens or contracts
 
 - **Explore the Instructions**: See `src/instructions/` for all available processing instructions
 
