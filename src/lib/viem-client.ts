@@ -95,7 +95,7 @@ export function getViemChain(chainId: number): Chain {
 /**
  * Configuration options for creating viem clients.
  */
-export type ViemClientOptions = {
+export interface ViemClientOptions {
   /** Number of retry attempts for failed requests */
   retryCount?: number;
   /** Delay between retries in milliseconds */
@@ -104,7 +104,7 @@ export type ViemClientOptions = {
   timeout?: number;
   /** Enable multicall batching for eth_call requests */
   batch?: boolean;
-};
+}
 
 const DEFAULT_OPTIONS: Required<ViemClientOptions> = {
   retryCount: 5,
