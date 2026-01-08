@@ -1,8 +1,8 @@
-import { describe, expect, it, beforeEach, mock } from 'bun:test';
-import type { InstructionMap, Program, VirtualMachine } from '@/types/vm';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import type { CastInfo, SecretManager, SecretMap } from '@/types';
-import { ContractCastStatus, ContractCastType } from '@prisma/client';
 import type { Web3Event } from '@/types/events';
+import type { InstructionMap, Program, VirtualMachine } from '@/types/vm';
+import { ContractCastStatus, ContractCastType } from '@prisma/client';
 
 // Mock dependencies
 const mockPrismaUpdate = mock(() => Promise.resolve({}));

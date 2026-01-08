@@ -8,21 +8,21 @@
  * - Application context with database and service access
  */
 
+// Import custom error class
+import { UserInputError } from '@/middleware/errors';
+// Import Prisma database client
+import prisma from '@/services/prisma';
+// Import application context type
+import type { AppContext } from '@/types/index';
 // Import core Pothos GraphQL schema builder
 import SchemaBuilder from '@pothos/core';
 // Import Prisma plugin for automatic GraphQL types from database schema
 import PrismaPlugin from '@pothos/plugin-prisma';
 import type PrismaTypes from '@pothos/plugin-prisma/generated';
-// Import Prisma database client
-import prisma from '@/services/prisma';
-// Import GraphQL scalar resolvers for extended types
-import { DateResolver, BigIntResolver, URLResolver, JSONResolver } from 'graphql-scalars';
-// Import application context type
-import type { AppContext } from '@/types/index';
 // Import validation plugin for input validation
 import ValidationPlugin from '@pothos/plugin-validation';
-// Import custom error class
-import { UserInputError } from '@/middleware/errors';
+// Import GraphQL scalar resolvers for extended types
+import { BigIntResolver, DateResolver, JSONResolver, URLResolver } from 'graphql-scalars';
 
 /**
  * Configured GraphQL schema builder instance.

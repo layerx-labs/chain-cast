@@ -1,11 +1,11 @@
 import type { ChainCastManager } from '@/services/chaincast-manager';
-import type { ContractCastType, ContractCastStatus, PrismaClient } from '@prisma/client';
+import type { ChainCastSecretManager } from '@/services/secret-manager';
+import type { ContractCastStatus, ContractCastType, PrismaClient } from '@prisma/client';
 import type LogService from '@taikai/scribal';
 import type { LogLevel } from '@taikai/scribal';
-import type { InstructionMap, Program, VirtualMachine } from './vm';
+import type { Abi, Chain, PublicClient, Transport } from 'viem';
 import type { Web3Event } from './events';
-import type { ChainCastSecretManager } from '@/services/secret-manager';
-import type { PublicClient, Transport, Chain, Abi } from 'viem';
+import type { InstructionMap, Program, VirtualMachine } from './vm';
 
 /**
  * Application context provided to all GraphQL resolvers.
@@ -91,7 +91,7 @@ export type __Config = {
 export type ChainNames =
   | 'ethereum' // Ethereum Mainnet
   | 'amoy' // Polygon Amoy Testnet
-  | 'local' // Local development network (Ganache/Hardhat)
+  | 'local' // Local development network (Hardhat/Anvil)
   | 'polygon' // Polygon Mainnet
   | 'sepolia' // Ethereum Sepolia Testnet
   | 'arbitrum' // Arbitrum One Mainnet

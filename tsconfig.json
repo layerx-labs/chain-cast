@@ -13,6 +13,7 @@
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
     "paths": {
+      "@/*": ["src/*"],
       "@/lib/*": ["src/lib/*"],
       "@/util/*": ["src/util/*"],
       "@/graphql/*": ["src/graphql/*"],
@@ -23,7 +24,9 @@
       "@/resolvers/*": ["src/graphql/resolvers/*"],
       "@/config/*": ["src/config/*"],
       "@/middleware/*": ["src/middleware/*"],
-      "@/processors/*": ["src/instructions/*"]
+      "@/processors/*": ["src/instructions/*"],
+      "@/dsl/*": ["src/dsl/*"],
+      "@/dsl": ["src/dsl"]
     },
     /* Type Checking */
     "strict": true,

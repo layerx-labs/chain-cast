@@ -239,21 +239,21 @@ ChainCast automatically recovers missed events:
 - `bun run format` - Format code with Biome
 - `bun run check` - Run all Biome checks (lint + format)
 - `bun run check:fix` - Fix all Biome issues
-- `bun run ganache:dev` - Start local Ganache blockchain
-- `bun run setup:ganache` - Setup Ganache with test contracts
 
-### Local Development with Ganache
+### Local Development
 
-For testing without mainnet/testnet:
+For local blockchain testing (Hardhat, Anvil, or similar):
 
-1. **Start Ganache**:
+1. **Start your local blockchain** (e.g., Anvil):
    ```bash
-   bun run ganache:dev
+   anvil
    ```
 
-2. **Deploy Test Contracts**:
-   ```bash
-   bun run setup:ganache
+2. **Configure local chain** in `.env.local`:
+   ```env
+   LOCAL_CHAIN_ID=31337
+   WEB3_RPC_LOCAL_URL=http://127.0.0.1:8545
+   WEB3_WS_LOCAL_URL=ws://127.0.0.1:8545
    ```
 
 3. **Start ChainCast**:

@@ -1,6 +1,6 @@
-import { describe, expect, it, beforeEach, mock } from 'bun:test';
+import { beforeEach, describe, expect, it, mock } from 'bun:test';
 import { Set as SetInstruction } from '@/processors/set';
-import type { VirtualMachine, InstructionCall } from '@/types/vm';
+import type { InstructionCall, VirtualMachine } from '@/types/vm';
 
 // Mock the log service
 mock.module('@/services/log', () => ({

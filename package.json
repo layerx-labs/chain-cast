@@ -1,8 +1,11 @@
 {
   "name": "chain-cast",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "A DAO-governed blockchain event processing platform designed to listen, process and stream events from smart contracts deployed on various EVM blockchain networks",
   "main": "src/main.ts",
+  "bin": {
+    "castc": "./src/dsl/cli/castc.ts"
+  },
   "scripts": {
     "dev": "bun --watch src/main.ts",
     "dev:debug": "bun --inspect=4321 --watch src/main.ts",
@@ -21,14 +24,16 @@
     "db:reset": "bunx prisma migrate reset --force",
     "db:migrate": "bunx prisma migrate dev",
     "db:push": "bunx prisma db push",
-    "setup:ganache": "bun scripts/setup-ganache.ts",
-    "ganache:dev": "ganache -h 0.0.0.0 -p 8545 -a 50 -s 0x6d2119524d65ea0b15b214ef260d3acdf8ca0ec6ec68045b5785d970f5ad97bd3d0025d212e625a8a21920852cc165c10faa6d8387a0c2530d1ffc0d265d92935749"
+    "castc": "bun src/dsl/cli/castc.ts",
+    "castc:compile": "bun src/dsl/cli/castc.ts compile",
+    "castc:validate": "bun src/dsl/cli/castc.ts validate",
+    "castc:decompile": "bun src/dsl/cli/castc.ts decompile"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/layerx-labs/chain-cast.git"
   },
-  "author": "LayerX Labs <chaincast@layerx.xyz>",
+  "author": "LayerX Labs <gm@layerx.xyz>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/layerx-labs/chain-cast/issues"
@@ -51,37 +56,35 @@
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@types/bun": "latest",
-    "@types/uuid": "^9.0.2",
-    "ganache": "^7.8.0",
+    "@types/uuid": "^9.0.8",
     "husky": "^8.0.3",
-    "prisma": "^4.15.0",
-    "typescript": "^5.0.4"
+    "prisma": "^4.16.2",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^8.8.1",
-    "@envelop/core": "^4.0.0",
-    "@envelop/graphql-middleware": "^5.0.0",
+    "@elastic/elasticsearch": "^8.19.1",
+    "@envelop/core": "^4.0.3",
+    "@envelop/graphql-middleware": "^5.0.3",
     "@graphql-yoga/node": "^3.9.1",
     "@paljs/plugins": "^5.3.3",
-    "@pothos/core": "^3.30.0",
-    "@pothos/plugin-prisma": "^3.51.1",
-    "@pothos/plugin-validation": "^3.9.2",
-    "@prisma/client": "^4.15.0",
-    "@taikai/scribal": "^1.0.3",
-    "@types/cookie": "^0.5.1",
-    "@types/express": "^4.17.17",
-    "axios": "^1.4.0",
-    "bullmq": "^3.15.1",
-    "cookie": "^0.5.0",
-    "cookie-parser": "^1.4.6",
-    "express": "^4.18.2",
+    "@pothos/core": "^3.41.2",
+    "@pothos/plugin-prisma": "^3.65.3",
+    "@pothos/plugin-validation": "^3.10.2",
+    "@prisma/client": "^4.16.2",
+    "@taikai/scribal": "^1.0.4",
+    "@types/express": "^4.17.25",
+    "axios": "^1.13.2",
+    "bullmq": "^3.16.2",
+    "commander": "^14.0.2",
+    "express": "^4.22.1",
     "googleapis": "^118.0.0",
-    "graphql": "^16.6.0",
-    "graphql-request": "^7.2.0",
-    "graphql-scalars": "^1.22.0",
-    "handlebars": "^4.7.7",
+    "graphql": "^16.12.0",
+    "graphql-request": "^7.4.0",
+    "graphql-scalars": "^1.25.0",
+    "handlebars": "^4.7.8",
     "inflection": "^2.0.1",
-    "viem": "^2.21.0",
-    "zod": "^3.21.4"
+    "viem": "^2.43.5",
+    "yaml": "^2.8.2",
+    "zod": "^3.25.76"
   }
 }

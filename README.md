@@ -12,14 +12,17 @@
 ## 🌟 Features
 
 ### Event Listening and Recovery
+- **Universal Event Support**: Process **any event** from any smart contract—not limited to ERC-20 transfers. Simply provide your contract's ABI when creating a Cast, and ChainCast will monitor all specified events
 - **Real-time Event Monitoring**: Establishes connections with smart contracts and monitors their event logs in real-time
 - **Automatic Recovery**: Automatically recovers missed events during network interruptions or downtime
 - **Robust Data Flow**: Ensures uninterrupted data flow with comprehensive error handling
 
 ### Programmable Event Processing Pipeline
+- **YAML-Based DSL**: Write event processing pipelines using a simple, declarative YAML syntax
 - **Customizable Processing**: Define customized event processing pipelines tailored to your specific needs
 - **Flexible Configuration**: Programmable configurations for defining sequences of processors and actions
 - **Extensible Framework**: Support for data transformation, filtering, enrichment, aggregation, and custom operations
+- **Built-in Compiler**: Validate and compile DSL pipelines with the `castc` CLI tool
 
 ### Extensible Instructions Architecture
 Chain Cast's virtual machine is built around a modular instructions architecture that allows for easy extension and customization:
@@ -135,37 +138,75 @@ export class CustomInstruction implements Instruction {
    This will start:
    - API server at `http://localhost:4400/api/graphql`
 
-## 🎯 Getting Started with Ganache
+## 🎯 Getting Started
 
-For a complete setup with local blockchain testing, follow our comprehensive guide:
+Ready to monitor real blockchain events? Follow our comprehensive guide:
 
 **[📖 Getting Started Guide](./GETTING-STARTED.md)**
 
-This guide includes:
-- Setting up Ganache local blockchain
-- Deploying ERC20 tokens
-- Creating ChainCast programs to monitor transfers
-- Automated setup scripts
-- Troubleshooting tips
+This guide walks you through monitoring **$LX token transfers on Ethereum mainnet**, demonstrating how ChainCast works with production chains. You'll learn to:
+- Set up ChainCast with Alchemy RPC
+- Create event processing programs
+- Monitor live token transfers in real-time
+- Use the GraphQL API to manage casts
 
-### Quick Ganache Setup
+## 🔧 Writing Custom Pipelines
+
+Chain Cast features a powerful YAML-based DSL (Domain-Specific Language) that allows you to create custom event processing pipelines without writing code. Pipelines are fully programmable and can include:
+
+- **Event filtering** - Process only specific events
+- **Data transformations** - Manipulate strings, numbers, objects, and arrays
+- **Conditional logic** - Branch execution based on event data
+- **External integrations** - Send data to webhooks, queues, databases, and more
+
+### Example Pipeline
+
+```yaml
+version: "1.0"
+name: "High Value Transfer Monitor"
+description: "Alert on large token transfers"
+
+program:
+  - filter-events:
+      events: ["Transfer"]
+
+  - set:
+      variable: threshold
+      value: 1000000000000000000000  # 1000 tokens
+
+  - condition:
+      when:
+        all:
+          - variable: event.returnValues.value
+            operator: ">"
+            compareTo: threshold
+      then: branch_0
+      else: branch_1
+      branches:
+        branch_0:
+          - webhook:
+              url: "https://api.example.com/alerts"
+              body: event
+        branch_1:
+          - debug:
+              variables: [event]
+```
+
+### Compile and Deploy
 
 ```bash
-# Start Ganache
-bun run ganache:dev
+# Validate your pipeline
+bun run castc validate my-pipeline.yaml
 
-# Deploy ERC20 and create ChainCast (automated)
-bun run setup:ganache
-
-# Start ChainCast service
-bun run dev
-
-# Test with token transfers (if available)
-bun scripts/transfer-erc20.ts
+# Compile to base64 for the ChainCast API
+bun run castc compile my-pipeline.yaml --base64
 ```
+
+For the complete DSL reference and more examples, see the **[DSL Programming Guide](./doc/DSL-GUIDE.md)**.
 
 ## 📚 Documentation
 
+- [DSL Programming Guide](./doc/DSL-GUIDE.md) - Learn how to write custom event processing pipelines
 - [API Documentation](./doc/README.md)
 - [Contributing Guidelines](./CONTRIBUTING.md)
 - [Code of Conduct](./CODE_OF_CONDUCT.md)

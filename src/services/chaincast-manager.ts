@@ -42,7 +42,10 @@ export class ChainCastManager<
   private _seretManagerCreator: new () => S;
 
   /** Constructor function for creating virtual machine instances */
-  private _vmCreator: new (info: CastInfo, supportedInstructions: InstructionMap) => VM;
+  private _vmCreator: new (
+    info: CastInfo,
+    supportedInstructions: InstructionMap
+  ) => VM;
 
   /**
    * Creates a new ChainCastManager instance with the specified implementations.
