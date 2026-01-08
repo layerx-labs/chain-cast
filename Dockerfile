@@ -1,8 +1,8 @@
 # Bun-optimized Dockerfile for ChainCast
 # Multi-stage build for smaller final image
 
-# Base image with Bun runtime
-FROM oven/bun:1-alpine AS base
+# Base image with Bun runtime (using Debian for Prisma compatibility)
+FROM oven/bun:1-debian AS base
 WORKDIR /app
 
 # Install stage - dependencies only
