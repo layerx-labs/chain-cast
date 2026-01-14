@@ -4,10 +4,10 @@ This document provides a comprehensive guide for AI assistants working on the Ch
 
 ## Project Overview
 
-**Chain Cast** is a DAO-governed blockchain event processing platform designed to listen, process, and stream events from smart contracts deployed on various EVM blockchain networks.
+**Chain Cast** is an open-source blockchain event processing platform designed to listen, process, and stream events from smart contracts deployed on various EVM blockchain networks.
 
 - **Repository**: https://github.com/layerx-labs/chain-cast
-- **License**: MIT (open source) / Commercial licenses governed by CHAINCAST DAO
+- **License**: MIT (open source) / Commercial licenses require LayerX Labs approval
 - **Runtime**: Bun (fast JavaScript runtime with native TypeScript support)
 - **Main Branch**: `master`
 - **Current Branch**: `hcv_migration_to_bun`
@@ -542,13 +542,11 @@ Key environment variables:
 - `CHAIN_CAST_API_PORT` - API server port (default: 4400)
 - `NODE_ENV` - Environment (development/production)
 
-## DAO Governance
+## Commercial Licensing
 
-Chain Cast is governed by the CHAINCAST DAO:
-- Commercial licenses require DAO approval
-- Major features voted by $CAST token holders
-- Community-driven development
-- Contact: chaincast@layerx.xyz
+Chain Cast commercial licensing is managed by LayerX Labs:
+- Commercial use requires LayerX Labs approval
+- Contact: gm@layerx.xyz
 
 ## Troubleshooting
 
@@ -615,5 +613,5 @@ When contributing code:
 
 ---
 
-**Last Updated**: 2026-01-07
-**Maintained by**: LayerX Labs & CHAINCAST DAO Community
+**Last Updated**: 2026-01-14
+**Maintained by**: LayerX Labs

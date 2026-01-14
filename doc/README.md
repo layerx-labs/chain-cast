@@ -340,5 +340,5 @@ You can test the API using tools like:
 
 For API-related issues or questions:
 - Create an issue on [GitHub](https://github.com/layerx-labs/chain-cast/issues)
-- Contact: chaincast@layerx.xyz
+- Contact: gm@layerx.xyz
 
