@@ -13,12 +13,12 @@ Use this section to tell people about which versions of your project are current
 
 We take the security of Chain Cast seriously. If you believe you have found a security vulnerability, please report it to us as described below.
 
-**🏛️ DAO Governance**: Security decisions and vulnerability responses are governed by the CHAINCAST DAO. Critical security issues may require DAO voting for resolution.
+Security decisions and vulnerability responses are managed by LayerX Labs.
 
 ### Reporting Process
 
 1. **DO NOT** create a public GitHub issue for the vulnerability.
-2. **DO** email your findings to `chaincast@layerx.xyz` with the subject line `[SECURITY] Chain Cast Vulnerability Report`.
+2. **DO** email your findings to `gm@layerx.xyz` with the subject line `[SECURITY] Chain Cast Vulnerability Report`.
 3. **DO** include a detailed description of the vulnerability, including:
    - Type of issue (buffer overflow, SQL injection, cross-site scripting, etc.)
    - Full paths of source file(s) related to the vulnerability
@@ -32,7 +32,6 @@ We take the security of Chain Cast seriously. If you believe you have found a se
 
 - You will receive an acknowledgment within 48 hours
 - We will investigate and provide updates on the progress
-- For critical vulnerabilities, DAO governance may be involved
 - Once the issue is confirmed, we will:
   - Work on a fix
   - Release a security update
@@ -45,14 +44,6 @@ We ask that you:
 - Avoid accessing or modifying other users' data
 - Avoid actions that could negatively impact other users' experience
 - Not attempt to gain access to our servers or infrastructure
-
-### DAO Security Governance
-
-For critical security issues:
-- **DAO Voting**: Critical security decisions may require DAO vote
-- **Emergency Response**: DAO can authorize emergency security measures
-- **Funding**: Security fixes may be funded through DAO treasury
-- **Transparency**: Security decisions are publicly documented
 
 ## Security Best Practices
 
@@ -83,27 +74,13 @@ Security updates will be released as patch versions (e.g., 1.0.1, 1.0.2) and wil
 ### Security Update Process
 
 1. **Vulnerability Assessment**: Security team assesses the vulnerability
-2. **DAO Notification**: Critical issues are reported to DAO governance
-3. **Fix Development**: Security fixes are developed and tested
-4. **DAO Approval**: For critical fixes, DAO may vote on deployment
-5. **Release**: Security update is released to the community
+2. **Fix Development**: Security fixes are developed and tested
+3. **Release**: Security update is released to the community
 
 ## Contact
 
 For security-related questions or concerns, please contact:
-- **Email**: chaincast@layerx.xyz
-- **DAO Governance**: https://dao.chaincast.xyz
+- **Email**: gm@layerx.xyz
 - **PGP Key**: [Available upon request]
-
-## Security Bounty Program
-
-The CHAINCAST DAO may offer security bounties for critical vulnerabilities:
-
-- **Critical Vulnerabilities**: Up to $10,000 in $CAST tokens
-- **High Severity**: Up to $5,000 in $CAST tokens
-- **Medium Severity**: Up to $1,000 in $CAST tokens
-- **Low Severity**: Recognition and acknowledgment
-
-Bounty amounts and eligibility are determined by DAO governance.
 
 Thank you for helping keep Chain Cast secure!

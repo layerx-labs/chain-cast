@@ -8,7 +8,7 @@ tags: []
 
 Thank you for your interest in contributing to Chain Cast! This document provides guidelines and information for contributors.
 
-**🏛️ DAO-Governed Project**: Chain Cast is controlled and managed by $CAST token holders through the CHAINCAST DAO. All commercial licenses and major governance decisions are made by the DAO community.
+**Open Source Project**: Chain Cast is developed and maintained by LayerX Labs. Commercial licenses are managed by LayerX Labs.
 
 ## Table of Contents
 
@@ -29,21 +29,11 @@ Thank you for your interest in contributing to Chain Cast! This document provide
 
 This project and everyone participating in it is governed by our [Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
-## DAO Governance
+## Commercial Licensing
 
-### Commercial Licensing
 - **Open Source**: MIT License for open source and non-commercial use
-- **Commercial Use**: Requires DAO approval and commercial license
-- **Enterprise**: Enterprise licensing governed by DAO governance
-- **Revenue**: All commercial licensing revenue managed by DAO treasury
-
-### Governance Process
-- **Proposals**: Submit governance proposals through DAO platform
-- **Voting**: $CAST token holders vote on key decisions
-- **Transparency**: All governance decisions are publicly visible
-- **Participation**: All token holders can participate in governance
-
-For more information, see our [Governance Documentation](./GOVERNANCE.md).
+- **Commercial Use**: Requires LayerX Labs approval and commercial license
+- **Contact**: gm@layerx.xyz for commercial licensing inquiries
 
 ## Getting Started
 
@@ -333,7 +323,6 @@ src/
 - `doc/README.md`: API documentation
 - `CONTRIBUTING.md`: This file
 - `CODE_OF_CONDUCT.md`: Community guidelines
-- `GOVERNANCE.md`: DAO governance documentation
 - `SECURITY.md`: Security policy
 - `CHANGELOG.md`: Version history
 
@@ -343,7 +332,7 @@ src/
 
 - **GitHub Issues**: For bugs and feature requests
 - **GitHub Discussions**: For questions and general discussion
-- **DAO Contact**: chaincast@layerx.xyz for governance matters
+- **Contact**: gm@layerx.xyz for commercial licensing inquiries
 
 ### Recognition
 
@@ -351,38 +340,28 @@ Contributors will be recognized in:
 - [Contributors list](https://github.com/layerx-labs/chain-cast/graphs/contributors)
 - Release notes
 - Project documentation
-- DAO governance acknowledgments
 
 ### Communication Channels
 
 - **GitHub Issues**: Bug reports and feature requests
 - **GitHub Discussions**: General questions and community discussion
-- **DAO Platform**: Governance proposals and voting
-- **Community Channels**: Discord, Telegram, Twitter
 
 ### Commercial Contributions
 
-For commercial contributions or enterprise features:
-
-1. **Submit DAO Proposal**: Create governance proposal for commercial features
-2. **Community Voting**: $CAST token holders vote on commercial proposals
-3. **Revenue Sharing**: Commercial contributions may include revenue sharing
-4. **Licensing**: Commercial use requires DAO-approved licensing
+For commercial contributions or enterprise features, please contact LayerX Labs at gm@layerx.xyz.
 
 ## Additional Resources
 
 - [GraphQL Documentation](https://graphql.org/)
 - [Prisma Documentation](https://www.prisma.io/docs/)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
-- [Jest Testing Framework](https://jestjs.io/docs/getting-started)
-- [DAO Governance](./GOVERNANCE.md)
+- [Bun Test Framework](https://bun.sh/docs/cli/test)
 
 ## Questions?
 
 If you have questions about contributing, feel free to:
 1. Open a [GitHub issue](https://github.com/layerx-labs/chain-cast/issues)
 2. Start a [GitHub discussion](https://github.com/layerx-labs/chain-cast/discussions)
-3. Contact the DAO at chaincast@layerx.xyz
-4. Join our [Discord community](https://discord.gg/chaincast)
+3. Contact us at gm@layerx.xyz
 
 Thank you for contributing to Chain Cast! 🚀

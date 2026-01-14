@@ -2,7 +2,7 @@
 
 This document outlines the development roadmap for Chain Cast, including planned features, improvements, and milestones.
 
-**🏛️ DAO-Governed Roadmap**: Major roadmap decisions and feature priorities are determined by $CAST token holders through the CHAINCAST DAO governance process.
+This roadmap outlines planned features and improvements for Chain Cast.
 
 ## 🎯 Vision
 
@@ -28,8 +28,6 @@ Chain Cast aims to become the go-to open-source solution for blockchain event pr
 ## 📅 Upcoming Releases
 
 ### v1.X.0
-
-*Note: Release timeline and feature priorities are subject to DAO governance approval*
 
 #### 🔍 Monitoring & Observability
 - [ ] **Real-time Dashboard**: Web-based monitoring dashboard
@@ -153,30 +151,21 @@ We welcome community input on the roadmap! Here's how you can contribute:
 
 ### Suggesting Features
 1. **Create an issue** with the `enhancement` label
-2. **Submit DAO proposal** for major features requiring governance
-3. **Provide detailed description** of the feature
-4. **Include use cases** and benefits
-5. **Consider implementation** complexity
-
-### DAO Governance Process
-- **Proposal Submission**: Submit governance proposals through DAO platform
-- **Community Discussion**: Engage in community discussions and feedback
-- **DAO Voting**: $CAST token holders vote on major roadmap decisions
-- **Implementation**: Approved features are prioritized for development
+2. **Provide detailed description** of the feature
+3. **Include use cases** and benefits
+4. **Consider implementation** complexity
 
 ### Prioritizing Features
 - **Community demand**: Features with high community interest
 - **Technical impact**: Features that improve core functionality
 - **Business value**: Features that enable new use cases
 - **Implementation effort**: Balance between impact and effort
-- **DAO governance**: Major features require DAO approval
 
 ### Implementation
 - **Fork the repository** and implement features
 - **Follow contributing guidelines** for code quality
 - **Write tests** for new functionality
 - **Update documentation** for new features
-- **Submit DAO proposals** for major features
 
 ## 📞 Feedback & Questions
 
@@ -184,26 +173,10 @@ We value your feedback on the roadmap! Please:
 
 - **Open issues** for feature requests
 - **Start discussions** for roadmap questions
-- **Submit DAO proposals** for major features
-- **Email us** at chaincast@layerx.xyz for private feedback
-- **Join our community** channels for ongoing discussions
-
-## 🏛️ DAO Governance
-
-### Roadmap Governance
-- **Major Features**: Require DAO proposal and community voting
-- **Release Timeline**: Subject to DAO governance approval
-- **Resource Allocation**: Development resources allocated through DAO
-- **Priority Setting**: Feature priorities determined by community vote
-
-### Getting Involved in Governance
-- **Acquire $CAST Tokens**: Purchase tokens to gain voting rights
-- **Submit Proposals**: Create governance proposals for roadmap features
-- **Participate in Voting**: Vote on roadmap and feature proposals
-- **Join Discussions**: Participate in community discussions
+- **Email us** at gm@layerx.xyz for private feedback
 
 ---
 
-**Note**: This roadmap is a living document and will be updated based on community feedback, technical requirements, and DAO governance decisions. The timeline and features are subject to change based on development progress, community needs, and DAO voting outcomes.
+**Note**: This roadmap is a living document and will be updated based on community feedback and technical requirements. The timeline and features are subject to change based on development progress and community needs.
 
 *Last updated: August 2025*

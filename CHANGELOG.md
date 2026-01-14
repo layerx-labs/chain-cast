@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-01-08
+
 ### Added
 - **DSL Compiler (castc)**: YAML-based domain-specific language for pipeline definitions
   - New CLI tool (`castc`) with compile, validate, and decompile commands
@@ -17,8 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Comprehensive DSL documentation (`doc/DSL-GUIDE.md`)
   - Full test suite for DSL components (cli, compiler, decompiler, parser, validator, transformers)
 - New dependencies: `commander` for CLI, `yaml` for YAML parsing
+- New example: `examples/lx-token-monitor.json` for $LX token monitoring on Ethereum mainnet
 
 ### Changed
+- **Docker**: Changed from Alpine to Debian base image for Prisma/OpenSSL compatibility
 - Updated dependencies to latest semver-compatible versions:
   - `typescript`: 5.0.4 → 5.9.3
   - `viem`: 2.21.0 → 2.43.5
@@ -27,8 +31,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `axios`: 1.4.0 → 1.13.2
   - `graphql`: 16.6.0 → 16.12.0
   - And other minor updates
+- Updated GETTING-STARTED.md to use Ethereum mainnet ($LX token) instead of Ganache
 - Updated README with DSL programming guide reference and custom pipelines section
-- Bumped package version to 1.2.0
+- Updated README with universal event support clarification
+- Updated CLAUDE.md with local development instructions (Anvil/Hardhat)
+
+### Removed
+- Ganache dependency and related scripts (`ganache:dev`, `setup:ganache`)
 
 ## [1.2.0] - 2026-01-07
 
@@ -180,6 +189,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **1.2.1**: DSL compiler (castc) for YAML-based pipelines + Docker Debian image
 - **1.2.0**: Major runtime and tooling migration (Bun, viem, Biome) + comprehensive tests
 - **1.1.1**: Open source documentation, GitHub templates, and developer tooling
 - **1.1.0**: ContractCast naming, status tracking, and improved logging

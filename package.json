@@ -1,7 +1,7 @@
 {
   "name": "chain-cast",
-  "version": "1.2.0",
-  "description": "A DAO-governed blockchain event processing platform designed to listen, process and stream events from smart contracts deployed on various EVM blockchain networks",
+  "version": "1.2.1",
+  "description": "An open-source blockchain event processing platform designed to listen, process and stream events from smart contracts deployed on various EVM blockchain networks",
   "main": "src/main.ts",
   "bin": {
     "castc": "./src/dsl/cli/castc.ts"
@@ -45,13 +45,11 @@
     "smart-contracts",
     "graphql",
     "ethereum",
-    "dao",
-    "governance",
     "defi",
     "web3",
     "event-processing",
     "chaincast",
-    "chain-token"
+    "evm"
   ],
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

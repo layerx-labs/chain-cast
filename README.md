@@ -7,7 +7,7 @@
 
 > A powerful open-source tool designed to listen to and recover events from Ethereum smart contracts deployed on any EVM chain. By seamlessly integrating with EVM chains, Chain Cast provides developers and businesses with the ability to extract and process valuable event data in a reliable and efficient manner.
 
-**🏛️ DAO-Governed Project**: Chain Cast is controlled and managed by $CAST token holders through the CHAINCAST DAO. All commercial licenses and governance decisions are made by the DAO community.
+**Open Source Project**: Chain Cast is developed and maintained by LayerX Labs. For commercial licensing, please contact LayerX Labs.
 
 ## 🌟 Features
 
@@ -210,7 +210,6 @@ For the complete DSL reference and more examples, see the **[DSL Programming Gui
 - [API Documentation](./doc/README.md)
 - [Contributing Guidelines](./CONTRIBUTING.md)
 - [Code of Conduct](./CODE_OF_CONDUCT.md)
-- [DAO Governance](./GOVERNANCE.md)
 
 ## 🧪 Testing
 
@@ -266,45 +265,26 @@ We welcome contributions! Please see our [Contributing Guidelines](./CONTRIBUTIN
 
 ## 📄 License
 
-This project is licensed under the MIT License for open source use. **Commercial licenses are governed by the CHAINCAST DAO**. For commercial use, please contact the DAO governance at chaincast@layerx.xyz.
+This project is licensed under the MIT License for open source and non-commercial use. **Commercial use requires a license from LayerX Labs**. For commercial licensing inquiries, please contact gm@layerx.xyz.
 
 ### License Types
 
 - **MIT License**: For open source and non-commercial use
-- **Commercial License**: Governed by CHAINCAST DAO - requires DAO approval
-- **Enterprise License**: Available through DAO governance
+- **Commercial License**: Required for commercial use - contact LayerX Labs
 
 See the [LICENSE](./LICENSE) file for details.
-
-## 🏛️ DAO Governance
-
-Chain Cast is governed by the CHAINCAST DAO, where $CAST token holders make key decisions about:
-
-- **Commercial Licensing**: All commercial license approvals
-- **Feature Development**: Major feature roadmap decisions
-- **Partnerships**: Strategic partnerships and integrations
-- **Treasury Management**: Project funding and resource allocation
-- **Governance Updates**: Changes to governance structure
-
-### Getting Involved
-
-- **Join the DAO**: Acquire $CAST tokens to participate in governance
-- **Propose Changes**: Submit governance proposals for community voting
-- **Vote on Proposals**: Participate in DAO voting on key decisions
-- **Contribute**: Help build and improve the project
 
 ## 🆘 Support
 
 - **Issues**: [GitHub Issues](https://github.com/layerx-labs/chain-cast/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/layerx-labs/chain-cast/discussions)
-- **DAO Contact**: chaincast@layerx.xyz
+- **Contact**: gm@layerx.xyz
 
 ## 🙏 Acknowledgments
 
 - Built with ❤️ by the LayerX Labs team
-- Governed by the CHAINCAST DAO community
 - Thanks to all our [contributors](https://github.com/layerx-labs/chain-cast/graphs/contributors)
 
 ---
 
-**Made with ❤️ by [LayerX Labs](https://github.com/layerx-labs) | Governed by [CHAINCAST DAO](https://dao.chaincast.xyz)**
+**Made with ❤️ by [LayerX Labs](https://github.com/layerx-labs)**
