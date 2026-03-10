@@ -41,7 +41,7 @@ ENV PORT=55000
 EXPOSE 55000
 
 # Mount volume for logs
-VOLUME /app/logs
+#VOLUME /app/logs
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
